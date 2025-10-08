@@ -172,8 +172,8 @@ export const SidebarFooter = React.forwardRef<HTMLDivElement, React.HTMLAttribut
             <div
             ref={ref}
             className={cn(
-                "flex flex-col gap-2 p-4 mt-auto transition-all duration-300 ease-in-out",
-                isExpanded ? "items-start" : "items-center",
+                "flex flex-col gap-2 mt-auto transition-all duration-300 ease-in-out",
+                isExpanded ? "items-start p-4" : "items-center p-3",
                 className
             )}
             {...props}

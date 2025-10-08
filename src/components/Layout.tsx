@@ -68,14 +68,6 @@ const MainLayout = () => {
             )}
             <SidebarMenuItem>
               <SidebarMenuButton label="" asChild>
-                <NavLink to="/profile" className="flex items-center">
-                  <User className="w-4 h-4" />
-                  {isExpanded && <span className="ml-2">Profile</span>}
-                </NavLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton label="" asChild>
                 <NavLink to="/service-queue" className="flex items-center">
                   <ClipboardList className="w-4 h-4" />
                   {isExpanded && <span className="ml-2">Service Queue</span>}
@@ -102,6 +94,12 @@ const MainLayout = () => {
         </SidebarContent>
                 <SidebarFooter>
                   <div className="flex flex-col items-center w-full gap-2">
+                    <NavLink to="/profile" className="w-full">
+                      <Button variant="outline" size={isExpanded ? "lg" : "default"} className="w-full">
+                        <User className="h-5 w-5" />
+                        {isExpanded && <span className="ml-2">Profile</span>}
+                      </Button>
+                    </NavLink>
                     <NavLink to="/about" className="w-full">
                       <Button variant="outline" size={isExpanded ? "lg" : "default"} className="w-full">
                         <Info className="h-5 w-5" />
