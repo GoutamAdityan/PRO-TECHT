@@ -1,10 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Plus, Package, Calendar, DollarSign, ShieldCheck, ShieldX } from 'lucide-react';
+import { Input } from '@/components/ui/input';
+import { Plus, Package, Calendar, DollarSign, ShieldCheck, ShieldX, Search } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Link } from 'react-router-dom';
 
@@ -27,6 +28,7 @@ const Products = () => {
   const { toast } = useToast();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     if (user) {
@@ -63,6 +65,15 @@ const Products = () => {
       setLoading(false);
     }
   };
+
+  const filteredProducts = useMemo(() => {
+    return products.filter(
+      (product) =>
+        product.brand.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.model.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        product.serial_number?.toLowerCase().includes(searchTerm.toLowerCase()),
+    );
+  }, [products, searchTerm]);
 
   const isWarrantyExpired = (expiryDate?: string) => {
     if (!expiryDate) return false;
@@ -112,25 +123,40 @@ const Products = () => {
         </Button>
       </div>
 
-      {products.length === 0 ? (
+      <div className="mb-8">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Search by brand, model, or serial number..."
+            className="pl-10 w-full max-w-lg"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
+      </div>
+
+      {filteredProducts.length === 0 ? (
         <Card className="text-center py-12">
           <CardContent>
             <Package className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
-            <CardTitle className="mb-2">No Products Yet</CardTitle>
+            <CardTitle className="mb-2">No Products Found</CardTitle>
             <CardDescription className="mb-6">
-              Start by adding your first product to track warranties and service history
+              {searchTerm ? 'Try adjusting your search terms.' : 'Start by adding your first product to track warranties and service history'}
             </CardDescription>
-            <Button asChild>
-              <Link to="/products/new">
-                <Plus className="w-4 h-4 mr-2" />
-                Add Your First Product
-              </Link>
-            </Button>
+            {!searchTerm && (
+              <Button asChild>
+                <Link to="/products/new">
+                  <Plus className="w-4 h-4 mr-2" />
+                  Add Your First Product
+                </Link>
+              </Button>
+            )}
           </CardContent>
         </Card>
       ) : (
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {products.map((product) => (
+          {filteredProducts.map((product) => (
             <Card key={product.id} className="hover:shadow-lg transition-shadow">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">

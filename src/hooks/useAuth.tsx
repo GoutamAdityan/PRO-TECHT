@@ -21,6 +21,8 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   updateProfile: (updates: Partial<Profile>) => Promise<{ error: any }>;
+  updateEmail: (newEmail: string) => Promise<{ error: any }>;
+  updatePassword: (newPassword: string) => Promise<{ error: any }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -224,6 +226,66 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const updateEmail = async (newEmail: string) => {
+    if (!user) return { error: new Error('No user logged in') };
+
+    try {
+      const { error } = await supabase.auth.updateUser({ email: newEmail });
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Update failed",
+          description: error.message
+        });
+      } else {
+        toast({
+          title: "Email update requested",
+          description: "Please check your new email address to confirm the change."
+        });
+      }
+
+      return { error };
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Update failed",
+        description: error.message
+      });
+      return { error };
+    }
+  };
+
+  const updatePassword = async (newPassword: string) => {
+    if (!user) return { error: new Error('No user logged in') };
+
+    try {
+      const { error } = await supabase.auth.updateUser({ password: newPassword });
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Update failed",
+          description: error.message
+        });
+      } else {
+        toast({
+          title: "Password updated",
+          description: "Your password has been updated successfully."
+        });
+      }
+
+      return { error };
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Update failed",
+        description: error.message
+      });
+      return { error };
+    }
+  };
+
   const value = {
     user,
     session,
@@ -232,7 +294,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     signUp,
     signIn,
     signOut,
-    updateProfile
+    updateProfile,
+    updateEmail,
+    updatePassword
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
