@@ -15,7 +15,7 @@ import {
   SidebarInset,
   useSidebar,
 } from "@/components/ui/sidebar";
-import { Shield, Package, Wrench, LogOut, LayoutDashboard, ClipboardList, Book, BarChart, User, Info } from "lucide-react";
+import { Shield, Package, Wrench, LogOut, LayoutDashboard, ClipboardList, Book, BarChart, User, Info, ShieldCheck, MessageSquare, FileText } from "lucide-react";
 
 // force reload
 // force reload
@@ -66,30 +66,72 @@ const MainLayout = () => {
                 </SidebarMenuItem>
               </>
             )}
-            <SidebarMenuItem>
-              <SidebarMenuButton label="" asChild>
-                <NavLink to="/service-queue" className="flex items-center">
-                  <ClipboardList className="w-4 h-4" />
-                  {isExpanded && <span className="ml-2">Service Queue</span>}
-                </NavLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton label="" asChild>
-                <NavLink to="/product-catalog" className="flex items-center">
-                  <Book className="w-4 h-4" />
-                  {isExpanded && <span className="ml-2">Product Catalog</span>}
-                </NavLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <SidebarMenuButton label="" asChild>
-                <NavLink to="/analytics" className="flex items-center">
-                  <BarChart className="w-4 h-4" />
-                  {isExpanded && <span className="ml-2">Analytics</span>}
-                </NavLink>
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            {profile?.role !== 'consumer' && profile?.role !== 'service_center' && (
+              <>
+                <SidebarMenuItem>
+                  <SidebarMenuButton label="" asChild>
+                    <NavLink to="/service-queue" className="flex items-center">
+                      <ClipboardList className="w-4 h-4" />
+                      {isExpanded && <span className="ml-2">Service Queue</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton label="" asChild>
+                    <NavLink to="/product-catalog" className="flex items-center">
+                      <Book className="w-4 h-4" />
+                      {isExpanded && <span className="ml-2">Product Catalog</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton label="" asChild>
+                    <NavLink to="/analytics" className="flex items-center">
+                      <BarChart className="w-4 h-4" />
+                      {isExpanded && <span className="ml-2">Analytics</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </>
+            )}
+            {profile?.role === 'consumer' && (
+              <SidebarMenuItem>
+                <SidebarMenuButton label="" asChild>
+                  <NavLink to="/warranty-tracker" className="flex items-center">
+                    <ShieldCheck className="w-4 h-4" />
+                    {isExpanded && <span className="ml-2">Warranty Tracker</span>}
+                  </NavLink>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            )}
+            {profile?.role === 'service_center' && (
+              <>
+                <SidebarMenuItem>
+                  <SidebarMenuButton label="" asChild>
+                    <NavLink to="/active-jobs" className="flex items-center">
+                      <ClipboardList className="w-4 h-4" />
+                      {isExpanded && <span className="ml-2">Active Jobs</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton label="" asChild>
+                    <NavLink to="/customer-communication" className="flex items-center">
+                      <MessageSquare className="w-4 h-4" />
+                      {isExpanded && <span className="ml-2">Customer Communication</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+                <SidebarMenuItem>
+                  <SidebarMenuButton label="" asChild>
+                    <NavLink to="/service-reports" className="flex items-center">
+                      <FileText className="w-4 h-4" />
+                      {isExpanded && <span className="ml-2">Service Reports</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </>
+            )}
           </SidebarMenu>
         </SidebarContent>
                 <SidebarFooter>
@@ -129,7 +171,6 @@ const MainLayout = () => {
         <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30">
           <div className="container mx-auto px-4 py-4 flex items-center justify-between">
             <SidebarTrigger />
-
           </div>
         </header>
         <main className="container mx-auto px-4 py-8">

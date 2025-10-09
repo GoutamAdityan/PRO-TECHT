@@ -183,6 +183,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         title: "Signed out",
         description: "You have been signed out successfully."
       });
+      window.location.href = '/auth';
     } catch (error: any) {
       toast({
         variant: "destructive",
