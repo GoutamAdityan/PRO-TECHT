@@ -3,9 +3,10 @@ import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield, Package, Users, Wrench, ListChecks, Boxes, BarChart3, LifeBuoy, Rocket, Zap, MessageSquare, FileText, Clock, CheckCircle } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'; // Added missing import
-import { Button } from '@/components/ui/button'; // Added missing import
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
+import { RoleGuard } from '@/components/ui/RoleGuard'; // Import RoleGuard
 
 const Index = () => {
   const { user, profile, loading } = useAuth();
@@ -148,42 +149,48 @@ const Index = () => {
 
         {/* Quick Actions Grid */}
         <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" variants={containerVariants}>
-          <motion.div variants={itemVariants}>
-            <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-primary" /> Create Report
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>Generate a new service report for a completed job.</CardDescription>
-              </CardContent>
-            </Card>
-          </motion.div>
-          <motion.div variants={itemVariants}>
-            <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <MessageSquare className="h-5 w-5 text-primary" /> Open Chat
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>Start a new conversation with a customer or team member.</CardDescription>
-              </CardContent>
-            </Card>
-          </motion.div>
-          <motion.div variants={itemVariants}>
-            <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <CheckCircle className="h-5 w-5 text-primary" /> Mark Job Complete
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <CardDescription>Finalize a service job and update its status.</CardDescription>
-              </CardContent>
-            </Card>
-          </motion.div>
+          <RoleGuard allowed={['service_center']}>
+            <motion.div variants={itemVariants}>
+              <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="h-5 w-5 text-primary" /> Create Report
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription>Generate a new service report for a completed job.</CardDescription>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </RoleGuard>
+          <RoleGuard allowed={['service_center']}>
+            <motion.div variants={itemVariants}>
+              <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <MessageSquare className="h-5 w-5 text-primary" /> Open Chat
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription>Start a new conversation with a customer or team member.</CardDescription>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </RoleGuard>
+          <RoleGuard allowed={['service_center']}>
+            <motion.div variants={itemVariants}>
+              <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300">
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <CheckCircle className="h-5 w-5 text-primary" /> Mark Job Complete
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <CardDescription>Finalize a service job and update its status.</CardDescription>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </RoleGuard>
         </motion.div>
 
         {/* Activity Feed (Placeholder) */}
