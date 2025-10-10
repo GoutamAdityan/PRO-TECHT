@@ -1,8 +1,9 @@
-import { Navigate } from 'react-router-dom';
+import { Navigate, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield, Package, Users, Wrench, ListChecks, Boxes, BarChart3, LifeBuoy, Rocket, Zap, MessageSquare, FileText, Clock, CheckCircle } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
+import FakeCountdown from '@/components/custom/FakeCountdown';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { motion } from 'framer-motion';
@@ -111,41 +112,53 @@ const Index = () => {
           >
             {getRoleDescription(profile?.role)}
           </motion.p>
+          {(!profile?.role || (profile?.role !== 'business_partner' && profile?.role !== 'service_center')) && (
+            <motion.p
+              initial={{ y: -20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ duration: 0.5, delay: 1.0 }}
+              className="text-2xl font-semibold text-foreground mt-8"
+            >
+              Welcome back, {profile?.full_name || user?.email}!
+            </motion.p>
+          )}
         </div>
       </div>
 
       <main className="max-w-7xl mx-auto px-4 py-12 space-y-12">
         {/* StatCards */}
-        <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4" variants={containerVariants}>
-          <StatCard
-            title="Active Jobs"
-            value="12"
-            description="+2 since last week"
-            icon={<Wrench className="h-5 w-5 text-muted-foreground" />}
-            variants={itemVariants}
-          />
-          <StatCard
-            title="Pending Reports"
-            value="5"
-            description="-1 since yesterday"
-            icon={<FileText className="h-5 w-5 text-muted-foreground" />}
-            variants={itemVariants}
-          />
-          <StatCard
-            title="Avg. Turnaround"
-            value="2.3 days"
-            description="Target: 2 days"
-            icon={<Clock className="h-5 w-5 text-muted-foreground" />}
-            variants={itemVariants}
-          />
-          <StatCard
-            title="SLA Compliance"
-            value="98%"
-            description="On track"
-            icon={<CheckCircle className="h-5 w-5 text-muted-foreground" />}
-            variants={itemVariants}
-          />
-        </motion.div>
+        <RoleGuard allowed={['business_partner', 'service_center']}>
+          <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4" variants={containerVariants}>
+            <StatCard
+              title="Active Jobs"
+              value="12"
+              description="+2 since last week"
+              icon={<Wrench className="h-5 w-5 text-muted-foreground" />}
+              variants={itemVariants}
+            />
+            <StatCard
+              title="Pending Reports"
+              value="5"
+              description="-1 since yesterday"
+              icon={<FileText className="h-5 w-5 text-muted-foreground" />}
+              variants={itemVariants}
+            />
+            <StatCard
+              title="Avg. Turnaround"
+              value="2.3 days"
+              description="Target: 2 days"
+              icon={<Clock className="h-5 w-5 text-muted-foreground" />}
+              variants={itemVariants}
+            />
+            <StatCard
+              title="SLA Compliance"
+              value="98%"
+              description="On track"
+              icon={<CheckCircle className="h-5 w-5 text-muted-foreground" />}
+              variants={itemVariants}
+            />
+          </motion.div>
+        </RoleGuard>
 
         {/* Quick Actions Grid */}
         <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" variants={containerVariants}>
@@ -193,54 +206,126 @@ const Index = () => {
           </RoleGuard>
         </motion.div>
 
+        {/* Consumer Specific Features */}
+        {(!profile?.role || (profile?.role !== 'business_partner' && profile?.role !== 'service_center')) && (
+          <motion.div variants={containerVariants}>
+            <motion.h2 variants={itemVariants} className="text-2xl font-heading font-semibold mb-6">Your Hub</motion.h2>
+            <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4" variants={containerVariants}>
+              <motion.div variants={itemVariants}>
+                <Link to="/products">
+                  <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300 h-full">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Package className="h-5 w-5 text-primary" /> My Products
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>View and manage your registered products.</CardDescription>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+              <motion.div variants={itemVariants}>
+                <Link to="/warranty-tracker">
+                  <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300 h-full">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Shield className="h-5 w-5 text-primary" /> My Warranties
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>Check warranty statuses and details.</CardDescription>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+              <motion.div variants={itemVariants}>
+                <Link to="/service-requests">
+                  <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300 h-full">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <LifeBuoy className="h-5 w-5 text-primary" /> My Service Requests
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>Track the status of your service requests.</CardDescription>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </motion.div>
+              <motion.div variants={itemVariants}>
+                <Link to="/service-requests">
+                  <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300 h-full">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <Rocket className="h-5 w-5 text-primary" /> New Service Request
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>Submit a new request for product service.</CardDescription>
+                    </CardContent>
+                  </Card>
+                </Link>
+                            </motion.div>
+                          </motion.div>
+              
+                          <motion.h2 variants={itemVariants} className="text-2xl font-heading font-semibold mb-6 mt-8">Upcoming Warranties</motion.h2>
+                          <motion.div variants={containerVariants}>
+                            <FakeCountdown />
+                          </motion.div>
+                        </motion.div>
+                      )}
+
         {/* Activity Feed (Placeholder) */}
-        <motion.div variants={containerVariants}>
-          <motion.h2 variants={itemVariants} className="text-2xl font-heading font-semibold mb-6">Recent Activity</motion.h2>
-          <motion.div className="space-y-4" variants={containerVariants}>
-            <motion.div variants={itemVariants}>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-9 w-9">
-                      <AvatarImage src="https://i.pravatar.cc/150?img=4" alt="Agent Name" />
-                      <AvatarFallback>AN</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-medium">Agent Sarah</p>
-                      <p className="text-sm text-muted-foreground">Completed Job #1234</p>
+        <RoleGuard allowed={['business_partner', 'service_center']}>
+          <motion.div variants={containerVariants}>
+            <motion.h2 variants={itemVariants} className="text-2xl font-heading font-semibold mb-6">Recent Activity</motion.h2>
+            <motion.div className="space-y-4" variants={containerVariants}>
+              <motion.div variants={itemVariants}>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-9 w-9">
+                        <AvatarImage src="https://i.pravatar.cc/150?img=4" alt="Agent Name" />
+                        <AvatarFallback>AN</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium">Agent Sarah</p>
+                        <p className="text-sm text-muted-foreground">Completed Job #1234</p>
+                      </div>
                     </div>
-                  </div>
-                  <span className="text-xs text-muted-foreground">2 hours ago</span>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm">Replaced faulty component in Smart Coffee Maker X1.</p>
-                  <Button variant="ghost" size="sm" className="mt-2">View Details</Button>
-                </CardContent>
-              </Card>
-            </motion.div>
-            <motion.div variants={itemVariants}>
-              <Card>
-                <CardHeader className="flex flex-row items-center justify-between">
-                  <div className="flex items-center gap-3">
-                    <Avatar className="h-9 w-9">
-                      <AvatarImage src="https://i.pravatar.cc/150?img=5" alt="Customer Name" />
-                      <AvatarFallback>CJ</AvatarFallback>
-                    </Avatar>
-                    <div>
-                      <p className="font-medium">Customer John</p>
-                      <p className="text-sm text-muted-foreground">New Service Request</p>
+                    <span className="text-xs text-muted-foreground">2 hours ago</span>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm">Replaced faulty component in Smart Coffee Maker X1.</p>
+                    <Button variant="ghost" size="sm" className="mt-2">View Details</Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
+              <motion.div variants={itemVariants}>
+                <Card>
+                  <CardHeader className="flex flex-row items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-9 w-9">
+                        <AvatarImage src="https://i.pravatar.cc/150?img=5" alt="Customer Name" />
+                        <AvatarFallback>CJ</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="font-medium">Customer John</p>
+                        <p className="text-sm text-muted-foreground">New Service Request</p>
+                      </div>
                     </div>
-                  </div>
-                  <span className="text-xs text-muted-foreground">Yesterday</span>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-sm">Robotic Vacuum Cleaner Pro not charging.</p>
-                  <Button variant="ghost" size="sm" className="mt-2">Assign Agent</Button>
-                </CardContent>
-              </Card>
+                    <span className="text-xs text-muted-foreground">Yesterday</span>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-sm">Robotic Vacuum Cleaner Pro not charging.</p>
+                    <Button variant="ghost" size="sm" className="mt-2">Assign Agent</Button>
+                  </CardContent>
+                </Card>
+              </motion.div>
             </motion.div>
           </motion.div>
-        </motion.div>
+        </RoleGuard>
       </main>
     </motion.div>
   );
