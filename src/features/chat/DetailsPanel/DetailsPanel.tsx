@@ -1,4 +1,3 @@
-
 // src/features/chat/DetailsPanel/DetailsPanel.tsx
 import React, { useEffect, useRef } from 'react';
 import { Sheet, SheetContent } from '@/components/ui/sheet';
@@ -8,6 +7,7 @@ import { ProductDetails } from './ProductDetails';
 import { CustomerDetails } from './CustomerDetails';
 import { QueryHistory } from './QueryHistory';
 import { useDetails } from '../useDetails';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface DetailsPanelProps {
   open: boolean;
@@ -40,19 +40,21 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({ open, onClose, conve
     };
   }, [open, onClose]);
 
-  if (!open) return null;
-
-  const content = (
-    <div
+  const panelContent = (
+    <motion.div
+      initial={{ opacity: 0, x: isMobile ? "100%" : 50 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: isMobile ? "100%" : 50 }}
+      transition={{ duration: 0.3 }}
       ref={panelRef}
       tabIndex={-1} // Make div focusable
       role="dialog"
       aria-label="Customer and Product Details"
-      className="flex h-full flex-col bg-card text-card-foreground focus:outline-none"
+      className="flex h-full flex-col bg-surface/[0.6] text-card-foreground focus:outline-none shadow-xl border-l border-border/50"
     >
-      <div className="flex items-center justify-between border-b p-3">
+      <div className="flex items-center justify-between border-b border-border/50 p-3 bg-card/50 backdrop-blur-sm">
         <h2 className="text-lg font-semibold">Details</h2>
-        <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close details panel">
+        <Button variant="ghost" size="icon" onClick={onClose} aria-label="Close details panel" className="hover:bg-accent/10">
           <XIcon className="h-5 w-5" />
         </Button>
       </div>
@@ -72,22 +74,30 @@ export const DetailsPanel: React.FC<DetailsPanelProps> = ({ open, onClose, conve
           </>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 
   if (isMobile) {
     return (
-      <Sheet open={open} onOpenChange={onClose}>
-        <SheetContent side="right" className="w-full sm:w-[90%] p-0">
-          {content}
-        </SheetContent>
-      </Sheet>
+      <AnimatePresence>
+        {open && (
+          <Sheet open={open} onOpenChange={onClose}>
+            <SheetContent side="right" className="w-full sm:w-[90%] p-0 bg-transparent border-none">
+              {panelContent}
+            </SheetContent>
+          </Sheet>
+        )}
+      </AnimatePresence>
     );
   } else {
     return (
-      <div className="w-96 border-l border-border shadow-lg bg-card text-card-foreground">
-        {content}
-      </div>
+      <AnimatePresence>
+        {open && (
+          <div className="w-96">
+            {panelContent}
+          </div>
+        )}
+      </AnimatePresence>
     );
   }
 };

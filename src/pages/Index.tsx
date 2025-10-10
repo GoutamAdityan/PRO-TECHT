@@ -1,8 +1,11 @@
-import { Navigate, Link } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Shield, Package, Users, Wrench, ListChecks, Boxes, BarChart3, LifeBuoy, Rocket, Zap } from 'lucide-react';
-import { DashboardCard } from '@/components/custom/DashboardCard';
+import { Shield, Package, Users, Wrench, ListChecks, Boxes, BarChart3, LifeBuoy, Rocket, Zap, MessageSquare, FileText, Clock, CheckCircle } from 'lucide-react';
+import { StatCard } from '@/components/ui/StatCard';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'; // Added missing import
+import { Button } from '@/components/ui/button'; // Added missing import
+import { motion } from 'framer-motion';
 
 const Index = () => {
   const { user, profile, loading } = useAuth();
@@ -52,174 +55,187 @@ const Index = () => {
     }
   };
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    show: { opacity: 1, y: 0 },
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-secondary via-background to-background">
-      <main className="px-4 py-12">
-        <div className="max-w-5xl mx-auto space-y-12">
-          <div className="text-center space-y-4 animate-fade-in-down">
-            <div className="flex items-center justify-center w-20 h-20 mx-auto bg-primary rounded-full shadow-lg">
-              {getRoleIcon(profile?.role)}
-            </div>
-            <h1 className="text-5xl font-bold text-foreground tracking-tight">
-              {getRoleTitle(profile?.role)}
-            </h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              {getRoleDescription(profile?.role)}
-            </p>
-          </div>
-
-          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
-            {profile?.role === 'consumer' && (
-              <>
-                <Link to="/products">
-                  <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
-                    <CardHeader className="pb-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                          <Package className="w-6 h-6 text-primary" />
-                        </div>
-                        <CardTitle className="text-xl">Product Vault</CardTitle>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription>
-                        Manage your products, warranties, and documentation in one place.
-                      </CardDescription>
-                    </CardContent>
-                  </Card>
-                </Link>
-
-                <Link to="/service-requests">
-                  <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
-                    <CardHeader className="pb-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
-                          <Wrench className="w-6 h-6 text-accent" />
-                        </div>
-                        <CardTitle className="text-xl">Service Requests</CardTitle>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription>
-                        Book services, track repairs, and communicate with service centers.
-                      </CardDescription>
-                    </CardContent>
-                  </Card>
-                </Link>
-
-                <Link to="/warranty-tracker">
-                  <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
-                    <CardHeader className="pb-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center">
-                          <Shield className="w-6 h-6 text-success" />
-                        </div>
-                        <CardTitle className="text-xl">Warranty Tracker</CardTitle>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription>
-                        Monitor warranty status and receive expiration notifications.
-                      </CardDescription>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </>
-            )}
-
-            {profile?.role === 'business_partner' && (
-              <>
-                <DashboardCard
-                  title="Service Queue"
-                  description="Manage incoming service requests and assign to service centers."
-                  href="/service-queue"
-                  icon={ListChecks}
-                  kpi="42"
-                  kpiLabel="Pending Requests"
-                  colorClassName="bg-primary/10 text-primary border-primary/20"
-                />
-                <DashboardCard
-                  title="Product Catalog"
-                  description="Manage your product lineup and warranty policies."
-                  href="/product-catalog"
-                  icon={Boxes}
-                  kpi="1,200+"
-                  kpiLabel="Active Products"
-                  colorClassName="bg-success/10 text-success border-success/20"
-                />
-                <DashboardCard
-                  title="Analytics"
-                  description="View service metrics, customer satisfaction, and ROI data."
-                  href="/analytics"
-                  icon={BarChart3}
-                  kpi="89%"
-                  kpiLabel="Customer Satisfaction"
-                  colorClassName="bg-accent/10 text-accent border-accent/20"
-                />
-              </>
-            )}
-
-            {profile?.role === 'service_center' && (
-              <>
-                <Link to="/active-jobs">
-                  <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
-                    <CardHeader className="pb-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
-                          <Zap className="w-6 h-6 text-accent" />
-                        </div>
-                        <CardTitle className="text-xl">Active Jobs</CardTitle>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription>
-                        View and manage your current service assignments.
-                      </CardDescription>
-                    </CardContent>
-                  </Card>
-                </Link>
-
-                <Link to="/customer-communication">
-                  <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
-                    <CardHeader className="pb-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                          <LifeBuoy className="w-6 h-6 text-primary" />
-                        </div>
-                        <CardTitle className="text-xl">Customer Communication</CardTitle>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription>
-                        Communicate directly with customers about service status.
-                      </CardDescription>
-                    </CardContent>
-                  </Card>
-                </Link>
-
-                <Link to="/service-reports">
-                  <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
-                    <CardHeader className="pb-4">
-                      <div className="flex items-center space-x-4">
-                        <div className="w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center">
-                          <Rocket className="w-6 h-6 text-success" />
-                        </div>
-                        <CardTitle className="text-xl">Service Reports</CardTitle>
-                      </div>
-                    </CardHeader>
-                    <CardContent>
-                      <CardDescription>
-                        Submit completion reports and service documentation.
-                      </CardDescription>
-                    </CardContent>
-                  </Card>
-                </Link>
-              </>
-            )}
-          </div>
+    <motion.div
+      className="min-h-screen bg-background"
+      initial="hidden"
+      animate="show"
+      variants={containerVariants}
+    >
+      {/* Hero Section */}
+      <div className="relative overflow-hidden py-20 text-center bg-gradient-to-br from-primary/10 via-background to-background rounded-b-3xl shadow-xl">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-50"
+        ></motion.div>
+        <div className="relative z-10 max-w-4xl mx-auto px-4">
+          <motion.div
+            initial={{ y: -50, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="flex items-center justify-center w-24 h-24 mx-auto mb-6 bg-primary rounded-full shadow-lg"
+          >
+            {getRoleIcon(profile?.role)}
+          </motion.div>
+          <motion.h1
+            initial={{ y: -30, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.6 }}
+            className="text-5xl md:text-6xl font-heading font-bold text-foreground tracking-tight mb-4"
+          >
+            {getRoleTitle(profile?.role)}
+          </motion.h1>
+          <motion.p
+            initial={{ y: -20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+            className="text-xl text-muted-foreground max-w-3xl mx-auto"
+          >
+            {getRoleDescription(profile?.role)}
+          </motion.p>
         </div>
+      </div>
+
+      <main className="max-w-7xl mx-auto px-4 py-12 space-y-12">
+        {/* StatCards */}
+        <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4" variants={containerVariants}>
+          <StatCard
+            title="Active Jobs"
+            value="12"
+            description="+2 since last week"
+            icon={<Wrench className="h-5 w-5 text-muted-foreground" />}
+            variants={itemVariants}
+          />
+          <StatCard
+            title="Pending Reports"
+            value="5"
+            description="-1 since yesterday"
+            icon={<FileText className="h-5 w-5 text-muted-foreground" />}
+            variants={itemVariants}
+          />
+          <StatCard
+            title="Avg. Turnaround"
+            value="2.3 days"
+            description="Target: 2 days"
+            icon={<Clock className="h-5 w-5 text-muted-foreground" />}
+            variants={itemVariants}
+          />
+          <StatCard
+            title="SLA Compliance"
+            value="98%"
+            description="On track"
+            icon={<CheckCircle className="h-5 w-5 text-muted-foreground" />}
+            variants={itemVariants}
+          />
+        </motion.div>
+
+        {/* Quick Actions Grid */}
+        <motion.div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3" variants={containerVariants}>
+          <motion.div variants={itemVariants}>
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-primary" /> Create Report
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>Generate a new service report for a completed job.</CardDescription>
+              </CardContent>
+            </Card>
+          </motion.div>
+          <motion.div variants={itemVariants}>
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5 text-primary" /> Open Chat
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>Start a new conversation with a customer or team member.</CardDescription>
+              </CardContent>
+            </Card>
+          </motion.div>
+          <motion.div variants={itemVariants}>
+            <Card className="cursor-pointer hover:shadow-lg transition-shadow duration-300">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <CheckCircle className="h-5 w-5 text-primary" /> Mark Job Complete
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <CardDescription>Finalize a service job and update its status.</CardDescription>
+              </CardContent>
+            </Card>
+          </motion.div>
+        </motion.div>
+
+        {/* Activity Feed (Placeholder) */}
+        <motion.div variants={containerVariants}>
+          <motion.h2 variants={itemVariants} className="text-2xl font-heading font-semibold mb-6">Recent Activity</motion.h2>
+          <motion.div className="space-y-4" variants={containerVariants}>
+            <motion.div variants={itemVariants}>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src="https://i.pravatar.cc/150?img=4" alt="Agent Name" />
+                      <AvatarFallback>AN</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium">Agent Sarah</p>
+                      <p className="text-sm text-muted-foreground">Completed Job #1234</p>
+                    </div>
+                  </div>
+                  <span className="text-xs text-muted-foreground">2 hours ago</span>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm">Replaced faulty component in Smart Coffee Maker X1.</p>
+                  <Button variant="ghost" size="sm" className="mt-2">View Details</Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+            <motion.div variants={itemVariants}>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="h-9 w-9">
+                      <AvatarImage src="https://i.pravatar.cc/150?img=5" alt="Customer Name" />
+                      <AvatarFallback>CJ</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium">Customer John</p>
+                      <p className="text-sm text-muted-foreground">New Service Request</p>
+                    </div>
+                  </div>
+                  <span className="text-xs text-muted-foreground">Yesterday</span>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-sm">Robotic Vacuum Cleaner Pro not charging.</p>
+                  <Button variant="ghost" size="sm" className="mt-2">Assign Agent</Button>
+                </CardContent>
+              </Card>
+            </motion.div>
+          </motion.div>
+        </motion.div>
       </main>
-    </div>
+    </motion.div>
   );
 };
 

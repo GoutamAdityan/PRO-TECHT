@@ -1,3 +1,4 @@
+
 // src/features/chat/ConversationView.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -6,9 +7,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { Message } from './realtime';
-import { ChatState } from './useChat'; // Import ChatState interface
-import { Smile, Paperclip, InfoIcon } from 'lucide-react'; // Added InfoIcon
-import './ChatBubble.css'; // Import the new CSS file
+import { ChatState } from './useChat';
+import { Smile, Paperclip, InfoIcon } from 'lucide-react';
+import './ChatBubble.css';
+import { motion } from 'framer-motion';
 
 // Helper to format date for chat separators
 const formatDateSeparator = (timestamp: string) => {
@@ -25,7 +27,10 @@ const formatDateSeparator = (timestamp: string) => {
 
 const MessageBubble: React.FC<{ message: Message; isAgent: boolean }> = ({ message, isAgent }) => {
   return (
-    <div
+    <motion.div
+      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.3 }}
       className={cn(
         "flex w-full mb-2",
         isAgent ? "justify-end" : "justify-start"
@@ -33,10 +38,10 @@ const MessageBubble: React.FC<{ message: Message; isAgent: boolean }> = ({ messa
     >
       <div
         className={cn(
-          "relative max-w-[65%] px-4 py-2 rounded-xl",
+          "relative max-w-[65%] px-4 py-2 rounded-xl shadow-md",
           isAgent
-            ? "bg-primary text-primary-foreground message-bubble-agent"
-            : "bg-muted message-bubble-customer"
+            ? "bg-primary text-primary-foreground message-bubble-agent rounded-br-none"
+            : "bg-muted text-muted-foreground message-bubble-customer rounded-bl-none"
         )}
       >
         <div className="flex flex-col">
@@ -44,6 +49,7 @@ const MessageBubble: React.FC<{ message: Message; isAgent: boolean }> = ({ messa
           <span
             className={cn(
               "self-end text-xs text-muted-foreground mt-1",
+              isAgent && "text-primary-foreground/70" // Adjust timestamp color for agent messages
             )}
           >
             {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -51,7 +57,7 @@ const MessageBubble: React.FC<{ message: Message; isAgent: boolean }> = ({ messa
           </span>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -106,28 +112,28 @@ export const ConversationView: React.FC<ConversationViewProps> = ({ selectedCust
   };
 
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-background/50 backdrop-blur-sm">
       {/* Header */}
-      <div className="flex items-center justify-between border-b p-3">
+      <div className="flex items-center justify-between border-b border-border/50 p-3 bg-card/50 backdrop-blur-sm">
         <div className="flex items-center gap-3">
-          <Avatar className="h-9 w-9">
+          <Avatar className="h-10 w-10 border border-border/50">
             <AvatarImage src={selectedCustomer.avatar} alt={selectedCustomer.name} />
             <AvatarFallback>{selectedCustomer.name.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
-            <p className="font-medium">{selectedCustomer.name}</p>
+            <p className="font-medium text-lg">{selectedCustomer.name}</p>
             <p className="text-sm text-muted-foreground">
               {isCustomerOnline ? 'Online' : 'Offline'}
             </p>
           </div>
         </div>
-        {/* Action buttons placeholder */}
         <div>
           <Button
             variant="ghost"
             size="icon"
             onClick={() => setIsDetailsPanelOpen((prev) => !prev)}
             aria-label="Toggle customer and product details"
+            className="hover:bg-accent/10"
           >
             <InfoIcon className="h-5 w-5" />
           </Button>
@@ -150,11 +156,11 @@ export const ConversationView: React.FC<ConversationViewProps> = ({ selectedCust
               <React.Fragment key={message.id}>
                 {showDateSeparator && (
                   <div className="relative my-6 text-center">
-                    <span className="relative z-10 inline-block bg-background px-2 text-sm text-muted-foreground">
+                    <span className="relative z-10 inline-block bg-background px-2 text-sm text-muted-foreground rounded-full shadow-sm">
                       {formatDateSeparator(message.timestamp)}
                     </span>
                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                      <div className="w-full border-t border-border" />
+                      <div className="w-full border-t border-border/50" />
                     </div>
                   </div>
                 )}
@@ -164,21 +170,35 @@ export const ConversationView: React.FC<ConversationViewProps> = ({ selectedCust
           })
         )}
         {isTyping && (
-          <div className="text-sm text-muted-foreground italic">{selectedCustomer.name} is typing...</div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="text-sm text-muted-foreground italic p-2 rounded-lg bg-muted/50 self-start max-w-fit"
+          >
+            {selectedCustomer.name} is typing...
+          </motion.div>
         )}
         <div ref={messagesEndRef} />
         {isSendingMessage && (
-          <div className="text-right text-sm text-muted-foreground italic">Sending...</div>
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
+            className="text-right text-sm text-muted-foreground italic p-2 rounded-lg bg-muted/50 self-end max-w-fit ml-auto"
+          >
+            Sending...
+          </motion.div>
         )}
       </div>
 
       {/* Message Composer */}
-      <div className="flex items-end gap-2 border-t bg-background p-3">
-        <Button variant="ghost" size="icon" className="shrink-0">
+      <div className="flex items-end gap-2 border-t border-border/50 bg-card/50 backdrop-blur-sm p-3">
+        <Button variant="ghost" size="icon" className="shrink-0 hover:bg-accent/10">
           <Smile className="h-5 w-5" />
           <span className="sr-only">Add emoji</span>
         </Button>
-        <Button variant="ghost" size="icon" className="shrink-0">
+        <Button variant="ghost" size="icon" className="shrink-0 hover:bg-accent/10">
           <Paperclip className="h-5 w-5" />
           <span className="sr-only">Attach file</span>
         </Button>
@@ -188,9 +208,9 @@ export const ConversationView: React.FC<ConversationViewProps> = ({ selectedCust
           onChange={(e) => setNewMessage(e.target.value)}
           onKeyDown={handleKeyPress}
           placeholder="Type your message..."
-          className="max-h-[100px] min-h-[40px] flex-1 resize-none"
+          className="max-h-[100px] min-h-[40px] flex-1 resize-none bg-background/50 border-border/50 focus-visible:ring-primary rounded-lg shadow-inner"
         />
-        <Button onClick={handleSendMessage} disabled={!newMessage.trim() || isSendingMessage}>
+        <Button onClick={handleSendMessage} disabled={!newMessage.trim() || isSendingMessage} className="bg-primary text-primary-foreground hover:bg-primary/90">
           Send
         </Button>
       </div>

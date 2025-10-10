@@ -1,5 +1,5 @@
 import { ModeToggle } from "@/components/theme-toggle";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import {
@@ -15,13 +15,46 @@ import {
   SidebarInset,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { Topbar } from "@/components/ui/Topbar";
 import { Shield, Package, Wrench, LogOut, LayoutDashboard, ClipboardList, Book, BarChart, User, Info, ShieldCheck, MessageSquare, FileText } from "lucide-react";
 
-// force reload
-// force reload
 const MainLayout = () => {
   const { isExpanded } = useSidebar();
   const { user, profile, signOut } = useAuth();
+  const location = useLocation();
+
+  const getPageTitle = (pathname: string) => {
+    switch (pathname) {
+      case "/":
+        return "Dashboard";
+      case "/products":
+        return "Product Vault";
+      case "/service-requests":
+        return "Service Requests";
+      case "/service-queue":
+        return "Service Queue";
+      case "/product-catalog":
+        return "Product Catalog";
+      case "/analytics":
+        return "Analytics";
+      case "/warranty-tracker":
+        return "Warranty Tracker";
+      case "/active-jobs":
+        return "Active Jobs";
+      case "/customer-communication":
+        return "Customer Communication";
+      case "/service-reports":
+        return "Service Reports";
+      case "/profile":
+        return "Profile";
+      case "/about":
+        return "About Us";
+      default:
+        return "ServiceBridge";
+    }
+  };
+
+  const currentPageTitle = getPageTitle(location.pathname);
 
   return (
     <>
@@ -37,28 +70,20 @@ const MainLayout = () => {
         <SidebarContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton label="Dashboard" asChild>
-                <NavLink to="/" className="flex items-center">
-                  <LayoutDashboard
-                    className={`w-4 h-4`}
-                  />
-                </NavLink>
+              <SidebarMenuButton label="Dashboard" to="/">
+                <LayoutDashboard />
               </SidebarMenuButton>
             </SidebarMenuItem>
             {profile?.role === 'consumer' && (
               <>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="Product Vault" asChild>
-                    <NavLink to="/products" className="flex items-center">
-                    <Package className="w-4 h-4" />
-                    </NavLink>
+                  <SidebarMenuButton label="Product Vault" to="/products">
+                    <Package />
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="Service Requests" asChild>
-                    <NavLink to="/service-requests" className="flex items-center">
-                      <Wrench className="w-4 h-4" />
-                    </NavLink>
+                  <SidebarMenuButton label="Service Requests" to="/service-requests">
+                    <Wrench />
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </>
@@ -66,110 +91,80 @@ const MainLayout = () => {
             {profile?.role !== 'consumer' && profile?.role !== 'service_center' && (
               <>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="Service Queue" asChild>
-                    <NavLink to="/service-queue" className="flex items-center">
-                      <ClipboardList className="w-4 h-4" />
-                    </NavLink>
+                  <SidebarMenuButton label="Service Queue" to="/service-queue">
+                    <ClipboardList />
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="Product Catalog" asChild>
-                    <NavLink to="/product-catalog" className="flex items-center">
-                      <Book className="w-4 h-4" />
-                    </NavLink>
+                  <SidebarMenuButton label="Product Catalog" to="/product-catalog">
+                    <Book />
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="Analytics" asChild>
-                    <NavLink to="/analytics" className="flex items-center">
-                      <BarChart className="w-4 h-4" />
-                    </NavLink>
+                  <SidebarMenuButton label="Analytics" to="/analytics">
+                    <BarChart />
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </>
             )}
             {profile?.role === 'consumer' && (
               <SidebarMenuItem>
-                <SidebarMenuButton label="Warranty Tracker" asChild>
-                  <NavLink to="/warranty-tracker" className="flex items-center">
-                      <ShieldCheck className="w-4 h-4" />
-                  </NavLink>
+                <SidebarMenuButton label="Warranty Tracker" to="/warranty-tracker">
+                  <ShieldCheck />
                 </SidebarMenuButton>
               </SidebarMenuItem>
             )}
             {profile?.role === 'service_center' && (
               <>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="Active Jobs" asChild>
-                    <NavLink to="/active-jobs" className="flex items-center">
-                      <ClipboardList className="w-4 h-4" />
-                    </NavLink>
+                  <SidebarMenuButton label="Active Jobs" to="/active-jobs">
+                    <ClipboardList />
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="Customer Communication" asChild>
-                    <NavLink to="/customer-communication" className="flex items-center">
-                      <MessageSquare className="w-4 h-4" />
-                    </NavLink>
+                  <SidebarMenuButton label="Customer Communication" to="/customer-communication">
+                    <MessageSquare />
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="Service Reports" asChild>
-                    <NavLink to="/service-reports" className="flex items-center">
-                      <FileText className="w-4 h-4" />
-                    </NavLink>
+                  <SidebarMenuButton label="Service Reports" to="/service-reports">
+                    <FileText />
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               </>
             )}
           </SidebarMenu>
         </SidebarContent>
-                <SidebarFooter>
-                  <div className="flex flex-col items-center w-full gap-2">
-                    <NavLink to="/profile" className="w-full">
-                      <Button variant="outline" size={isExpanded ? "lg" : "default"} className="w-full">
-                        <User className="h-5 w-5" />
-                        {isExpanded && <span className="ml-2">Profile</span>}
-                      </Button>
-                    </NavLink>
-                    <NavLink to="/about" className="w-full">
-                      <Button variant="outline" size={isExpanded ? "lg" : "default"} className="w-full">
-                        <Info className="h-5 w-5" />
-                        {isExpanded && <span className="ml-2">About Us</span>}
-                      </Button>
-                    </NavLink>
-                    <ModeToggle isExpanded={isExpanded} />
-                    <div className="flex items-center space-x-4 p-2">
-                      {isExpanded && (
-                        <div className="text-sm text-muted-foreground">
-                          Welcome, {profile?.full_name || user.email}
-                        </div>
-                      )}
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={signOut}
-                        className="flex items-center space-x-2"
-                      >
-                        <LogOut className="w-4 h-4" />
-                        {isExpanded && <span>Sign Out</span>}
-                      </Button>
-                    </div>
-                  </div>
-                </SidebarFooter>      </Sidebar>
-      <SidebarInset>
-        <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-30">
-          <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-            <SidebarTrigger />
+        <SidebarFooter>
+          <div className="flex flex-col items-center w-full gap-2">
+            <SidebarMenuItem>
+              <SidebarMenuButton label="Profile" to="/profile">
+                <User />
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <SidebarMenuButton label="About Us" to="/about">
+                <Info />
+              </SidebarMenuButton>
+            </SidebarMenuItem>
+            <ModeToggle isExpanded={isExpanded} />
+            <SidebarMenuItem>
+              <SidebarMenuButton label="Sign Out" onClick={signOut}>
+                <LogOut />
+              </SidebarMenuButton>
+            </SidebarMenuItem>
           </div>
-        </header>
+        </SidebarFooter>
+      </Sidebar>
+      <SidebarInset>
+        <Topbar pageTitle={currentPageTitle} actions={<ModeToggle isExpanded={isExpanded} />} />
         <main className="container mx-auto px-4 py-8">
           <Outlet />
         </main>
       </SidebarInset>
     </>
   );
-}
+};
 
 const Layout = () => {
   const { user } = useAuth();
