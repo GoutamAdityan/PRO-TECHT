@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -10,68 +10,66 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 30 50% 95%;
-    --foreground: 240 10% 3.9%;
+    --background: 30 50% 95%; /* Warm neutral background */
+    --foreground: 240 10% 3.9%; /* Dark text */
 
-    --card: 0 0% 100%;
+    --card: 40 50% 98%; /* Slightly lighter warm neutral for cards */
     --card-foreground: 240 10% 3.9%;
 
     --popover: 0 0% 100%;
     --popover-foreground: 240 10% 3.9%;
 
-    /* New Primary Color - Earthy Green */
+    /* Primary Color - Deep Forest Green */
     --primary: 145 25% 30%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 40 50% 90%;
+    --secondary: 40 50% 90%; /* Warm neutral */
     --secondary-foreground: 240 10% 3.9%;
 
-    --muted: 240 5% 96.1%;
+    --muted: 30 50% 90%; /* Even lighter warm neutral */
     --muted-foreground: 240 4% 46.1%;
 
-    /* New Accent Color - Vibrant Orange */
-    --accent: 25 100% 50%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent Color - Muted Gold/Yellow */
+    --accent: 45 80% 60%;
+    --accent-foreground: 240 10% 3.9%; /* Dark text for accent */
 
-    /* ServiceBridge Success - Green #10b981 */
-    --success: 158 64% 52%;
-    --success-foreground: 0 0% 100%;
+    /* Surface for Glassy Cards */
+    --surface: 40 50% 98%; /* Same as card, transparency will be applied via rgba */
+    --surface-foreground: 240 10% 3.9%;
 
-    /* ServiceBridge Warning - Yellow #f59e0b */
-    --warning: 38 92% 50%;
-    --warning-foreground: 0 0% 0%;
-
-    /* ServiceBridge Destructive - Red #ef4444 */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 240 6% 90%;
     --input: 240 6% 90%;
-    --ring: 145 25% 30%;
+    --ring: 145 25% 30%; /* Primary green for ring */
 
-    --radius: 0.5rem;
+    --radius: 0.75rem; /* Slightly larger border radius */
 
-    --sidebar-background: 0 0% 98%;
+    --sidebar-background: 40 50% 98%; /* Match card/surface */
     --sidebar-foreground: 240 5.3% 26.1%;
     --sidebar-primary: 145 25% 30%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 40 50% 90%;
+    --sidebar-accent: 40 50% 90%; /* Match secondary */
     --sidebar-accent-foreground: 240 10% 3.9%;
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 145 25% 30%;
+
+    /* Font Variables */
+    --font-heading: 'Montserrat';
+    --font-body: 'Open Sans';
   }
 
   .dark {
     --background: 240 10% 3.9%;
     --foreground: 0 0% 98%;
 
-    --card: 240 10% 3.9%;
+    --card: 240 10% 8%;
     --card-foreground: 0 0% 98%;
 
     --popover: 240 10% 3.9%;
     --popover-foreground: 0 0% 98%;
 
-    /* New Primary Color - Earthy Green (darker in dark mode) */
     --primary: 145 25% 25%;
     --primary-foreground: 0 0% 100%;
 
@@ -81,25 +79,19 @@ All colors MUST be HSL.
     --muted: 240 4% 17.5%;
     --muted-foreground: 240 4% 65.1%;
 
-    /* New Accent Color - Vibrant Orange (darker in dark mode) */
-    --accent: 25 100% 45%;
-    --accent-foreground: 0 0% 100%;
+    --accent: 45 80% 50%; /* Darker muted gold */
+    --accent-foreground: 240 10% 3.9%;
 
-    /* ServiceBridge Success - Green (darker) */
-    --success: 158 64% 45%;
-    --success-foreground: 0 0% 100%;
+    --surface: 240 10% 8%; /* Same as card, transparency will be applied via rgba */
+    --surface-foreground: 0 0% 98%;
 
-    /* ServiceBridge Warning - Yellow (darker) */
-    --warning: 38 85% 45%;
-    --warning-foreground: 0 0% 100%;
-
-    /* ServiceBridge Destructive - Red (darker) */
     --destructive: 0 75% 55%;
     --destructive-foreground: 0 0% 100%;
 
     --border: 240 4% 17.5%;
     --input: 240 4% 17.5%;
     --ring: 145 25% 25%;
+
     --sidebar-background: 240 6% 10%;
     --sidebar-foreground: 0 0% 98%;
     --sidebar-primary: 145 25% 30%;
@@ -118,6 +110,10 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
-    font-family: "Inter", sans-serif;
+    font-family: var(--font-body), sans-serif;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading), sans-serif;
   }
 }
