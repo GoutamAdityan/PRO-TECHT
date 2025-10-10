@@ -1,264 +1,179 @@
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import * as z from "zod";
-import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
-import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
-import { cn } from "@/lib/utils";
-import { format } from "date-fns";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useState } from 'react';
+import { useAuth } from '@/hooks/useAuth';
+import { supabase } from '@/integrations/supabase/client';
+import { useNavigate } from 'react-router-dom';
+import { useToast } from '@/hooks/use-toast';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Label } from '@/components/ui/label';
+import { ProductSelector } from '@/components/ui/ProductSelector';
+import { motion } from 'framer-motion';
+import { Plus, Calendar, DollarSign, ReceiptText } from 'lucide-react';
 
-const productCategories = [
-  "electronics",
-  "appliances",
-  "automotive",
-  "furniture",
-  "tools",
-  "other",
-] as const;
-
-const productSchema = z.object({
-  brand: z.string().min(1, "Brand is required"),
-  model: z.string().min(1, "Model is required"),
-  serial_number: z.string().optional(),
-  purchase_date: z.date(),
-  purchase_price: z.coerce.number().optional(),
-  warranty_months: z.coerce.number().optional(),
-  retailer: z.string().optional(),
-  notes: z.string().optional(),
-  category: z.enum(productCategories),
-});
+interface SelectedProduct {
+  type: string;
+  brand: string;
+  model: string;
+}
 
 const NewProduct = () => {
   const { user } = useAuth();
-  const { toast } = useToast();
   const navigate = useNavigate();
+  const { toast } = useToast();
 
-  const form = useForm<z.infer<typeof productSchema>>({
-    resolver: zodResolver(productSchema),
-    defaultValues: {
-      brand: "",
-      model: "",
-      serial_number: "",
-      purchase_date: new Date(),
-      purchase_price: 0,
-      warranty_months: 12,
-      retailer: "",
-      notes: "",
-      category: "electronics",
-    },
-  });
+  const [selectedProduct, setSelectedProduct] = useState<SelectedProduct | null>(null);
+  const [serialNumber, setSerialNumber] = useState('');
+  const [purchaseDate, setPurchaseDate] = useState('');
+  const [purchasePrice, setPurchasePrice] = useState('');
+  const [warrantyMonths, setWarrantyMonths] = useState('');
+  const [retailer, setRetailer] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const onSubmit = async (values: z.infer<typeof productSchema>) => {
-    if (!user) return;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
-    const { error } = await supabase.from("products").insert([
-      {
-        ...values,
+    if (!user) {
+      toast({ title: "Error", description: "You must be logged in to add a product.", variant: "destructive" });
+      return;
+    }
+
+    if (!selectedProduct || !selectedProduct.type || !selectedProduct.brand || !selectedProduct.model || !serialNumber || !purchaseDate) {
+      toast({ title: "Error", description: "Please ensure product type, brand, model, serial number, and purchase date are all filled.", variant: "destructive" });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const warrantyExpiryDate = warrantyMonths
+        ? new Date(new Date(purchaseDate).setMonth(new Date(purchaseDate).getMonth() + parseInt(warrantyMonths)))
+            .toISOString().split('T')[0]
+        : null;
+
+      const { error } = await supabase.from('products').insert({
         user_id: user.id,
-      },
-    ]);
+        type: selectedProduct.type,
+        brand: selectedProduct.brand,
+        model: selectedProduct.model,
+        serial_number: serialNumber,
+        purchase_date: purchaseDate,
+        purchase_price: purchasePrice ? parseFloat(purchasePrice) : null,
+        warranty_months: warrantyMonths ? parseInt(warrantyMonths) : null,
+        warranty_expiry: warrantyExpiryDate,
+        retailer: retailer || null,
+      });
 
-    if (error) {
-      toast({
-        title: "Error creating product",
-        description: error.message,
-        variant: "destructive",
-      });
-    } else {
-      toast({
-        title: "Product created",
-        description: "Your product has been added to your vault.",
-      });
-      navigate("/products");
+      if (error) {
+        throw error;
+      }
+
+      toast({ title: "Success", description: "Product added successfully!" });
+      navigate('/products');
+    } catch (error: any) {
+      console.error('Error adding product:', error.message);
+      let errorMessage = `Failed to add product: ${error.message}`;
+      if (error.message.includes("Could not find the 'type' column") || error.message.includes("schema cache")) {
+        errorMessage = "We couldn't save this product because the system schema is missing a required field (type). Please try again or contact support.";
+      }
+      toast({ title: "Error", description: errorMessage, variant: "destructive" });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Add a New Product</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="brand"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Brand</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. Apple" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex flex-col gap-8"
+    >
+      <h1 className="text-3xl font-bold font-heading">Add New Product</h1>
+
+      <Card className="bg-card/50 backdrop-blur-sm shadow-md border border-border/50">
+        <CardHeader>
+          <CardTitle className="font-heading">Product Details</CardTitle>
+          <CardDescription>Enter the details of your new product.</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div>
+              <Label>Product Type, Brand, Model</Label>
+              <ProductSelector onProductSelect={setSelectedProduct} className="mt-1" />
+              {!selectedProduct?.type && <p className="text-xs text-destructive mt-1">Product type, brand, and model are required.</p>}
+            </div>
+
+            <div>
+              <Label htmlFor="serialNumber">Serial Number</Label>
+              <Input
+                id="serialNumber"
+                value={serialNumber}
+                onChange={(e) => setSerialNumber(e.target.value)}
+                className="mt-1 bg-background/50 border-border/50 focus-visible:ring-primary"
+                placeholder="Enter serial number"
+              />
+              {!serialNumber && <p className="text-xs text-destructive mt-1">Serial number is required.</p>}
+            </div>
+
+            <div>
+              <Label htmlFor="purchaseDate">Purchase Date</Label>
+              <Input
+                id="purchaseDate"
+                type="date"
+                value={purchaseDate}
+                onChange={(e) => setPurchaseDate(e.target.value)}
+                className="mt-1 bg-background/50 border-border/50 focus-visible:ring-primary"
+              />
+              {!purchaseDate && <p className="text-xs text-destructive mt-1">Purchase date is required.</p>}
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="purchasePrice">Purchase Price</Label>
+                <Input
+                  id="purchasePrice"
+                  type="number"
+                  value={purchasePrice}
+                  onChange={(e) => setPurchasePrice(e.target.value)}
+                  className="mt-1 bg-background/50 border-border/50 focus-visible:ring-primary"
+                  placeholder="e.g., 499.99"
+                />
+              </div>
+              <div>
+                <Label htmlFor="warrantyMonths">Warranty (Months)</Label>
+                <Input
+                  id="warrantyMonths"
+                  type="number"
+                  value={warrantyMonths}
+                  onChange={(e) => setWarrantyMonths(e.target.value)}
+                  className="mt-1 bg-background/50 border-border/50 focus-visible:ring-primary"
+                  placeholder="e.g., 12"
+                />
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="retailer">Retailer</Label>
+              <Input
+                id="retailer"
+                value={retailer}
+                onChange={(e) => setRetailer(e.target.value)}
+                className="mt-1 bg-background/50 border-border/50 focus-visible:ring-primary"
+                placeholder="e.g., Amazon"
+              />
+            </div>
+
+            <Button type="submit" className="w-full bg-primary text-primary-foreground hover:bg-primary/90" disabled={loading}>
+              {loading ? 'Adding Product...' : (
+                <>
+                  <Plus className="h-4 w-4 mr-2" /> Add Product
+                </>
               )}
-            />
-            <FormField
-              control={form.control}
-              name="model"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Model</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. MacBook Pro 16-inch" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="serial_number"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Serial Number</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. C02G8J34P3F1" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Category</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a category" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {productCategories.map((category) => (
-                        <SelectItem key={category} value={category}>
-                          {category.charAt(0).toUpperCase() + category.slice(1)}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="purchase_date"
-              render={({ field }) => (
-                <FormItem className="flex flex-col">
-                  <FormLabel>Purchase Date</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant={"outline"}
-                          className={cn(
-                            "w-[240px] pl-3 text-left font-normal",
-                            !field.value && "text-muted-foreground"
-                          )}
-                        >
-                          {field.value ? (
-                            format(field.value, "PPP")
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className="w-auto p-0" align="start">
-                      <Calendar
-                        mode="single"
-                        selected={field.value}
-                        onSelect={field.onChange}
-                        disabled={(date) =>
-                          date > new Date() || date < new Date("1900-01-01")
-                        }
-                        initialFocus
-                      />
-                    </PopoverContent>
-                  </Popover>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="purchase_price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Purchase Price</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="warranty_months"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Warranty (in months)</FormLabel>
-                  <FormControl>
-                    <Input type="number" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="retailer"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Retailer</FormLabel>
-                  <FormControl>
-                    <Input placeholder="e.g. Apple Store" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="notes"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Notes</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Add Product</Button>
+            </Button>
           </form>
-        </Form>
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </motion.div>
   );
 };
 

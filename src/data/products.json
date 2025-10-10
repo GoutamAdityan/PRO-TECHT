@@ -1,0 +1,7 @@
+[
+  { "type":"Smartphone", "brand":"Acme", "models":["Z1","Z2","Z Pro"] },
+  { "type":"Smartphone", "brand":"Globex", "models":["X-Phone","Mega-Phone"] },
+  { "type":"Laptop", "brand":"Acme", "models":["Pro X","Air S"] },
+  { "type":"Laptop", "brand":"TechCorp", "models":["UltraBook 3000","Gaming Beast"] },
+  { "type":"Tablet", "brand":"Globex", "models":["Tab A","Tab Pro"] }
+]
