@@ -9,6 +9,7 @@ import { motion } from 'framer-motion';
 import { CheckCircle, FileText, Download, Filter, CalendarDays, Search } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { cn } from '@/lib/utils'; // Added missing import
 
 interface ReportFile {
   preview: string;

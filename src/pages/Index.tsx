@@ -3,6 +3,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Shield, Package, Users, Wrench, ListChecks, Boxes, BarChart3, LifeBuoy, Rocket, Zap, MessageSquare, FileText, Clock, CheckCircle } from 'lucide-react';
 import { StatCard } from '@/components/ui/StatCard';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'; // Added missing import
+import { Button } from '@/components/ui/button'; // Added missing import
 import { motion } from 'framer-motion';
 
 const Index = () => {

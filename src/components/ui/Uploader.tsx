@@ -1,6 +1,6 @@
 
 // src/components/ui/Uploader.tsx
-import React, { useState, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useDropzone } from 'react-dropzone'; // Assuming react-dropzone is available
 import { cn } from '@/lib/utils';
 import { X, FileText, Image, Loader2 } from 'lucide-react';

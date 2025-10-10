@@ -106,7 +106,18 @@ Sidebar.displayName = "Sidebar";
 
 // --- Sidebar Menu Button ---
 const sidebarMenuButtonVariants = cva(
-    "flex w-full items-center gap-3 rounded-lg p-3 text-left text-sm outline-none ring-sidebar-ring transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground",
+    "flex w-full items-center rounded-lg p-2 text-left text-sm outline-none ring-sidebar-ring transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50",
+    {
+        variants: {
+            active: {
+                true: "bg-accent text-accent-foreground font-medium border-l-2 border-primary",
+                false: "",
+            },
+        },
+        defaultVariants: {
+            active: false,
+        },
+    }
 );
 
 export const SidebarMenuButton = React.forwardRef<
@@ -155,7 +166,7 @@ export const SidebarMenuButton = React.forwardRef<
         ref={ref}
         to={to}
         data-active={isActive}
-        className={cn(sidebarMenuButtonVariants({ active: isActive }), !isExpanded && "justify-center", className)}
+        className={cn(sidebarMenuButtonVariants({ active: isActive }), !isExpanded ? "justify-center" : "gap-2", className)}
         title={isExpanded ? undefined : label}
         {...props}
       >
@@ -172,7 +183,7 @@ export const SidebarMenuButton = React.forwardRef<
       ref={ref}
       to={to}
       data-active={isActive}
-      className={cn(sidebarMenuButtonVariants({ active: isActive }), !isExpanded && "justify-center", className)}
+      className={cn(sidebarMenuButtonVariants({ active: isActive }), !isExpanded ? "justify-center" : "gap-2", className)}
       title={isExpanded ? undefined : label}
       {...props}
     >
