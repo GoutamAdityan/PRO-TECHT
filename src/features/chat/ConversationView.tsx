@@ -1,4 +1,3 @@
-
 // src/features/chat/ConversationView.tsx
 import React, { useState, useRef, useEffect } from 'react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -8,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { cn } from '@/lib/utils';
 import { Message } from './realtime';
 import { ChatState } from './useChat'; // Import ChatState interface
-import { Smile, Paperclip } from 'lucide-react';
+import { Smile, Paperclip, InfoIcon } from 'lucide-react'; // Added InfoIcon
 import './ChatBubble.css'; // Import the new CSS file
 
 // Helper to format date for chat separators
@@ -56,9 +55,12 @@ const MessageBubble: React.FC<{ message: Message; isAgent: boolean }> = ({ messa
   );
 };
 
-interface ConversationViewProps extends ChatState {}
+interface ConversationViewProps extends ChatState {
+  isDetailsPanelOpen: boolean;
+  setIsDetailsPanelOpen: (open: boolean) => void;
+}
 
-export const ConversationView: React.FC<ConversationViewProps> = ({ selectedCustomer, messages, isLoadingMessages, isSendingMessage, sendMessage, isTyping, isCustomerOnline }) => {
+export const ConversationView: React.FC<ConversationViewProps> = ({ selectedCustomer, messages, isLoadingMessages, isSendingMessage, sendMessage, isTyping, isCustomerOnline, isDetailsPanelOpen, setIsDetailsPanelOpen }) => {
   const [newMessage, setNewMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -121,9 +123,13 @@ export const ConversationView: React.FC<ConversationViewProps> = ({ selectedCust
         </div>
         {/* Action buttons placeholder */}
         <div>
-          <Button variant="ghost" size="icon">
-            {/* Icon for call/video call etc. */}
-            <span className="sr-only">Call</span>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => setIsDetailsPanelOpen((prev) => !prev)}
+            aria-label="Toggle customer and product details"
+          >
+            <InfoIcon className="h-5 w-5" />
           </Button>
         </div>
       </div>

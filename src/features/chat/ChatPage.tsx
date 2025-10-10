@@ -4,17 +4,18 @@ import { CustomerList } from './CustomerList';
 import { ConversationView } from './ConversationView';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Button } from '@/components/ui/button';
-import { MenuIcon, InfoIcon } from 'lucide-react'; // Assuming lucide-react is available for icons
+import { MenuIcon, InfoIcon } from 'lucide-react';
 import { useChat } from './useChat';
 import { DetailsPanel } from './DetailsPanel/DetailsPanel';
-import { useMediaQuery } from '@/hooks/use-mobile'; // Assuming this hook exists for mobile detection
+import { useIsMobile } from '@/hooks/use-mobile';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'; // Added missing import
 
 const ChatPage: React.FC = () => {
   const [isCustomerListSheetOpen, setIsCustomerListSheetOpen] = useState(false);
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
   const chatState = useChat();
   const { selectedCustomer } = chatState;
-  const isMobile = useMediaQuery('(max-width: 768px)'); // Adjust breakpoint as needed
+  const isMobile = useIsMobile();
 
   // Keyboard shortcut to toggle details panel (D key)
   useEffect(() => {
@@ -61,44 +62,13 @@ const ChatPage: React.FC = () => {
 
       {/* Conversation View and Details Panel */}
       <div className="flex flex-1">
-        <div className="flex flex-col flex-1 bg-background">
-          {/* Conversation Header with Details Button */}
-          <div className="flex items-center justify-between border-b p-3">
-            <div className="flex items-center gap-3">
-              {selectedCustomer ? (
-                <>
-                  <Avatar className="h-9 w-9">
-                    <AvatarImage src={selectedCustomer.avatar} alt={selectedCustomer.name} />
-                    <AvatarFallback>{selectedCustomer.name.charAt(0)}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-medium">{selectedCustomer.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {chatState.isCustomerOnline ? 'Online' : 'Offline'}
-                    </p>
-                  </div>
-                </>
-              ) : (
-                <p className="font-medium text-muted-foreground">Select a customer</p>
-              )}
-            </div>
-            {selectedCustomer && (
-              <div>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsDetailsPanelOpen((prev) => !prev)}
-                  aria-label="Toggle customer and product details"
-                >
-                  <InfoIcon className="h-5 w-5" />
-                </Button>
-              </div>
-            )}
-          </div>
-          <ConversationView {...chatState} />
-        </div>
-
-        {/* Details Panel */}
+                            <div className="flex flex-col flex-1 bg-background">
+                              <ConversationView
+                                {...chatState}
+                                isDetailsPanelOpen={isDetailsPanelOpen}
+                                setIsDetailsPanelOpen={setIsDetailsPanelOpen}
+                              />
+                            </div>        {/* Details Panel */}
         <DetailsPanel
           open={isDetailsPanelOpen}
           onClose={() => setIsDetailsPanelOpen(false)}
