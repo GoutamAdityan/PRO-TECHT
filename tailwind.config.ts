@@ -61,6 +61,14 @@ export default {
           DEFAULT: "hsl(var(--surface))",
           foreground: "hsl(var(--surface-foreground))",
         },
+        // Custom text colors
+        "text-primary": "hsl(var(--text-primary))",
+        "text-secondary": "hsl(var(--text-secondary))",
+        "text-muted": "hsl(var(--text-muted))",
+        // Custom hover/active colors
+        hover: "hsl(var(--hover))",
+        "primary-hover": "hsl(var(--primary-hover))",
+        "primary-active": "hsl(var(--primary-active))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -90,9 +98,18 @@ export default {
         "accordion-up": "accordion-up 0.2s ease-out",
       },
       fontFamily: {
-        heading: ["'Montserrat'", "sans-serif"], // Example geometric font
-        body: ["'Open Sans'", "sans-serif"], // Example humanist font
-        sans: ["'Open Sans'", "sans-serif"], // Default sans to body font
+        heading: ["'Montserrat'", "sans-serif"],
+        body: ["'Open Sans'", "sans-serif"],
+        sans: ["'Open Sans'", "sans-serif"],
+      },
+      boxShadow: {
+        soft: '0 4px 12px rgba(var(--shadow-color-rgb), 0.15)',
+        DEFAULT: '0 1px 3px 0 rgba(var(--shadow-color-rgb), 0.1), 0 1px 2px -1px rgba(var(--shadow-color-rgb), 0.1)',
+        md: '0 4px 6px -1px rgba(var(--shadow-color-rgb), 0.1), 0 2px 4px -2px rgba(var(--shadow-color-rgb), 0.1)',
+        lg: '0 10px 15px -3px rgba(var(--shadow-color-rgb), 0.1), 0 4px 6px -4px rgba(var(--shadow-color-rgb), 0.1)',
+        xl: '0 20px 25px -5px rgba(var(--shadow-color-rgb), 0.1), 0 8px 10px -6px rgba(var(--shadow-color-rgb), 0.1)',
+        '2xl': '0 25px 50px -12px rgba(var(--shadow-color-rgb), 0.25)',
+        inner: 'inset 0 2px 4px 0 rgba(var(--shadow-color-rgb), 0.05)',
       },
     },
   },

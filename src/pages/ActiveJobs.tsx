@@ -6,7 +6,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal, Eye, Check, RotateCcw, Filter, CalendarDays, Search } from 'lucide-react';
+import { MoreHorizontal, Eye, Check, RotateCcw, Filter, CalendarDays, Search, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { DetailsPanel } from '@/features/chat/DetailsPanel/DetailsPanel';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -32,7 +32,7 @@ type ServiceRequest = {
 const getStatusBadgeClass = (status: ServiceRequestStatus) => {
   switch (status) {
     case "Pending":
-      return "bg-yellow-500/20 text-yellow-700 border-yellow-500/30";
+      return "bg-muted text-muted-foreground border-border";
     case "In Progress":
       return "bg-blue-500/20 text-blue-700 border-blue-500/30";
     case "Completed":

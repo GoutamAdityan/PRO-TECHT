@@ -4,104 +4,120 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
+/* 
+  NEW THEME: Light Pastel Green Aesthetic
+  This file defines the complete design system for the application.
+  All colors, gradients, fonts, etc., are defined here as CSS variables.
+  Colors are specified in HSL format for easy manipulation of saturation and lightness.
 */
 
 @layer base {
   :root {
-    --background: 30 50% 95%; /* Warm neutral background */
-    --foreground: 240 10% 3.9%; /* Dark text */
+    /* Primary Palette - Soft, calm, and visually balanced pastel greens */
+    --background: 140 33% 97%; /* #F4FBF6 */
+    --foreground: 158 33% 17%; /* #1C3B2C */
 
-    --card: 40 50% 98%; /* Slightly lighter warm neutral for cards */
-    --card-foreground: 240 10% 3.9%;
+    --card: 0 0% 100%; /* #FFFFFF */
+    --card-foreground: 158 33% 17%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --popover-foreground: 158 33% 17%;
 
-    /* Primary Color - Deep Forest Green */
-    --primary: 145 25% 30%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary Buttons & Accents (Dark Forest Green) */
+    --primary: 158 39% 30%; /* #2E6B4F */
+    --primary-foreground: 0 0% 100%; /* White */
 
-    --secondary: 40 50% 90%; /* Warm neutral */
-    --secondary-foreground: 240 10% 3.9%;
+    /* Secondary & Surface Tones */
+    --secondary: 140 33% 94%; /* #E8F6EC */
+    --secondary-foreground: 158 33% 17%;
 
-    --muted: 30 50% 90%; /* Even lighter warm neutral */
-    --muted-foreground: 240 4% 46.1%;
+    /* Muted & Hover States */
+    --muted: 137 33% 91%; /* #DFF1E3 */
+    --muted-foreground: 137 18% 37%; /* #4F6F57 */
 
-    /* Accent Color - Muted Gold/Yellow */
-    --accent: 45 80% 60%;
-    --accent-foreground: 240 10% 3.9%; /* Dark text for accent */
+    /* Accent & Focus */
+    --accent: 130 25% 70%; /* #9DC9A3 */
+    --accent-foreground: 158 33% 17%;
 
-    /* Surface for Glassy Cards */
-    --surface: 40 50% 98%; /* Same as card, transparency will be applied via rgba */
-    --surface-rgb: 250, 245, 230; /* RGB equivalent of HSL(40 50% 98%) for rgba usage */
-    --surface-foreground: 240 10% 3.9%;
+    /* Borders & Inputs */
+    --border: 130 25% 87%; /* #D2E7D5 */
+    --input: 130 25% 87%;
+    --ring: 136 31% 75%; /* #A9D5B3 - Focus Ring */
 
-    --destructive: 0 84% 60%;
+    /* Destructive Actions */
+    --destructive: 0 70% 67%; /* #E57373 */
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 6% 90%;
-    --input: 240 6% 90%;
-    --ring: 145 25% 30%; /* Primary green for ring */
+    /* Other Semantic Colors */
+    --success: 140 60% 40%;
+    --success-foreground: 0 0% 100%;
+    --warning: 45 90% 55%;
+    --warning-foreground: 158 33% 17%;
 
-    --radius: 0.75rem; /* Slightly larger border radius */
+    --radius: 0.75rem;
 
-    --sidebar-background: 40 50% 98%; /* Match card/surface */
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 145 25% 30%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 40 50% 90%; /* Match secondary */
-    --sidebar-accent-foreground: 240 10% 3.9%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 145 25% 30%;
+    /* Custom Text Colors */
+    --text-primary: 158 33% 17%; /* #1C3B2C */
+    --text-secondary: 137 18% 37%; /* #4F6F57 */
+    --text-muted: 140 15% 47%; /* #6E8C77 */
 
-    /* Font Variables */
-    --font-heading: 'Montserrat';
-    --font-body: 'Open Sans';
+    /* Custom States & Shadows */
+    --hover: 137 33% 91%; /* #DFF1E3 */
+    --shadow-color-rgb: 158, 10%, 20%; /* Green-gray tone for shadows */
+    
+    /* Button Specific States */
+    --primary-hover: 152 40% 39%; /* #3C8C65 */
+    --primary-active: 159 40% 24%; /* #245740 */
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
+    /* Dark Mode - Deeper, muted pastel green theme */
+    --background: 158 15% 10%; /* #131A17 */
+    --foreground: 140 25% 90%; /* #DBE9E0 */
 
-    --card: 240 10% 8%;
-    --card-foreground: 0 0% 98%;
+    --card: 158 15% 12%; /* #17201C */
+    --card-foreground: 140 25% 90%;
 
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
+    --popover: 158 15% 10%;
+    --popover-foreground: 140 25% 90%;
 
-    --primary: 145 25% 25%;
+    /* Primary Buttons & Accents */
+    --primary: 158 39% 30%; /* #2E6B4F */
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 4% 17.5%;
-    --secondary-foreground: 0 0% 98%;
+    /* Secondary & Surface Tones */
+    --secondary: 158 15% 15%; /* #1C2521 */
+    --secondary-foreground: 140 25% 90%;
 
-    --muted: 240 4% 17.5%;
-    --muted-foreground: 240 4% 65.1%;
+    /* Muted & Hover States */
+    --muted: 158 15% 20%; /* #26312C */
+    --muted-foreground: 140 18% 70%; /* #A4B8AB */
 
-    --accent: 45 80% 50%; /* Darker muted gold */
-    --accent-foreground: 240 10% 3.9%;
+    /* Accent & Focus */
+    --accent: 130 25% 40%; /* #4D825A */
+    --accent-foreground: 140 25% 90%;
 
-    --surface: 240 10% 8%; /* Same as card, transparency will be applied via rgba */
-    --surface-rgb: 20, 20, 25; /* RGB equivalent for rgba usage */
-    --surface-foreground: 0 0% 98%;
+    /* Borders & Inputs */
+    --border: 158 15% 25%; /* #313E38 */
+    --input: 158 15% 25%;
+    --ring: 136 31% 45%; /* #5B9E6D */
 
-    --destructive: 0 75% 55%;
+    /* Destructive Actions */
+    --destructive: 0 70% 50%; /* #D94C4C */
     --destructive-foreground: 0 0% 100%;
+    
+    /* Custom Text Colors */
+    --text-primary: 140 25% 90%;
+    --text-secondary: 140 18% 70%;
+    --text-muted: 140 15% 55%;
 
-    --border: 240 4% 17.5%;
-    --input: 240 4% 17.5%;
-    --ring: 145 25% 25%;
-
-    --sidebar-background: 240 6% 10%;
-    --sidebar-foreground: 0 0% 98%;
-    --sidebar-primary: 145 25% 30%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 4% 15.9%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 240 4% 15.9%;
-    --sidebar-ring: 145 25% 30%;
+    /* Custom States & Shadows */
+    --hover: 152 20% 22%; /* #2C3D35 */
+    --shadow-color-rgb: 158, 10%, 5%;
+    
+    /* Button Specific States */
+    --primary-hover: 152 40% 39%; /* #3C8C65 */
+    --primary-active: 159 40% 24%; /* #245740 */
   }
 }
 
@@ -113,9 +129,32 @@ All colors MUST be HSL.
   body {
     @apply bg-background text-foreground;
     font-family: var(--font-body), sans-serif;
+    transition: background-color 0.2s ease-in-out, color 0.2s ease-in-out;
   }
 
   h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading), sans-serif;
+    color: hsl(var(--text-primary));
+  }
+
+  p {
+    color: hsl(var(--text-secondary));
+  }
+
+  .text-muted-foreground {
+    color: hsl(var(--text-muted));
+  }
+}
+
+@layer components {
+  /* Applying new hover states for buttons */
+  .btn-primary {
+    @apply bg-primary text-primary-foreground;
+  }
+  .btn-primary:hover {
+    background-color: hsl(var(--primary-hover));
+  }
+  .btn-primary:active {
+    background-color: hsl(var(--primary-active));
   }
 }
