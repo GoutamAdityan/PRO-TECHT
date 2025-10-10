@@ -5,7 +5,7 @@ THERE ARE 3 WAYS TO LOG IN
 3* SERVICE CENTER
 
 EMAIL AND PASSWORD:
-1* EMAIL-test@email.com
+1* EMAIL- test@email.com
    password-test123456
 
 2* EMAIL- test123@email.com
