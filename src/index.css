@@ -35,6 +35,7 @@ All colors MUST be HSL.
 
     /* Surface for Glassy Cards */
     --surface: 40 50% 98%; /* Same as card, transparency will be applied via rgba */
+    --surface-rgb: 250, 245, 230; /* RGB equivalent of HSL(40 50% 98%) for rgba usage */
     --surface-foreground: 240 10% 3.9%;
 
     --destructive: 0 84% 60%;
@@ -83,6 +84,7 @@ All colors MUST be HSL.
     --accent-foreground: 240 10% 3.9%;
 
     --surface: 240 10% 8%; /* Same as card, transparency will be applied via rgba */
+    --surface-rgb: 20, 20, 25; /* RGB equivalent for rgba usage */
     --surface-foreground: 0 0% 98%;
 
     --destructive: 0 75% 55%;

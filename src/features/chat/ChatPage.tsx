@@ -1,4 +1,3 @@
-// src/features/chat/ChatPage.tsx
 import React, { useState, useEffect } from 'react';
 import { CustomerList } from './CustomerList';
 import { ConversationView } from './ConversationView';
@@ -8,7 +7,8 @@ import { MenuIcon, InfoIcon } from 'lucide-react';
 import { useChat } from './useChat';
 import { DetailsPanel } from './DetailsPanel/DetailsPanel';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'; // Added missing import
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { motion } from 'framer-motion';
 
 const ChatPage: React.FC = () => {
   const [isCustomerListSheetOpen, setIsCustomerListSheetOpen] = useState(false);
@@ -38,7 +38,12 @@ const ChatPage: React.FC = () => {
   }, [selectedCustomer]);
 
   return (
-    <div className="flex h-full overflow-hidden">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="flex h-full overflow-hidden rounded-lg shadow-xl backdrop-blur-sm bg-surface/[0.6] border border-surface-foreground/[0.06]"
+    >
       {/* Desktop Layout - Customer List */}
       <div className="hidden md:flex w-80 bg-card border-r border-border flex-col">
         <CustomerList {...chatState} />
@@ -62,13 +67,15 @@ const ChatPage: React.FC = () => {
 
       {/* Conversation View and Details Panel */}
       <div className="flex flex-1">
-                            <div className="flex flex-col flex-1 bg-background">
-                              <ConversationView
-                                {...chatState}
-                                isDetailsPanelOpen={isDetailsPanelOpen}
-                                setIsDetailsPanelOpen={setIsDetailsPanelOpen}
-                              />
-                            </div>        {/* Details Panel */}
+        <div className="flex flex-col flex-1 bg-background">
+          <ConversationView
+            {...chatState}
+            isDetailsPanelOpen={isDetailsPanelOpen}
+            setIsDetailsPanelOpen={setIsDetailsPanelOpen}
+          />
+        </div>
+
+        {/* Details Panel */}
         <DetailsPanel
           open={isDetailsPanelOpen}
           onClose={() => setIsDetailsPanelOpen(false)}
@@ -76,7 +83,7 @@ const ChatPage: React.FC = () => {
           isMobile={isMobile}
         />
       </div>
-    </div>
+    </motion.div>
   );
 };
 

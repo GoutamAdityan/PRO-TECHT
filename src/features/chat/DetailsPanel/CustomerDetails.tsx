@@ -1,4 +1,3 @@
-
 // src/features/chat/DetailsPanel/CustomerDetails.tsx
 import React from 'react';
 import { CustomerDetails as CustomerDetailsType } from './mockDetailsAdapter';
@@ -7,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Phone, Mail, User, MapPin } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 interface CustomerDetailsProps {
   customer: CustomerDetailsType;
@@ -27,32 +27,32 @@ export const CustomerDetails: React.FC<CustomerDetailsProps> = ({ customer }) =>
   };
 
   return (
-    <Card className="mb-4">
+    <Card className="mb-4 bg-card/50 backdrop-blur-sm shadow-md border border-border/50">
       <CardHeader>
-        <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Customer Details</CardTitle>
+        <CardTitle className="text-sm font-semibold text-muted-foreground uppercase tracking-wide font-heading">Customer Details</CardTitle>
       </CardHeader>
       <CardContent>
         <div className="flex items-center gap-4 mb-4">
-          <Avatar className="h-16 w-16">
+          <Avatar className="h-16 w-16 border border-border/50 shadow-sm">
             <AvatarImage src={customer.avatarUrl} alt={customer.fullName} />
-            <AvatarFallback>{customer.fullName.charAt(0)}</AvatarFallback>
+            <AvatarFallback className="font-heading text-lg">{customer.fullName.charAt(0)}</AvatarFallback>
           </Avatar>
           <div>
-            <h3 className="font-semibold text-lg">{customer.fullName}</h3>
-            <Badge variant={getVerificationBadgeVariant(customer.verificationStatus)}>{customer.verificationStatus}</Badge>
+            <h3 className="font-semibold text-lg font-heading">{customer.fullName}</h3>
+            <Badge variant={getVerificationBadgeVariant(customer.verificationStatus)} className={cn("shadow-sm", customer.verificationStatus === 'Verified' && "bg-primary text-primary-foreground")}>{customer.verificationStatus}</Badge>
           </div>
         </div>
 
         <div className="grid grid-cols-1 gap-y-2 text-sm mb-4">
           <div className="flex items-center gap-2">
             <Mail className="h-4 w-4 text-muted-foreground" />
-            <a href={`mailto:${customer.email}`} className="text-primary hover:underline">
+            <a href={`mailto:${customer.email}`} className="text-primary hover:underline hover:text-primary/80 transition-colors">
               {customer.email}
             </a>
           </div>
           <div className="flex items-center gap-2">
             <Phone className="h-4 w-4 text-muted-foreground" />
-            <a href={`tel:${customer.phone}`} className="text-primary hover:underline">
+            <a href={`tel:${customer.phone}`} className="text-primary hover:underline hover:text-primary/80 transition-colors">
               {customer.phone}
             </a>
           </div>
@@ -82,13 +82,13 @@ export const CustomerDetails: React.FC<CustomerDetailsProps> = ({ customer }) =>
         </div>
 
         <div className="flex flex-wrap gap-2 mt-4">
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="hover:bg-accent/10 hover:text-accent-foreground border-border/50">
             <Phone className="h-4 w-4 mr-2" /> Call
           </Button>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="hover:bg-accent/10 hover:text-accent-foreground border-border/50">
             <Mail className="h-4 w-4 mr-2" /> Email
           </Button>
-          <Button variant="outline" size="sm">
+          <Button variant="outline" size="sm" className="hover:bg-accent/10 hover:text-accent-foreground border-border/50">
             <User className="h-4 w-4 mr-2" /> View Account
           </Button>
         </div>
