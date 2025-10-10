@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
@@ -8,65 +8,26 @@ import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Eye, Check, RotateCcw, Filter, CalendarDays, Search } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { DetailsPanel } from '@/features/chat/DetailsPanel/DetailsPanel'; // Reusing DetailsPanel
+import { DetailsPanel } from '@/features/chat/DetailsPanel/DetailsPanel';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
+import { useRealtime } from '@/hooks/useRealtime';
+import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/hooks/useAuth';
+import { mockRealtimeAdapter } from '@/lib/realtime/mockAdapter';
 
 // TypeScript Types
 type ServiceRequestStatus = "Pending" | "In Progress" | "Completed";
 
 type ServiceRequest = {
   id: string;
+  requestId: string;
   productName: string;
   customerName: string;
   requestDate: string;
   status: ServiceRequestStatus;
   assignedCenter: string;
 };
-
-// Dummy Data
-const dummyServiceRequests: ServiceRequest[] = [
-  {
-    id: "SR001",
-    productName: "Smart Coffee Maker X1",
-    customerName: "Alice Smith",
-    requestDate: "2025-10-01",
-    status: "Pending",
-    assignedCenter: "",
-  },
-  {
-    id: "SR002",
-    productName: "Smartphone Z",
-    customerName: "Bob Williams",
-    requestDate: "2025-10-04",
-    status: "In Progress",
-    assignedCenter: "Uptown Electronics Repair",
-  },
-  {
-    id: "SR003",
-    productName: "Robotic Vacuum Cleaner Pro",
-    customerName: "Charlie Brown",
-    requestDate: "2025-09-28",
-    status: "Completed",
-    assignedCenter: "Downtown Appliance Fixers",
-  },
-  {
-    id: "SR004",
-    productName: "Smart Air Purifier Max",
-    customerName: "Alice Smith",
-    requestDate: "2025-10-05",
-    status: "In Progress",
-    assignedCenter: "Uptown Electronics Repair",
-  },
-  {
-    id: "SR005",
-    productName: "Electric Kettle Pro",
-    customerName: "Bob Williams",
-    requestDate: "2025-10-06",
-    status: "Pending",
-    assignedCenter: "",
-  },
-];
 
 const getStatusBadgeClass = (status: ServiceRequestStatus) => {
   switch (status) {
@@ -82,12 +43,47 @@ const getStatusBadgeClass = (status: ServiceRequestStatus) => {
 };
 
 const ActiveJobs = () => {
-  const [requests, setRequests] = useState<ServiceRequest[]>(dummyServiceRequests);
+  const { user, profile } = useAuth();
+  const { toast } = useToast();
+  const [requests, setRequests] = useState<ServiceRequest[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<ServiceRequestStatus | "All">("All");
   const [selectedRequestId, setSelectedRequestId] = useState<string | null>(null);
   const [isDetailsPanelOpen, setIsDetailsPanelOpen] = useState(false);
   const isMobile = useIsMobile();
+  const [isLoadingJobs, setIsLoadingJobs] = useState(true);
+
+  // Fetch initial active jobs
+  useEffect(() => {
+    const fetchJobs = async () => {
+      setIsLoadingJobs(true);
+      // In a real app, centerId would come from profile or be selected
+      const centerId = profile?.assigned_center_id || "Uptown Electronics Repair"; // Mock center ID
+      const fetchedJobs = await mockRealtimeAdapter.fetchActiveJobs(centerId);
+      setRequests(fetchedJobs);
+      setIsLoadingJobs(false);
+    };
+    if (profile?.role === 'service_center') {
+      fetchJobs();
+    }
+  }, [profile]);
+
+  // Subscribe to new requests
+  useRealtime({
+    newRequest: (newReq: ServiceRequest) => {
+      if (profile?.role === 'service_center') {
+        // Check if the request is for this service center (mock logic)
+        // For now, assume all new requests are relevant
+        setRequests((prev) => [newReq, ...prev]);
+        toast({
+          title: "New Service Request!",
+          description: `Request ID: ${newReq.requestId} for ${newReq.productName}`,
+          action: <Button variant="ghost" onClick={() => handleViewDetails(newReq.id)}>View</Button>,
+          duration: 5000,
+        });
+      }
+    },
+  });
 
   const handleStatusChange = (id: string, newStatus: ServiceRequestStatus) => {
     setRequests(requests.map(req => req.id === id ? { ...req, status: newStatus } : req));
@@ -104,6 +100,22 @@ const ActiveJobs = () => {
     setSelectedRequestId(requestId);
     setIsDetailsPanelOpen(true);
   };
+
+  if (isLoadingJobs) {
+    return (
+      <div className="flex h-full items-center justify-center text-muted-foreground">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col items-center gap-4"
+        >
+          <Loader2 className="h-10 w-10 animate-spin text-primary" />
+          <p className="text-lg">Loading active jobs...</p>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -159,7 +171,13 @@ const ActiveJobs = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {filteredRequests.length === 0 ? (
+                  {isLoadingJobs ? (
+                    <TableRow>
+                      <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
+                        <Loader2 className="h-6 w-6 animate-spin inline-block mr-2" /> Loading jobs...
+                      </TableCell>
+                    </TableRow>
+                  ) : filteredRequests.length === 0 ? (
                     <TableRow>
                       <TableCell colSpan={7} className="h-24 text-center text-muted-foreground">
                         No active jobs found.
@@ -175,7 +193,7 @@ const ActiveJobs = () => {
                         whileHover={{ scale: 1.005, backgroundColor: "rgba(var(--surface-rgb), 0.1)", boxShadow: "0 4px 8px rgba(0,0,0,0.05)" }}
                         className="border-b border-border/50"
                       >
-                        <TableCell className="font-medium text-primary cursor-pointer hover:underline" onClick={() => handleViewDetails(req.id)}>{req.id}</TableCell>
+                        <TableCell className="font-medium text-primary cursor-pointer hover:underline" onClick={() => handleViewDetails(req.id)}>{req.requestId}</TableCell>
                         <TableCell>{req.productName}</TableCell>
                         <TableCell>{req.customerName}</TableCell>
                         <TableCell>{req.requestDate}</TableCell>
