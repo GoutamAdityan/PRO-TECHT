@@ -37,30 +37,27 @@ const MainLayout = () => {
         <SidebarContent>
           <SidebarMenu>
             <SidebarMenuItem>
-              <SidebarMenuButton label="" asChild>
+              <SidebarMenuButton label="Dashboard" asChild>
                 <NavLink to="/" className="flex items-center">
                   <LayoutDashboard
                     className={`w-4 h-4 ${isExpanded ? 'ml-2' : '-ml-1'}`}
                   />
-                  {isExpanded && <span className="ml-2">Dashboard</span>}
                 </NavLink>
               </SidebarMenuButton>
             </SidebarMenuItem>
             {profile?.role === 'consumer' && (
               <>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="" asChild>
+                  <SidebarMenuButton label="Product Vault" asChild>
                     <NavLink to="/products" className="flex items-center">
-                      <Package className="w-4 h-4" />
-                      {isExpanded && <span className="ml-2">Product Vault</span>}
+                    <Package className="w-4 h-4" />
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="" asChild>
+                  <SidebarMenuButton label="Service Requests" asChild>
                     <NavLink to="/service-requests" className="flex items-center">
                       <Wrench className="w-4 h-4" />
-                      {isExpanded && <span className="ml-2">Service Requests</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -69,26 +66,23 @@ const MainLayout = () => {
             {profile?.role !== 'consumer' && profile?.role !== 'service_center' && (
               <>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="" asChild>
+                  <SidebarMenuButton label="Service Queue" asChild>
                     <NavLink to="/service-queue" className="flex items-center">
                       <ClipboardList className="w-4 h-4" />
-                      {isExpanded && <span className="ml-2">Service Queue</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="" asChild>
+                  <SidebarMenuButton label="Product Catalog" asChild>
                     <NavLink to="/product-catalog" className="flex items-center">
                       <Book className="w-4 h-4" />
-                      {isExpanded && <span className="ml-2">Product Catalog</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="" asChild>
+                  <SidebarMenuButton label="Analytics" asChild>
                     <NavLink to="/analytics" className="flex items-center">
                       <BarChart className="w-4 h-4" />
-                      {isExpanded && <span className="ml-2">Analytics</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -96,10 +90,9 @@ const MainLayout = () => {
             )}
             {profile?.role === 'consumer' && (
               <SidebarMenuItem>
-                <SidebarMenuButton label="" asChild>
+                <SidebarMenuButton label="Warranty Tracker" asChild>
                   <NavLink to="/warranty-tracker" className="flex items-center">
-                    <ShieldCheck className="w-4 h-4" />
-                    {isExpanded && <span className="ml-2">Warranty Tracker</span>}
+                      <ShieldCheck className="w-4 h-4" />
                   </NavLink>
                 </SidebarMenuButton>
               </SidebarMenuItem>
@@ -107,26 +100,23 @@ const MainLayout = () => {
             {profile?.role === 'service_center' && (
               <>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="" asChild>
+                  <SidebarMenuButton label="Active Jobs" asChild>
                     <NavLink to="/active-jobs" className="flex items-center">
                       <ClipboardList className="w-4 h-4" />
-                      {isExpanded && <span className="ml-2">Active Jobs</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="" asChild>
+                  <SidebarMenuButton label="Customer Communication" asChild>
                     <NavLink to="/customer-communication" className="flex items-center">
                       <MessageSquare className="w-4 h-4" />
-                      {isExpanded && <span className="ml-2">Customer Communication</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
                 <SidebarMenuItem>
-                  <SidebarMenuButton label="" asChild>
+                  <SidebarMenuButton label="Service Reports" asChild>
                     <NavLink to="/service-reports" className="flex items-center">
                       <FileText className="w-4 h-4" />
-                      {isExpanded && <span className="ml-2">Service Reports</span>}
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

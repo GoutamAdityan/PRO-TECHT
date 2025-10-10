@@ -1,0 +1,34 @@
+
+/* src/features/chat/ChatBubble.css */
+
+.message-bubble-agent {
+  position: relative;
+}
+
+.message-bubble-agent::after {
+  content: "";
+  position: absolute;
+  right: -8px; /* Adjust to align flush with bubble */
+  bottom: 0px; /* Adjust to align flush with bubble */
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 8px solid var(--primary); /* Use CSS variable for primary color */
+}
+
+.message-bubble-customer {
+  position: relative;
+}
+
+.message-bubble-customer::after {
+  content: "";
+  position: absolute;
+  left: -8px; /* Adjust to align flush with bubble */
+  bottom: 0px; /* Adjust to align flush with bubble */
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-right: 8px solid var(--muted); /* Use CSS variable for muted color */
+}

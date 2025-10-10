@@ -113,12 +113,51 @@ export const SidebarMenuButton = React.forwardRef<
   React.AnchorHTMLAttributes<HTMLAnchorElement> & {
     isActive?: boolean;
     label: string;
+    asChild?: boolean;
   }
->(({ className, isActive, label, children, ...props }, ref) => {
+>(({ className, isActive, label, children, asChild = false, ...props }, ref) => {
   const { isExpanded } = useSidebar();
+  const Comp = asChild ? Slot : "a";
+
+  const labelSpan = label && (
+    <span
+      className={cn(
+        "label whitespace-nowrap transition-all duration-200",
+        isExpanded
+          ? "opacity-100 visible w-auto max-w-none ml-2"
+          : "opacity-0 invisible w-0 max-w-0 overflow-hidden m-0 p-0 pointer-events-none"
+      )}
+      aria-hidden={!isExpanded}
+    >
+      {label}
+    </span>
+  );
+
+  if (asChild) {
+    const child = React.Children.only(children) as React.ReactElement;
+    return (
+      <Comp
+        ref={ref}
+        data-active={isActive}
+        className={cn(sidebarMenuButtonVariants(), !isExpanded && "justify-center", className)}
+        title={isExpanded ? undefined : label}
+        {...props}
+      >
+        {React.cloneElement(child, {
+          ...child.props,
+          children: (
+            <>
+              {child.props.children}
+              {labelSpan}
+            </>
+          ),
+        })}
+      </Comp>
+    );
+  }
 
   return (
-    <a
+    <Comp
       ref={ref}
       data-active={isActive}
       className={cn(sidebarMenuButtonVariants(), !isExpanded && "justify-center", className)}
@@ -126,20 +165,8 @@ export const SidebarMenuButton = React.forwardRef<
       {...props}
     >
       {children}
-      {label && (
-        <span
-          className={cn(
-            "label whitespace-nowrap transition-all duration-200",
-            isExpanded
-              ? "opacity-100 visible w-auto max-w-none ml-2"
-              : "opacity-0 invisible w-0 max-w-0 overflow-hidden m-0 p-0 pointer-events-none"
-          )}
-          aria-hidden={!isExpanded}
-        >
-          {label}
-        </span>
-      )}
-    </a>
+      {labelSpan}
+    </Comp>
   );
 });
 SidebarMenuButton.displayName = "SidebarMenuButton";
