@@ -38,8 +38,8 @@ const NewProduct = () => {
       return;
     }
 
-    if (!selectedProduct || !serialNumber || !purchaseDate) {
-      toast({ title: "Error", description: "Please fill in all required product details.", variant: "destructive" });
+    if (!selectedProduct || !selectedProduct.type || !selectedProduct.brand || !selectedProduct.model || !serialNumber || !purchaseDate) {
+      toast({ title: "Error", description: "Please ensure product type, brand, model, serial number, and purchase date are all filled.", variant: "destructive" });
       return;
     }
 
@@ -71,7 +71,11 @@ const NewProduct = () => {
       navigate('/products');
     } catch (error: any) {
       console.error('Error adding product:', error.message);
-      toast({ title: "Error", description: `Failed to add product: ${error.message}`, variant: "destructive" });
+      let errorMessage = `Failed to add product: ${error.message}`;
+      if (error.message.includes("Could not find the 'type' column") || error.message.includes("schema cache")) {
+        errorMessage = "We couldn't save this product because the system schema is missing a required field (type). Please try again or contact support.";
+      }
+      toast({ title: "Error", description: errorMessage, variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -96,7 +100,7 @@ const NewProduct = () => {
             <div>
               <Label>Product Type, Brand, Model</Label>
               <ProductSelector onProductSelect={setSelectedProduct} className="mt-1" />
-              {!selectedProduct && <p className="text-xs text-destructive mt-1">Product type, brand, and model are required.</p>}
+              {!selectedProduct?.type && <p className="text-xs text-destructive mt-1">Product type, brand, and model are required.</p>}
             </div>
 
             <div>
