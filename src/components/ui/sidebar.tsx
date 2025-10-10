@@ -1,4 +1,5 @@
-import * as React from "react";
+import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { PanelLeft } from "lucide-react";
@@ -111,13 +112,15 @@ const sidebarMenuButtonVariants = cva(
 export const SidebarMenuButton = React.forwardRef<
   HTMLAnchorElement,
   React.AnchorHTMLAttributes<HTMLAnchorElement> & {
-    isActive?: boolean;
+    to?: string; // Add 'to' prop for react-router-dom Link
     label: string;
     asChild?: boolean;
   }
->(({ className, isActive, label, children, asChild = false, ...props }, ref) => {
+>(({ className, to, label, children, asChild = false, ...props }, ref) => {
   const { isExpanded } = useSidebar();
-  const Comp = asChild ? Slot : "a";
+  const location = useLocation();
+  const isActive = to ? location.pathname === to : false;
+  const Comp = to ? Link : (asChild ? Slot : "a"); // Use Link if 'to' is provided
 
   const labelSpan = label && (
     <span
@@ -133,24 +136,32 @@ export const SidebarMenuButton = React.forwardRef<
     </span>
   );
 
+  const content = (
+    <>
+      {React.Children.map(children, (child) => {
+        if (React.isValidElement(child)) {
+          return React.cloneElement(child, { className: cn(child.props.className, "h-6 w-6") });
+        }
+        return child;
+      })}
+      {labelSpan}
+    </>
+  );
+
   if (asChild) {
     const child = React.Children.only(children) as React.ReactElement;
     return (
       <Comp
         ref={ref}
+        to={to}
         data-active={isActive}
-        className={cn(sidebarMenuButtonVariants(), !isExpanded && "justify-center", className)}
+        className={cn(sidebarMenuButtonVariants({ active: isActive }), !isExpanded && "justify-center", className)}
         title={isExpanded ? undefined : label}
         {...props}
       >
         {React.cloneElement(child, {
           ...child.props,
-          children: (
-            <>
-              {child.props.children}
-              {labelSpan}
-            </>
-          ),
+          children: content,
         })}
       </Comp>
     );
@@ -159,13 +170,13 @@ export const SidebarMenuButton = React.forwardRef<
   return (
     <Comp
       ref={ref}
+      to={to}
       data-active={isActive}
-      className={cn(sidebarMenuButtonVariants(), !isExpanded && "justify-center", className)}
+      className={cn(sidebarMenuButtonVariants({ active: isActive }), !isExpanded && "justify-center", className)}
       title={isExpanded ? undefined : label}
       {...props}
     >
-      {children}
-      {labelSpan}
+      {content}
     </Comp>
   );
 });

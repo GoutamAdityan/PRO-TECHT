@@ -40,7 +40,7 @@ const MainLayout = () => {
               <SidebarMenuButton label="Dashboard" asChild>
                 <NavLink to="/" className="flex items-center">
                   <LayoutDashboard
-                    className={`w-4 h-4 ${isExpanded ? 'ml-2' : '-ml-1'}`}
+                    className={`w-4 h-4`}
                   />
                 </NavLink>
               </SidebarMenuButton>
