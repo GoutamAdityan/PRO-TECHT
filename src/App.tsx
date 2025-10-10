@@ -22,6 +22,9 @@ import ProductCatalog from "./pages/ProductCatalog";
 import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
 import About from "./pages/About";
+import ActiveJobs from "./pages/ActiveJobs";
+import CustomerCommunication from "./pages/CustomerCommunication";
+import ServiceReports from "./pages/ServiceReports";
 
 // force reload
 const queryClient = new QueryClient();
@@ -51,6 +54,9 @@ const App = () => (
                 <Route path="/analytics" element={<Analytics />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/about" element={<About />} />
+                <Route path="/active-jobs" element={<ActiveJobs />} />
+                <Route path="/customer-communication" element={<CustomerCommunication />} />
+                <Route path="/service-reports" element={<ServiceReports />} />
 
               </Route>
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

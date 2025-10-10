@@ -161,53 +161,59 @@ const Index = () => {
 
             {profile?.role === 'service_center' && (
               <>
-                <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
-                        <Zap className="w-6 h-6 text-accent" />
+                <Link to="/active-jobs">
+                  <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
+                    <CardHeader className="pb-4">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                          <Zap className="w-6 h-6 text-accent" />
+                        </div>
+                        <CardTitle className="text-xl">Active Jobs</CardTitle>
                       </div>
-                      <CardTitle className="text-xl">Active Jobs</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription>
-                      View and manage your current service assignments.
-                    </CardDescription>
-                  </CardContent>
-                </Card>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>
+                        View and manage your current service assignments.
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                </Link>
 
-                <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
-                        <LifeBuoy className="w-6 h-6 text-primary" />
+                <Link to="/customer-communication">
+                  <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
+                    <CardHeader className="pb-4">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                          <LifeBuoy className="w-6 h-6 text-primary" />
+                        </div>
+                        <CardTitle className="text-xl">Customer Communication</CardTitle>
                       </div>
-                      <CardTitle className="text-xl">Customer Communication</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription>
-                      Communicate directly with customers about service status.
-                    </CardDescription>
-                  </CardContent>
-                </Card>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>
+                        Communicate directly with customers about service status.
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                </Link>
 
-                <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
-                  <CardHeader className="pb-4">
-                    <div className="flex items-center space-x-4">
-                      <div className="w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center">
-                        <Rocket className="w-6 h-6 text-success" />
+                <Link to="/service-reports">
+                  <Card className="hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer">
+                    <CardHeader className="pb-4">
+                      <div className="flex items-center space-x-4">
+                        <div className="w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center">
+                          <Rocket className="w-6 h-6 text-success" />
+                        </div>
+                        <CardTitle className="text-xl">Service Reports</CardTitle>
                       </div>
-                      <CardTitle className="text-xl">Service Reports</CardTitle>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <CardDescription>
-                      Submit completion reports and service documentation.
-                    </CardDescription>
-                  </CardContent>
-                </Card>
+                    </CardHeader>
+                    <CardContent>
+                      <CardDescription>
+                        Submit completion reports and service documentation.
+                      </CardDescription>
+                    </CardContent>
+                  </Card>
+                </Link>
               </>
             )}
           </div>
