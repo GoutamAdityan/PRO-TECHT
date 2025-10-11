@@ -3,7 +3,7 @@
 **ServiceBridge** streamlines service center management by integrating job tracking, customer communication, and performance reporting into one unified AI-assisted platform.
 Designed for efficiency and clarity, it empowers teams to manage repairs, ensure SLA compliance, and deliver better customer experiences with ease.
 
-🌐 **Live Deployment:** Coming Soon 👀
+🌐 **Live Deployment:** https://product-care-flow.onrender.com/auth
 
 📊 **Points for Issues on Leaderboard:**
 ⭐ 1 Star — 5 Points | ⭐⭐ 2 Stars — 10 Points | ⭐⭐⭐ 3 Stars — 15 Points
