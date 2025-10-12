@@ -1,12 +1,22 @@
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, ShieldCheck, Clock, Zap } from 'lucide-react';
+import { useRef, useState, useEffect } from 'react';
 import NavBar from '@/components/NavBar';
 import HeroIllustration from '@/components/HeroIllustration';
 import FeatureCard from '@/components/FeatureCard';
 import Footer from '@/components/Footer';
 
 const HomePage = () => {
+  const navbarRef = useRef<HTMLElement>(null);
+  const [navbarHeight, setNavbarHeight] = useState(0);
+
+  useEffect(() => {
+    if (navbarRef.current) {
+      setNavbarHeight(navbarRef.current.offsetHeight);
+    }
+  }, []);
+
   const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault();
     const href = e.currentTarget.href;
@@ -19,17 +29,18 @@ const HomePage = () => {
 
   return (
     <div className="bg-bg min-h-screen text-white overflow-x-hidden">
-      <NavBar />
-      <main className="container mx-auto px-4 pt-32">
+      <NavBar ref={navbarRef} />
+      <main className="container mx-auto px-4">
         {/* Hero Section */}
         <motion.section
-          className="text-center flex flex-col items-center justify-center relative"
+          className="min-h-screen text-center flex flex-col items-center justify-center relative"
+          style={{ minHeight: `calc(100vh - ${navbarHeight}px)` }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
           <HeroIllustration />
-          <h1 className="text-4xl md:text-6xl font-bold text-heading mb-4 -mt-16 md:-mt-24 relative z-10">Manage warranties & service requests — in one calm place.</h1>
+          <h1 className="text-4xl md:text-6xl font-bold text-heading mb-4 -mt-12 md:-mt-20 relative z-10">Manage warranties & service requests — in one calm place.</h1>
           <p className="text-lg md:text-xl text-text max-w-2xl mx-auto mb-8 relative z-10">Track, protect, and get help for your devices. Quick setup, smart reminders.</p>
           <div className="flex space-x-4 relative z-10">
             <Link to="/auth" className="bg-accent text-black py-3 px-6 rounded-full font-semibold hover:bg-opacity-80 transition-colors duration-300 flex items-center">Get Started <ArrowRight className="ml-2" /></Link>

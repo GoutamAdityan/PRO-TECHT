@@ -1,20 +1,22 @@
+import { forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useState } from 'react';
 import { Menu, X } from 'lucide-react';
 
-const NavBar = () => {
+const NavBar = forwardRef<HTMLElement>((props, ref) => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <motion.nav
+      ref={ref}
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
       className="fixed top-0 left-0 right-0 z-50 py-4 px-8 bg-transparent backdrop-filter backdrop-blur-lg bg-opacity-30 border-b border-gray-800"
     >
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold text-white">WarrantyHub</Link>
+        <Link to="/" className="text-2xl font-bold text-white">ServiceBridge</Link>
         <div className="hidden md:flex items-center space-x-4">
           <Link to="/auth" className="bg-accent text-black py-2 px-4 rounded-full hover:bg-opacity-80 transition-colors duration-300">Login</Link>
         </div>
@@ -35,6 +37,6 @@ const NavBar = () => {
       )}
     </motion.nav>
   );
-};
+});
 
 export default NavBar;
