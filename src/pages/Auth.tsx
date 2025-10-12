@@ -16,15 +16,33 @@ const Auth = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [contentHeight, setContentHeight] = useState<number | string>('auto');
+  const [maxFormHeight, setMaxFormHeight] = useState<number | string>('auto');
   const signInRef = useRef<HTMLDivElement>(null);
   const signUpRef = useRef<HTMLDivElement>(null);
 
+  // Effect to calculate and set max form height on mount and resize
+  useEffect(() => {
+    const calculateMaxHeight = () => {
+      const signInHeight = signInRef.current?.offsetHeight || 0;
+      const signUpHeight = signUpRef.current?.offsetHeight || 0;
+      const newMaxHeight = Math.max(signInHeight, signUpHeight);
+      if (newMaxHeight > 0) {
+        setMaxFormHeight(newMaxHeight);
+      }
+    };
+
+    calculateMaxHeight();
+    window.addEventListener('resize', calculateMaxHeight);
+    return () => window.removeEventListener('resize', calculateMaxHeight);
+  }, []);
+
+  // Effect to set current content height for animation
   useEffect(() => {
     const activeRef = activeTab === 'signin' ? signInRef : signUpRef;
     if (activeRef.current) {
       setContentHeight(activeRef.current.offsetHeight);
     }
-  }, [activeTab]);
+  }, [activeTab, maxFormHeight]); // Depend on maxFormHeight to re-evaluate if forms grow
 
   useEffect(() => {
     if (error) {
@@ -108,9 +126,10 @@ const Auth = () => {
           </motion.div>
 
           <motion.div
-            className="mt-6"
+            className="mt-6 relative"
             animate={{ height: contentHeight || 'auto' }}
             transition={{ duration: 0.4, ease: [0.4, 0.0, 0.2, 1] }}
+            style={{ minHeight: maxFormHeight }}
           >
             <AnimatePresence mode="wait">
               <motion.div
@@ -119,8 +138,9 @@ const Auth = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
+                className="absolute inset-0"
               >
-                <TabsContent value="signin" ref={signInRef} className="glass-card p-8">
+                <TabsContent value="signin" ref={signInRef} className="glass-card p-8" tabIndex={-1} aria-hidden={activeTab !== 'signin'}>
                   <form onSubmit={handleSignIn} className="space-y-6">
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -135,7 +155,7 @@ const Auth = () => {
                     </Button>
                   </form>
                 </TabsContent>
-                <TabsContent value="signup" ref={signUpRef} className="glass-card p-8">
+                <TabsContent value="signup" ref={signUpRef} className="glass-card p-8" tabIndex={-1} aria-hidden={activeTab !== 'signup'}>
                   <form onSubmit={handleSignUp} className="space-y-6">
                     <div className="relative">
                       <Users className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
