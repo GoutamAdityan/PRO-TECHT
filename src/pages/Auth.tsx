@@ -51,9 +51,6 @@ const Auth = () => {
     }
   }, [error]);
 
-  if (user && !loading) {
-    return <Navigate to="/" replace />;
-  }
 
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

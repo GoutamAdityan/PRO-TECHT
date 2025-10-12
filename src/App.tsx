@@ -27,6 +27,7 @@ import CustomerCommunication from "./pages/CustomerCommunication";
 import ServiceReports from "./pages/ServiceReports";
 import { AnimatePresence } from "framer-motion";
 import PageTransition from "@/components/PageTransition";
+import AuthRedirector from "@/components/AuthRedirector"; // Import AuthRedirector
 
 const queryClient = new QueryClient();
 
@@ -37,6 +38,7 @@ const App = () => {
     <ThemeProvider attribute="class" defaultTheme="system" storageKey="vite-ui-theme">
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
+          <AuthRedirector /> {/* Render AuthRedirector here */}
           <TooltipProvider>
             <Toaster />
             <Sonner />
