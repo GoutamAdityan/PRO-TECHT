@@ -7,6 +7,7 @@ import HeroIllustration from '@/components/HeroIllustration';
 import FeatureCard from '@/components/FeatureCard';
 import Footer from '@/components/Footer';
 
+// Force re-compilation
 const HomePage = () => {
   const navbarRef = useRef<HTMLElement>(null);
   const [navbarHeight, setNavbarHeight] = useState(0);

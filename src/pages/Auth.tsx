@@ -138,9 +138,8 @@ const Auth = () => {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={{ duration: 0.3 }}
-                className="absolute inset-0"
               >
-                <TabsContent value="signin" ref={signInRef} className="glass-card p-8" tabIndex={-1} aria-hidden={activeTab !== 'signin'}>
+                <TabsContent value="signin" ref={signInRef} className="glass-card p-8" tabIndex={-1} aria-hidden={activeTab !== 'signin'} style={{ display: activeTab === 'signin' ? 'block' : 'none' }}>
                   <form onSubmit={handleSignIn} className="space-y-6">
                     <div className="relative">
                       <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
@@ -155,7 +154,7 @@ const Auth = () => {
                     </Button>
                   </form>
                 </TabsContent>
-                <TabsContent value="signup" ref={signUpRef} className="glass-card p-8" tabIndex={-1} aria-hidden={activeTab !== 'signup'}>
+                <TabsContent value="signup" ref={signUpRef} className="glass-card p-8" tabIndex={-1} aria-hidden={activeTab !== 'signup'} style={{ display: activeTab === 'signup' ? 'block' : 'none' }}>
                   <form onSubmit={handleSignUp} className="space-y-6">
                     <div className="relative">
                       <Users className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
