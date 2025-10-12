@@ -2,6 +2,31 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Global styles to prevent unwanted text cursor and focus */
+html, body, #root {
+  -webkit-user-select: none; /* Safari */
+  -moz-user-select: none; /* Firefox */
+  -ms-user-select: none; /* IE10+/Edge */
+  user-select: none; /* Standard */
+  caret-color: transparent;
+  outline: none;
+}
+
+/* Re-enable for interactive elements */
+input, textarea, select, button, a {
+  -webkit-user-select: auto;
+  -moz-user-select: auto;
+  -ms-user-select: auto;
+  user-select: auto;
+  caret-color: auto;
+}
+
+/* Ensure focus outlines are visible for accessibility on interactive elements */
+input:focus, textarea:focus, select:focus, button:focus, a:focus {
+  outline: 2px solid var(--accent); /* Or your preferred focus style */
+  outline-offset: 2px;
+}
+
 .auth-container {
   @apply min-h-screen flex items-center justify-center p-4;
   background-color: #0f1513;
