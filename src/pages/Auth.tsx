@@ -12,6 +12,7 @@ import '@/styles/auth.css';
 
 const Auth = () => {
   const { user, signIn, signUp, loading } = useAuth();
+  const [activeTab, setActiveTab] = useState("signin");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -77,21 +78,28 @@ const Auth = () => {
           <p className="text-gray-400 mt-2">Your calm place for product lifecycle management.</p>
         </div>
 
-        <Tabs defaultValue="signin" className="w-full">
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.3, duration: 0.5 }}
           >
-            <TabsList className="grid w-full grid-cols-2 bg-white/5 p-1 rounded-lg">
+            <TabsList className="relative grid w-full grid-cols-2 bg-white/5 p-1 rounded-lg">
               <TabsTrigger value="signin" className="tabs-trigger">Sign In</TabsTrigger>
               <TabsTrigger value="signup" className="tabs-trigger">Sign Up</TabsTrigger>
+              {activeTab && (
+                <motion.div
+                  layoutId="active-tab-indicator"
+                  className="absolute inset-0 bg-accent/20 rounded-md -z-10"
+                  transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                />
+              )}
             </TabsList>
           </motion.div>
 
           <AnimatePresence mode="wait">
             <motion.div
-              key={Tabs.defaultValue}
+              key={activeTab}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -10 }}
