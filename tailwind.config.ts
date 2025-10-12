@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import { tokens } from "./src/design/tokens";
 
 export default {
   darkMode: ["class"],
@@ -14,6 +15,11 @@ export default {
     },
     extend: {
       colors: {
+        bg: tokens.colors.bg,
+        "card-bg": tokens.colors.cardBg,
+        accent: tokens.colors.accent,
+        text: tokens.colors.text,
+        heading: tokens.colors.heading,
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -34,10 +40,6 @@ export default {
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -74,6 +76,15 @@ export default {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
+        DEFAULT: tokens.radii.DEFAULT,
+        full: tokens.radii.full,
+      },
+      blur: {
+        glass: tokens.blur.glass,
+      },
+      transitionDuration: {
+        fast: tokens.motion.fast,
+        medium: tokens.motion.medium,
       },
       keyframes: {
         "accordion-down": {

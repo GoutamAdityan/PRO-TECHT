@@ -1,19 +1,27 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Shield, Users, Wrench } from 'lucide-react';
+import { Shield, Users, Wrench, Mail, Lock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import '@/styles/auth.css';
 
 const Auth = () => {
   const { user, signIn, signUp, loading } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  // Redirect if already authenticated
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   if (user && !loading) {
     return <Navigate to="/" replace />;
   }
@@ -21,205 +29,153 @@ const Auth = () => {
   const handleSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+    setError(null);
     const formData = new FormData(e.currentTarget);
     const email = formData.get('signin-email') as string;
     const password = formData.get('signin-password') as string;
-    
     const { error } = await signIn(email, password);
-    
-    if (!error) {
-      // Successful login - redirect will happen automatically via auth state change
+    if (error) {
+      setError(error.message);
     }
-    
     setIsSubmitting(false);
   };
 
   const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+    setError(null);
     const formData = new FormData(e.currentTarget);
     const email = formData.get('signup-email') as string;
     const password = formData.get('signup-password') as string;
     const fullName = formData.get('signup-fullname') as string;
     const role = formData.get('signup-role') as string;
-    
-    await signUp(email, password, fullName, role);
+    const { error } = await signUp(email, password, fullName, role);
+    if (error) {
+      setError(error.message);
+    }
     setIsSubmitting(false);
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-background">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
-
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-background to-muted/50 px-4">
-      <div className="w-full max-w-md space-y-8">
-        <div className="text-center">
-          <div className="flex items-center justify-center w-12 h-12 mx-auto bg-primary rounded-lg mb-4">
-            <Shield className="w-6 h-6 text-primary-foreground" />
-          </div>
-          <h1 className="text-3xl font-bold text-foreground">ServiceBridge</h1>
-          <p className="text-muted-foreground mt-2">
-            Product lifecycle management platform
-          </p>
+    <div className="auth-container">
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.7, ease: [0.4, 0.0, 0.2, 1] }}
+        className="w-full max-w-md"
+      >
+        <div className="text-center mb-8">
+          <motion.div
+            initial={{ scale: 0, rotate: -180 }}
+            animate={{ scale: 1, rotate: 0 }}
+            transition={{ delay: 0.2, type: 'spring', stiffness: 260, damping: 20 }}
+            className="inline-block p-3 bg-accent/20 rounded-full mb-4"
+          >
+            <Shield className="w-8 h-8 text-accent" />
+          </motion.div>
+          <h1 className="text-4xl font-bold text-white">Welcome to ServiceBridge</h1>
+          <p className="text-gray-400 mt-2">Your calm place for product lifecycle management.</p>
         </div>
 
-        <Card className="shadow-lg">
-          <Tabs defaultValue="signin" className="w-full">
-            <CardHeader>
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Sign In</TabsTrigger>
-                <TabsTrigger value="signup">Sign Up</TabsTrigger>
-              </TabsList>
-            </CardHeader>
+        <Tabs defaultValue="signin" className="w-full">
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.5 }}
+          >
+            <TabsList className="grid w-full grid-cols-2 bg-white/5 p-1 rounded-lg">
+              <TabsTrigger value="signin" className="tabs-trigger">Sign In</TabsTrigger>
+              <TabsTrigger value="signup" className="tabs-trigger">Sign Up</TabsTrigger>
+            </TabsList>
+          </motion.div>
 
-            <TabsContent value="signin">
-              <form onSubmit={handleSignIn}>
-                <CardContent className="space-y-4">
-                  <CardTitle>Welcome Back</CardTitle>
-                  <CardDescription>
-                    Sign in to your ServiceBridge account
-                  </CardDescription>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-email">Email</Label>
-                    <Input
-                      id="signin-email"
-                      name="signin-email"
-                      type="email"
-                      placeholder="you@example.com"
-                      required
-                      disabled={isSubmitting}
-                    />
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={Tabs.defaultValue}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+              className="mt-6"
+            >
+              <TabsContent value="signin" className="glass-card p-8">
+                <form onSubmit={handleSignIn} className="space-y-6">
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <Input id="signin-email" name="signin-email" type="email" placeholder="Email" required disabled={isSubmitting} className="form-input pl-10" />
                   </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signin-password">Password</Label>
-                    <Input
-                      id="signin-password"
-                      name="signin-password"
-                      type="password"
-                      required
-                      disabled={isSubmitting}
-                    />
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <Input id="signin-password" name="signin-password" type="password" placeholder="Password" required disabled={isSubmitting} className="form-input pl-10" />
                   </div>
-                </CardContent>
-                
-                <CardFooter>
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
-                    disabled={isSubmitting}
-                  >
+                  <Button type="submit" className="submit-button" disabled={isSubmitting}>
                     {isSubmitting ? 'Signing In...' : 'Sign In'}
                   </Button>
-                </CardFooter>
-              </form>
-            </TabsContent>
-
-            <TabsContent value="signup">
-              <form onSubmit={handleSignUp}>
-                <CardContent className="space-y-4">
-                  <CardTitle>Create Account</CardTitle>
-                  <CardDescription>
-                    Join ServiceBridge today
-                  </CardDescription>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-fullname">Full Name</Label>
-                    <Input
-                      id="signup-fullname"
-                      name="signup-fullname"
-                      type="text"
-                      placeholder="John Doe"
-                      required
-                      disabled={isSubmitting}
-                    />
+                </form>
+              </TabsContent>
+              <TabsContent value="signup" className="glass-card p-8">
+                <form onSubmit={handleSignUp} className="space-y-6">
+                  <div className="relative">
+                    <Users className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <Input id="signup-fullname" name="signup-fullname" type="text" placeholder="Full Name" required disabled={isSubmitting} className="form-input pl-10" />
                   </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      name="signup-email"
-                      type="email"
-                      placeholder="you@example.com"
-                      required
-                      disabled={isSubmitting}
-                    />
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <Input id="signup-email" name="signup-email" type="email" placeholder="Email" required disabled={isSubmitting} className="form-input pl-10" />
                   </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-password">Password</Label>
-                    <Input
-                      id="signup-password"
-                      name="signup-password"
-                      type="password"
-                      required
-                      disabled={isSubmitting}
-                      minLength={6}
-                    />
+                  <div className="relative">
+                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                    <Input id="signup-password" name="signup-password" type="password" placeholder="Password (min. 6 characters)" required disabled={isSubmitting} minLength={6} className="form-input pl-10" />
                   </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="signup-role">Account Type</Label>
+                  <div className="relative">
+                    <Label htmlFor="signup-role" className="sr-only">Account Type</Label>
                     <Select name="signup-role" defaultValue="consumer" disabled={isSubmitting}>
-                      <SelectTrigger>
+                      <SelectTrigger className="form-input">
                         <SelectValue placeholder="Select your role" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="consumer">
                           <div className="flex items-center space-x-2">
                             <Users className="w-4 h-4" />
-                            <div>
-                              <div className="font-medium">Consumer</div>
-                              <div className="text-sm text-muted-foreground">Track products & services</div>
-                            </div>
+                            <span>Consumer</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="business_partner">
                           <div className="flex items-center space-x-2">
                             <Shield className="w-4 h-4" />
-                            <div>
-                              <div className="font-medium">Business Partner</div>
-                              <div className="text-sm text-muted-foreground">Manage products & support</div>
-                            </div>
+                            <span>Business Partner</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="service_center">
                           <div className="flex items-center space-x-2">
                             <Wrench className="w-4 h-4" />
-                            <div>
-                              <div className="font-medium">Service Center</div>
-                              <div className="text-sm text-muted-foreground">Provide repair services</div>
-                            </div>
+                            <span>Service Center</span>
                           </div>
                         </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
-                </CardContent>
-                
-                <CardFooter>
-                  <Button 
-                    type="submit" 
-                    className="w-full" 
-                    disabled={isSubmitting}
-                  >
+                  <Button type="submit" className="submit-button" disabled={isSubmitting}>
                     {isSubmitting ? 'Creating Account...' : 'Create Account'}
                   </Button>
-                </CardFooter>
-              </form>
-            </TabsContent>
-          </Tabs>
-        </Card>
-      </div>
+                </form>
+              </TabsContent>
+            </motion.div>
+          </AnimatePresence>
+        </Tabs>
+        <AnimatePresence>
+          {error && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="mt-4 text-center bg-red-500/20 text-red-400 p-3 rounded-lg"
+            >
+              {error}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
     </div>
   );
 };
