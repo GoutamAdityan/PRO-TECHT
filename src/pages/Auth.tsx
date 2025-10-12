@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Button } from '@/components/ui/button';
@@ -15,6 +15,16 @@ const Auth = () => {
   const [activeTab, setActiveTab] = useState("signin");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [contentHeight, setContentHeight] = useState<number | string>('auto');
+  const signInRef = useRef<HTMLDivElement>(null);
+  const signUpRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const activeRef = activeTab === 'signin' ? signInRef : signUpRef;
+    if (activeRef.current) {
+      setContentHeight(activeRef.current.offsetHeight);
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     if (error) {
@@ -97,79 +107,84 @@ const Auth = () => {
             </TabsList>
           </motion.div>
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="mt-6"
-            >
-              <TabsContent value="signin" className="glass-card p-8">
-                <form onSubmit={handleSignIn} className="space-y-6">
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                    <Input id="signin-email" name="signin-email" type="email" placeholder="Email" required disabled={isSubmitting} className="form-input pl-10" />
-                  </div>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                    <Input id="signin-password" name="signin-password" type="password" placeholder="Password" required disabled={isSubmitting} className="form-input pl-10" />
-                  </div>
-                  <Button type="submit" className="submit-button" disabled={isSubmitting}>
-                    {isSubmitting ? 'Signing In...' : 'Sign In'}
-                  </Button>
-                </form>
-              </TabsContent>
-              <TabsContent value="signup" className="glass-card p-8">
-                <form onSubmit={handleSignUp} className="space-y-6">
-                  <div className="relative">
-                    <Users className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                    <Input id="signup-fullname" name="signup-fullname" type="text" placeholder="Full Name" required disabled={isSubmitting} className="form-input pl-10" />
-                  </div>
-                  <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                    <Input id="signup-email" name="signup-email" type="email" placeholder="Email" required disabled={isSubmitting} className="form-input pl-10" />
-                  </div>
-                  <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                    <Input id="signup-password" name="signup-password" type="password" placeholder="Password (min. 6 characters)" required disabled={isSubmitting} minLength={6} className="form-input pl-10" />
-                  </div>
-                  <div className="relative">
-                    <Label htmlFor="signup-role" className="sr-only">Account Type</Label>
-                    <Select name="signup-role" defaultValue="consumer" disabled={isSubmitting}>
-                      <SelectTrigger className="form-input">
-                        <SelectValue placeholder="Select your role" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="consumer">
-                          <div className="flex items-center space-x-2">
-                            <Users className="w-4 h-4" />
-                            <span>Consumer</span>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="business_partner">
-                          <div className="flex items-center space-x-2">
-                            <Shield className="w-4 h-4" />
-                            <span>Business Partner</span>
-                          </div>
-                        </SelectItem>
-                        <SelectItem value="service_center">
-                          <div className="flex items-center space-x-2">
-                            <Wrench className="w-4 h-4" />
-                            <span>Service Center</span>
-                          </div>
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <Button type="submit" className="submit-button" disabled={isSubmitting}>
-                    {isSubmitting ? 'Creating Account...' : 'Create Account'}
-                  </Button>
-                </form>
-              </TabsContent>
-            </motion.div>
-          </AnimatePresence>
+          <motion.div
+            className="mt-6"
+            animate={{ height: contentHeight || 'auto' }}
+            transition={{ duration: 0.4, ease: [0.4, 0.0, 0.2, 1] }}
+          >
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={activeTab}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+              >
+                <TabsContent value="signin" ref={signInRef} className="glass-card p-8">
+                  <form onSubmit={handleSignIn} className="space-y-6">
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                      <Input id="signin-email" name="signin-email" type="email" placeholder="Email" required disabled={isSubmitting} className="form-input pl-10" />
+                    </div>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                      <Input id="signin-password" name="signin-password" type="password" placeholder="Password" required disabled={isSubmitting} className="form-input pl-10" />
+                    </div>
+                    <Button type="submit" className="submit-button" disabled={isSubmitting}>
+                      {isSubmitting ? 'Signing In...' : 'Sign In'}
+                    </Button>
+                  </form>
+                </TabsContent>
+                <TabsContent value="signup" ref={signUpRef} className="glass-card p-8">
+                  <form onSubmit={handleSignUp} className="space-y-6">
+                    <div className="relative">
+                      <Users className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                      <Input id="signup-fullname" name="signup-fullname" type="text" placeholder="Full Name" required disabled={isSubmitting} className="form-input pl-10" />
+                    </div>
+                    <div className="relative">
+                      <Mail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                      <Input id="signup-email" name="signup-email" type="email" placeholder="Email" required disabled={isSubmitting} className="form-input pl-10" />
+                    </div>
+                    <div className="relative">
+                      <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
+                      <Input id="signup-password" name="signup-password" type="password" placeholder="Password (min. 6 characters)" required disabled={isSubmitting} minLength={6} className="form-input pl-10" />
+                    </div>
+                    <div className="relative">
+                      <Label htmlFor="signup-role" className="sr-only">Account Type</Label>
+                      <Select name="signup-role" defaultValue="consumer" disabled={isSubmitting}>
+                        <SelectTrigger className="form-input">
+                          <SelectValue placeholder="Select your role" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="consumer">
+                            <div className="flex items-center space-x-2">
+                              <Users className="w-4 h-4" />
+                              <span>Consumer</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="business_partner">
+                            <div className="flex items-center space-x-2">
+                              <Shield className="w-4 h-4" />
+                              <span>Business Partner</span>
+                            </div>
+                          </SelectItem>
+                          <SelectItem value="service_center">
+                            <div className="flex items-center space-x-2">
+                              <Wrench className="w-4 h-4" />
+                              <span>Service Center</span>
+                            </div>
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <Button type="submit" className="submit-button" disabled={isSubmitting}>
+                      {isSubmitting ? 'Creating Account...' : 'Create Account'}
+                    </Button>
+                  </form>
+                </TabsContent>
+              </motion.div>
+            </AnimatePresence>
+          </motion.div>
         </Tabs>
         <AnimatePresence>
           {error && (
