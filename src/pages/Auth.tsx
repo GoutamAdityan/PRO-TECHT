@@ -86,12 +86,12 @@ const Auth = () => {
   };
 
   return (
-    <div className="auth-container">
+    <div className="auth-container pt-[10vh] items-start">
       <motion.div
         initial={{ opacity: 0, y: 20, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.7, ease: [0.4, 0.0, 0.2, 1] }}
-        className="w-full max-w-md"
+        className="w-full max-w-md mx-auto"
       >
         <div className="text-center mb-8">
           <motion.div
