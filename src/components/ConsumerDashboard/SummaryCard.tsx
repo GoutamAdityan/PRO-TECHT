@@ -16,26 +16,27 @@ interface SummaryCardProps {
 const SummaryCard: React.FC<SummaryCardProps> = ({ title, value, ctaText, onCtaClick, icon: Icon, delay = 0 }) => {
   return (
     <motion.div
-      initial={{ opacity: 0, y: 6 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.28, delay: delay, ease: "easeOut" }}
+      transition={{ duration: 0.5, delay: delay, ease: "easeOut" }}
       whileHover={{
-        y: -3,
-        boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)",
-        transition: { duration: 0.2 }
+        scale: 1.02,
+        boxShadow: "0 10px 20px rgba(0,0,0,0.2), 0 0 30px rgba(34,197,94,0.15)",
+        transition: { duration: 0.3, ease: "easeOut" }
       }}
-      className="h-full cursor-pointer"
-      onClick={onCtaClick} // Make the whole card clickable
+      className="h-full cursor-pointer rounded-2xl transition-all duration-300 ease-out"
     >
-      <Card className="bg-[rgba(18,26,22,0.45)] backdrop-blur-sm border border-[rgba(255,255,255,0.03)] rounded-2xl p-5 flex flex-col items-start justify-between h-full">
+      <Card className="bg-muted/40 backdrop-blur-xl border border-foreground/10 rounded-2xl p-6 flex flex-col items-start justify-between h-full">
         <div className="flex items-center mb-3">
-          <Icon className="w-6 h-6 text-green-400 mr-3" />
-          <h3 className="text-lg font-medium text-gray-200">{title}</h3>
+          <Icon className="w-6 h-6 text-emerald-400 mr-3" />
+          <h3 className="text-lg font-medium text-foreground/90">{title}</h3>
         </div>
-        <p className="text-3xl font-bold text-white mb-4">{value}</p>
+        <p className="text-4xl font-bold text-white mb-4">{value}</p>
         <Button
           onClick={onCtaClick}
-          className="mt-auto px-4 py-2 bg-green-600 text-white font-medium rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition-all duration-200 ease-in-out transform hover:-translate-y-0.5"
+          className="mt-auto px-6 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold rounded-full shadow-lg
+                     hover:translate-y-[-2px] transition-all duration-200 ease-out
+                     shadow-[0_0_15px_rgba(34,197,94,0.25)] hover:shadow-[0_0_25px_rgba(34,197,94,0.4)]"
         >
           {ctaText}
         </Button>
