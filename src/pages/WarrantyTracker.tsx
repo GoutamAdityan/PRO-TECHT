@@ -8,6 +8,7 @@ import { WarrantyStatusBadge } from '@/components/custom/WarrantyStatusBadge';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ShieldCheck, ShieldX, Search, Wrench } from 'lucide-react';
 import { FloatingLabelInput } from '../components/ui/FloatingLabelInput'; // Corrected relative import
+import { Input } from '@/components/ui/input'; // Added import for Input component
 import WarrantyTrackerSkeleton from '@/components/WarrantyTrackerSkeleton'; // New import
 
 interface ProductWarrantyInfo {
@@ -121,28 +122,27 @@ const WarrantyTracker = () => {
       </div>
 
       <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-8">
-        <motion.div variants={itemVariants} className="flex-grow">
-          <FloatingLabelInput
-            id="warranty-filter"
-            label="Filter by brand or model..."
+        <motion.div variants={itemVariants} className="flex-grow relative">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+          <Input
+            type="text"
+            placeholder="Filter by brand or model..."
             value={filter}
             onChange={e => setFilter(e.target.value)}
-            className="w-full bg-[rgba(18,26,22,0.45)] backdrop-blur-sm border border-[rgba(255,255,255,0.03)] rounded-lg text-white
-                       focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-0 focus-visible:border-green-400"
+            className="h-11 w-full pl-10 pr-4 py-2.5 rounded-lg border border-[rgba(255,255,255,0.03)] bg-[rgba(18,26,22,0.45)] text-foreground/80 placeholder:text-muted-foreground placeholder:opacity-80
+                       focus:outline-none focus:ring-2 focus:ring-emerald-400/30 transition-all duration-150 ease-out"
             aria-label="Filter warranties"
           />
         </motion.div>
         <motion.div variants={itemVariants}>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger
-              className="w-full md:w-[180px] bg-[rgba(18,26,22,0.45)] backdrop-blur-sm border border-[rgba(255,255,255,0.03)] rounded-lg text-white
-                         focus:ring-2 focus:ring-green-400 focus:ring-offset-0 focus:border-green-400"
-              whileHover={{ scale: 1.02, boxShadow: shouldReduceMotion ? 'none' : '0 0 10px rgba(34, 197, 94, 0.3)' }}
-              transition={{ duration: 0.2, ease: "easeOut" }}
+              className="h-11 w-full md:w-[180px] px-4 rounded-lg border border-[rgba(255,255,255,0.03)] bg-[rgba(18,26,22,0.45)] text-foreground/80
+                         focus:outline-none focus:ring-2 focus:ring-emerald-400/30 transition-all duration-150 ease-out"
             >
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
-            <SelectContent className="bg-[rgba(18,26,22,0.8)] backdrop-blur-md border border-[rgba(255,255,255,0.05)] text-white">
+            <SelectContent className="bg-[rgba(18,26,22,0.8)] backdrop-blur-md border border-[rgba(255,255,255,0.05)] text-foreground/80">
               <SelectItem value="all">All Statuses</SelectItem>
               <SelectItem value="active">Active</SelectItem>
               <SelectItem value="expiring-soon">Expiring Soon</SelectItem>
