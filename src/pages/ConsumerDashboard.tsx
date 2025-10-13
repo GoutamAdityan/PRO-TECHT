@@ -53,7 +53,7 @@ const ConsumerDashboard: React.FC = () => {
 
   return (
       <motion.div
-        className="max-w-6xl mx-auto px-6 py-8 text-white"
+        className="max-w-6xl mx-auto px-6 py-6 text-white"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
