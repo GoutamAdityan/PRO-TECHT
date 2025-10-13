@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { WarrantyStatusBadge } from '@/components/custom/WarrantyStatusBadge';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import { ShieldCheck, ShieldX, Search, Wrench } from 'lucide-react';
-import { FloatingLabelInput } from '@/components/ui/FloatingLabelInput'; // New import
+import { FloatingLabelInput } from '../components/ui/FloatingLabelInput'; // Corrected relative import
 import WarrantyTrackerSkeleton from '@/components/WarrantyTrackerSkeleton'; // New import
 
 interface ProductWarrantyInfo {
