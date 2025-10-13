@@ -81,49 +81,53 @@ const Products = () => {
     return expiry > today && expiry <= thirtyDaysFromNow;
   };
 
-  // Global easing for primary transitions
-  const globalEasing = [0.22, 0.9, 0.32, 1];
+  const globalEasing = [0.22, 0.9, 0.32, 1]; // Keep custom easing for other animations
 
   const containerVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 6 },
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 50 }, // More dramatic slide-in
     show: {
       opacity: 1,
       y: 0,
       transition: {
-        staggerChildren: 0.03, // 30ms between children
-        duration: shouldReduceMotion ? 0 : 0.26, // medium 260ms
-        ease: globalEasing,
+        staggerChildren: 0.07, // Match dashboard
+        delayChildren: 0.2,    // Match dashboard
+        ease: "easeOut",       // Match dashboard
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 6 },
-    show: { opacity: 1, y: 0, transition: { duration: shouldReduceMotion ? 0 : 0.26, ease: globalEasing } },
+    hidden: { y: shouldReduceMotion ? 0 : 20, opacity: 0, filter: shouldReduceMotion ? 'none' : 'blur(8px)' }, // Add blur-in
+    show: { y: 0, opacity: 1, filter: 'blur(0px)', transition: { duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" } }, // Increased blur-in duration
   };
 
   return (
     <motion.div
       initial="hidden"
       animate="show"
+      exit={{ opacity: 0, y: shouldReduceMotion ? 0 : -30, filter: shouldReduceMotion ? 'none' : 'blur(10px)', transition: { duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" } }} // Increased exit duration and blur
       variants={containerVariants}
       className="max-w-7xl mx-auto px-6 py-10 text-white" // Centered with max-width and generous padding
     >
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div>
+        <motion.div variants={itemVariants}>
           <h1 className="text-4xl font-bold leading-tight mb-2">Product Vault</h1> {/* H1 36-48px */}
+        </motion.div>
+        <motion.div variants={itemVariants}>
           <p className="text-lg text-gray-400 leading-relaxed">
             Manage your products, warranties, and documentation with ease.
           </p>
+        </motion.div>
         </div>
         <Button
           asChild
           className="h-12 px-6 rounded-full bg-gradient-to-br from-green-600 to-green-700 text-white font-medium shadow-lg
                      hover:from-green-700 hover:to-green-800 transition-all duration-300 ease-out
                      focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50"
-          whileHover={{ scale: 1.06 }}
+          whileHover={{ scale: 1.06, boxShadow: shouldReduceMotion ? 'none' : '0 0 20px rgba(34, 197, 94, 0.7)' }} // More prominent hover
           whileTap={{ scale: 0.985 }}
-          transition={{ duration: 0.22, ease: globalEasing }}
+          transition={{ duration: 0.3, ease: "easeOut" }}
         >
           <Link to="/products/new">
             <Plus className="w-5 h-5 mr-2" />
@@ -138,10 +142,10 @@ const Products = () => {
         ) : products.length === 0 ? (
           <motion.div
             key="empty-state"
-            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 20 }}
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
-            transition={{ duration: 0.32, ease: globalEasing }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex flex-col items-center justify-center min-h-[40vh] text-center"
           >
             <Card className="bg-[rgba(18,26,22,0.45)] backdrop-blur-sm border border-[rgba(255,255,255,0.03)] rounded-2xl p-8 shadow-xl max-w-md w-full">
@@ -149,7 +153,7 @@ const Products = () => {
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.4, ease: globalEasing, delay: 0.1 }}
+                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
                 >
                   <HandCoins className="w-20 h-20 mx-auto text-green-500 mb-6" /> {/* Micro-illustration icon */}
                 </motion.div>
@@ -161,8 +165,8 @@ const Products = () => {
                 </CardDescription>
                 <motion.div
                   initial={{ scale: 0.9, opacity: 0 }}
-                  animate={{ scale: 1, opacity: 1 }}
-                  transition={{ duration: 0.3, ease: globalEasing, delay: 0.2 }}
+                  animate={{ scale: 1, opacity: 1, scaleX: [1, 1.05, 1] }} // Pulse once animation
+                  transition={{ duration: 0.8, ease: "easeOut", delay: 0.2 }} // Longer duration for pulse
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.985 }}
                   className="relative"
@@ -195,10 +199,11 @@ const Products = () => {
                 key={product.id}
                 variants={itemVariants}
                 whileHover={{
-                  y: shouldReduceMotion ? 0 : -6,
-                  boxShadow: shouldReduceMotion ? 'none' : '0 15px 30px rgba(0,0,0,0.3)',
-                  scale: shouldReduceMotion ? 1 : 1.01,
-                  transition: { duration: 0.16, ease: globalEasing }, // short 160ms
+                  y: shouldReduceMotion ? 0 : -10, // More lift
+                  boxShadow: shouldReduceMotion ? 'none' : '0 20px 40px rgba(0,0,0,0.5)', // More prominent shadow
+                  scale: shouldReduceMotion ? 1 : 1.03, // More scale
+                  rotateZ: shouldReduceMotion ? 0 : 1, // Slight tilt
+                  transition: { duration: 0.2, ease: "easeOut" }, // short 200ms
                 }}
                 className="relative"
               >
@@ -278,7 +283,7 @@ const Products = () => {
                                    focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.985 }}
-                        transition={{ duration: 0.16, ease: globalEasing }}
+                        transition={{ duration: 0.2, ease: "easeOut" }}
                       >
                         <Link to={`/products/${product.id}`}>
                           View Details

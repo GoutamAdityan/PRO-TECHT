@@ -3,9 +3,12 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { WarrantyStatusBadge } from '@/components/custom/WarrantyStatusBadge';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { ShieldCheck, ShieldX, Search, Wrench } from 'lucide-react';
+import { FloatingLabelInput } from '@/components/ui/FloatingLabelInput'; // New import
+import WarrantyTrackerSkeleton from '@/components/WarrantyTrackerSkeleton'; // New import
 
 interface ProductWarrantyInfo {
   id: string;
@@ -26,6 +29,7 @@ const WarrantyTracker = () => {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('');
   const [statusFilter, setStatusFilter] = useState('all');
+  const shouldReduceMotion = useReducedMotion();
 
   useEffect(() => {
     if (user) {
@@ -74,73 +78,162 @@ const WarrantyTracker = () => {
       return getStatus(p.warranty_expiry) === statusFilter;
     });
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>Warranty Tracker</CardTitle>
-          <CardDescription>An overview of your product warranties and service history.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="flex space-x-4 mb-4">
-            <Input
-              placeholder="Filter by brand or model..."
-              value={filter}
-              onChange={e => setFilter(e.target.value)}
-              className="max-w-sm"
-            />
-            <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Filter by status" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">All Statuses</SelectItem>
-                <SelectItem value="active">Active</SelectItem>
-                <SelectItem value="expiring-soon">Expiring Soon</SelectItem>
-                <SelectItem value="expired">Expired</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+  // Global easing for primary transitions
+  const globalEasing = [0.22, 0.9, 0.32, 1];
 
-          <div className="rounded-md border">
+  const containerVariants = {
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 50 },
+    show: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        staggerChildren: 0.07,
+        delayChildren: 0.2,
+        ease: "easeOut",
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: shouldReduceMotion ? 0 : 20, opacity: 0, filter: shouldReduceMotion ? 'none' : 'blur(8px)' },
+    show: { y: 0, opacity: 1, filter: 'blur(0px)', transition: { duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" } },
+  };
+
+  return (
+    <motion.div
+      initial="hidden"
+      animate="show"
+      exit={{ opacity: 0, y: shouldReduceMotion ? 0 : -30, filter: shouldReduceMotion ? 'none' : 'blur(10px)', transition: { duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" } }}
+      variants={containerVariants}
+      className="max-w-7xl mx-auto px-6 py-10 text-white" // Centered with max-width and generous padding
+    >
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <div className="flex flex-col">
+          <motion.div variants={itemVariants}>
+            <h1 className="text-4xl font-bold leading-tight mb-2">Warranty Tracker</h1>
+          </motion.div>
+          <motion.div variants={itemVariants}>
+            <p className="text-lg text-gray-400 leading-relaxed">
+              An overview of your product warranties and service history.
+            </p>
+          </motion.div>
+        </div>
+      </div>
+
+      <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4 mb-8">
+        <motion.div variants={itemVariants} className="flex-grow">
+          <FloatingLabelInput
+            id="warranty-filter"
+            label="Filter by brand or model..."
+            value={filter}
+            onChange={e => setFilter(e.target.value)}
+            className="w-full bg-[rgba(18,26,22,0.45)] backdrop-blur-sm border border-[rgba(255,255,255,0.03)] rounded-lg text-white
+                       focus-visible:ring-2 focus-visible:ring-green-400 focus-visible:ring-offset-0 focus-visible:border-green-400"
+            aria-label="Filter warranties"
+          />
+        </motion.div>
+        <motion.div variants={itemVariants}>
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger
+              className="w-full md:w-[180px] bg-[rgba(18,26,22,0.45)] backdrop-blur-sm border border-[rgba(255,255,255,0.03)] rounded-lg text-white
+                         focus:ring-2 focus:ring-green-400 focus:ring-offset-0 focus:border-green-400"
+              whileHover={{ scale: 1.02, boxShadow: shouldReduceMotion ? 'none' : '0 0 10px rgba(34, 197, 94, 0.3)' }}
+              transition={{ duration: 0.2, ease: "easeOut" }}
+            >
+              <SelectValue placeholder="Filter by status" />
+            </SelectTrigger>
+            <SelectContent className="bg-[rgba(18,26,22,0.8)] backdrop-blur-md border border-[rgba(255,255,255,0.05)] text-white">
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="active">Active</SelectItem>
+              <SelectItem value="expiring-soon">Expiring Soon</SelectItem>
+              <SelectItem value="expired">Expired</SelectItem>
+            </SelectContent>
+          </Select>
+        </motion.div>
+      </div>
+
+      <AnimatePresence mode="wait">
+        {loading ? (
+          <WarrantyTrackerSkeleton key="skeleton" />
+        ) : filteredProducts.length === 0 ? (
+          <motion.div
+            key="empty-state"
+            initial={{ opacity: 0, y: shouldReduceMotion ? 0 : 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: shouldReduceMotion ? 0 : -20 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="flex flex-col items-center justify-center min-h-[40vh] text-center"
+          >
+            <Card className="bg-[rgba(18,26,22,0.45)] backdrop-blur-sm border border-[rgba(255,255,255,0.03)] rounded-2xl p-8 shadow-xl max-w-md w-full">
+              <CardContent className="flex flex-col items-center justify-center p-0">
+                <motion.div
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ duration: 0.6, ease: "easeOut", delay: 0.1 }}
+                >
+                  <ShieldX className="w-20 h-20 mx-auto text-green-500 mb-6" /> {/* Subtle icon */}
+                </motion.div>
+                <CardTitle className="text-2xl font-bold mb-3 leading-normal">
+                  No Warranties Found
+                </CardTitle>
+                <CardDescription className="text-base text-gray-400 mb-8 leading-relaxed">
+                  It looks like you haven't registered any products yet, or all warranties have expired.
+                </CardDescription>
+              </CardContent>
+            </Card>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="warranty-list"
+            className="rounded-md border border-[rgba(255,255,255,0.03)] bg-[rgba(18,26,22,0.45)] backdrop-blur-sm shadow-xl"
+            variants={containerVariants}
+            initial="hidden"
+            animate="show"
+          >
             <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Product</TableHead>
-                  <TableHead>Warranty Status</TableHead>
-                  <TableHead>Days to Expiry</TableHead>
-                  <TableHead>Services (In Progress)</TableHead>
-                  <TableHead>Services (Completed)</TableHead>
+              <TableHeader className="[&_tr]:border-b-[rgba(255,255,255,0.05)]">
+                <TableRow className="hover:bg-transparent">
+                  <TableHead className="text-gray-300 font-bold tracking-wider">Product</TableHead>
+                  <TableHead className="text-gray-300 font-bold tracking-wider">Warranty Status</TableHead>
+                  <TableHead className="text-gray-300 font-bold tracking-wider">Days to Expiry</TableHead>
+                  <TableHead className="text-gray-300 font-bold tracking-wider">Services (In Progress)</TableHead>
+                  <TableHead className="text-gray-300 font-bold tracking-wider">Services (Completed)</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {loading ? (
-                  <TableRow><TableCell colSpan={5} className="text-center">Loading...</TableCell></TableRow>
-                ) : filteredProducts.length === 0 ? (
-                  <TableRow><TableCell colSpan={5} className="text-center">No products found.</TableCell></TableRow>
-                ) : (
-                  filteredProducts.map(p => {
-                    const daysUntilExpiry = getDaysUntilExpiry(p.warranty_expiry);
-                    return (
-                      <TableRow key={p.id}>
-                        <TableCell>
-                          <div className="font-medium">{p.brand} {p.model}</div>
-                          <div className="text-sm text-muted-foreground">{p.serial_number}</div>
-                        </TableCell>
-                        <TableCell><WarrantyStatusBadge warrantyExpiry={p.warranty_expiry} /></TableCell>
-                        <TableCell>{daysUntilExpiry !== null ? `${daysUntilExpiry} days` : '-'}</TableCell>
-                        <TableCell>{p.service_counts?.in_progress || 0}</TableCell>
-                        <TableCell>{p.service_counts?.completed || 0}</TableCell>
-                      </TableRow>
-                    );
-                  })
-                )}
+                {filteredProducts.map(p => {
+                  const daysUntilExpiry = getDaysUntilExpiry(p.warranty_expiry);
+                  return (
+                    <motion.tr
+                      key={p.id}
+                      variants={itemVariants}
+                      whileHover={{
+                        y: shouldReduceMotion ? 0 : -4,
+                        boxShadow: shouldReduceMotion ? 'none' : '0 10px 20px rgba(0,0,0,0.3)',
+                        scale: shouldReduceMotion ? 1 : 1.01,
+                        transition: { duration: 0.18, ease: [0.22, 0.9, 0.32, 1] },
+                        backgroundColor: shouldReduceMotion ? 'transparent' : 'rgba(255,255,255,0.05)',
+                      }}
+                      whileTap={{ scale: 0.99, transition: { duration: 0.08 } }}
+                      className="border-b-[rgba(255,255,255,0.05)] cursor-pointer"
+                    >
+                      <TableCell>
+                        <div className="font-medium text-gray-100">{p.brand} {p.model}</div>
+                        <div className="text-sm text-gray-400">{p.serial_number}</div>
+                      </TableCell>
+                      <TableCell><WarrantyStatusBadge warrantyExpiry={p.warranty_expiry} /></TableCell>
+                      <TableCell className="text-gray-200">{daysUntilExpiry !== null ? `${daysUntilExpiry} days` : '-'}</TableCell>
+                      <TableCell className="text-gray-200">{p.service_counts?.in_progress || 0}</TableCell>
+                      <TableCell className="text-gray-200">{p.service_counts?.completed || 0}</TableCell>
+                    </motion.tr>
+                  );
+                })}
               </TableBody>
             </Table>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 };
 
