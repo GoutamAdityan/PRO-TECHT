@@ -1,19 +1,20 @@
-import React from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { Slot } from "@radix-ui/react-slot";
-import { cva, type VariantProps } from "class-variance-authority";
-import { PanelLeft } from "lucide-react";
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
+import { Users, Grid, Box, Wrench, Shield, User, Sun, LogOut, Info, LayoutDashboard, ClipboardList, Book, BarChart, MessageSquare, FileText, ShieldCheck, Package } from "lucide-react";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { ModeToggle } from "@/components/theme-toggle";
+import { useAuth } from "@/hooks/useAuth";
+
+const MotionLink = motion(Link);
 
 // --- Context for Sidebar State ---
 interface SidebarContextProps {
-  isExpanded: boolean;
-  setIsExpanded: React.Dispatch<React.SetStateAction<boolean>>;
   isMobile: boolean;
   openMobile: boolean;
   setOpenMobile: React.Dispatch<React.SetStateAction<boolean>>;
@@ -32,18 +33,11 @@ export function useSidebar() {
 // --- Sidebar Provider ---
 export function SidebarProvider({ children }: { children: React.ReactNode }) {
   const isMobile = useIsMobile();
-  const [isExpanded, setIsExpanded] = React.useState(false);
   const [openMobile, setOpenMobile] = React.useState(false);
 
-  React.useEffect(() => {
-    if (isMobile) {
-      setIsExpanded(false);
-    }
-  }, [isMobile]);
-
   const contextValue = React.useMemo(
-    () => ({ isExpanded, setIsExpanded, isMobile, openMobile, setOpenMobile }),
-    [isExpanded, isMobile, openMobile]
+    () => ({ isMobile, openMobile, setOpenMobile }),
+    [isMobile, openMobile]
   );
 
   return (
@@ -54,246 +48,238 @@ export function SidebarProvider({ children }: { children: React.ReactNode }) {
 }
 
 // --- Main Sidebar Component ---
-const W_COLLAPSED = 64;
-const W_EXPANDED = 240;
+interface SidebarProps {
+  profileRole: string | undefined;
+  signOut: () => void;
+}
 
-export const Sidebar = React.forwardRef<HTMLElement, React.HTMLAttributes<HTMLElement>>(
-  ({ className, children, ...props }, ref) => {
-    const { isExpanded, setIsExpanded, isMobile, openMobile, setOpenMobile } = useSidebar();
-
-    React.useEffect(() => {
-      document.body.style.setProperty("--sb-w", `${isExpanded ? W_EXPANDED : W_COLLAPSED}px`);
-    }, [isExpanded]);
-
-    if (isMobile) {
-      return (
-        <Sheet open={openMobile} onOpenChange={setOpenMobile}>
-          <SheetContent
-            side="left"
-            className="w-[--sidebar-width-mobile] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
-            style={{ "--sidebar-width-mobile": `${W_EXPANDED}px` } as React.CSSProperties}
-          >
-            <nav ref={ref} className="flex h-full w-full flex-col" {...props}>
-              {children}
-            </nav>
-          </SheetContent>
-        </Sheet>
-      );
-    }
-
-    return (
-      <nav
-        ref={ref}
-        className={cn(
-          "fixed left-0 top-0 z-40 h-screen border-r bg-sidebar text-sidebar-foreground transition-all duration-300 ease-in-out overflow-hidden flex flex-col",
-          className
-        )}
-        style={{ width: isExpanded ? W_EXPANDED : W_COLLAPSED }}
-        onMouseEnter={() => setIsExpanded(true)}
-        onMouseLeave={() => setIsExpanded(false)}
-        onFocusCapture={() => setIsExpanded(true)}
-        onBlurCapture={() => setIsExpanded(false)}
-        aria-expanded={isExpanded}
-        {...props}
-      >
-        {children}
-      </nav>
-    );
-  }
-);
-Sidebar.displayName = "Sidebar";
-
-
-// --- Sidebar Menu Button ---
-const sidebarMenuButtonVariants = cva(
-    "flex w-full items-center rounded-lg p-2 text-left text-sm outline-none ring-sidebar-ring transition-colors hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 disabled:pointer-events-none disabled:opacity-50",
-    {
-        variants: {
-            active: {
-                true: "bg-accent text-accent-foreground font-medium border-l-2 border-primary",
-                false: "",
-            },
-        },
-        defaultVariants: {
-            active: false,
-        },
-    }
-);
-
-export const SidebarMenuButton = React.forwardRef<
-  HTMLAnchorElement,
-  React.AnchorHTMLAttributes<HTMLAnchorElement> & {
-    to?: string; // Add 'to' prop for react-router-dom Link
-    label: string;
-    asChild?: boolean;
-  }
->(({ className, to, label, children, asChild = false, ...props }, ref) => {
-  const { isExpanded } = useSidebar();
+export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
   const location = useLocation();
-  const isActive = to ? location.pathname === to : false;
-  const Comp = to ? Link : (asChild ? Slot : "a"); // Use Link if 'to' is provided
+  const navigate = useNavigate(); // Use useNavigate for programmatic navigation
+  const [expanded, setExpanded] = useState(false);
+  const containerRef = useRef<HTMLElement>(null);
+  const shouldReducedMotion = useReducedMotion();
+  const { isMobile, openMobile, setOpenMobile } = useSidebar();
 
-  const labelSpan = label && (
-    <span
-      className={cn(
-        "label whitespace-nowrap transition-all duration-200",
-        isExpanded
-          ? "opacity-100 visible w-auto max-w-none ml-2"
-          : "opacity-0 invisible w-0 max-w-0 overflow-hidden m-0 p-0 pointer-events-none"
-      )}
-      aria-hidden={!isExpanded}
-    >
-      {label}
-    </span>
-  );
+  const mainNavItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, to: '/consumer-dashboard', roles: ['consumer'] },
+    { id: 'dashboard-bp', label: 'Dashboard', icon: LayoutDashboard, to: '/service-queue', roles: ['business_partner'] },
+    { id: 'dashboard-sc', label: 'Dashboard', icon: LayoutDashboard, to: '/active-jobs', roles: ['service_center'] },
+    { id: 'products', label: 'Product Vault', icon: Package, to: '/products', roles: ['consumer'] },
+    { id: 'requests', label: 'Service Requests', icon: Wrench, to: '/service-requests', roles: ['consumer'] },
+    { id: 'warranty', label: 'Warranty Tracker', icon: ShieldCheck, to: '/warranty-tracker', roles: ['consumer'] },
+    { id: 'service-queue', label: ClipboardList, to: '/service-queue', roles: ['business_partner'] }, // Icon directly here
+    { id: 'product-catalog', label: 'Product Catalog', icon: Book, to: '/product-catalog', roles: ['business_partner'] },
+    { id: 'analytics', label: 'Analytics', icon: BarChart, to: '/analytics', roles: ['business_partner'] },
+    { id: 'active-jobs', label: 'Active Jobs', icon: ClipboardList, to: '/active-jobs', roles: ['service_center'] },
+    { id: 'customer-communication', label: 'Customer Communication', icon: MessageSquare, to: '/customer-communication', roles: ['service_center'] },
+    { id: 'service-reports', label: 'Service Reports', icon: FileText, to: '/service-reports', roles: ['service_center'] },
+  ].filter(item => item.roles.includes(profileRole || 'guest'));
 
-  const content = (
-    <>
-      {React.Children.map(children, (child) => {
-        if (React.isValidElement(child)) {
-          return React.cloneElement(child, { className: cn(child.props.className, "h-6 w-6") });
-        }
-        return child;
-      })}
-      {labelSpan}
-    </>
-  );
+  const footerNavItems = [
+    { id: 'profile', label: 'Profile', icon: User, to: '/profile', roles: ['consumer', 'business_partner', 'service_center'] },
+    { id: 'about', label: 'About Us', icon: Info, to: '/about', roles: ['consumer', 'business_partner', 'service_center'] },
+  ].filter(item => item.roles.includes(profileRole || 'guest'));
 
-  if (asChild) {
-    const child = React.Children.only(children) as React.ReactElement;
-    return (
-      <Comp
-        ref={ref}
-        to={to}
-        data-active={isActive}
-        className={cn(sidebarMenuButtonVariants({ active: isActive }), !isExpanded ? "justify-center" : "gap-2", className)}
-        title={isExpanded ? undefined : label}
-        {...props}
-      >
-        {React.cloneElement(child, {
-          ...child.props,
-          children: content,
-        })}
-      </Comp>
-    );
-  }
-
-  return (
-    <Comp
-      ref={ref}
-      to={to}
-      data-active={isActive}
-      className={cn(sidebarMenuButtonVariants({ active: isActive }), !isExpanded ? "justify-center" : "gap-2", className)}
-      title={isExpanded ? undefined : label}
-      {...props}
-    >
-      {content}
-    </Comp>
-  );
-});
-SidebarMenuButton.displayName = "SidebarMenuButton";
-
-
-// --- Other components (simplified or kept as is) ---
-
-export const SidebarHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-    ({ className, ...props }, ref) => {
-        const { isExpanded } = useSidebar();
-        return (
-            <div
-            ref={ref}
-            className={cn(
-                "flex flex-col gap-2 p-4 transition-all duration-300 ease-in-out",
-                isExpanded ? "items-start" : "items-center",
-                className
-            )}
-            {...props}
-            />
-        );
-    }
-);
-SidebarHeader.displayName = "SidebarHeader";
-
-export const SidebarFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-    ({ className, ...props }, ref) => {
-        const { isExpanded } = useSidebar();
-        return (
-            <div
-            ref={ref}
-            className={cn(
-                "flex flex-col gap-2 mt-auto transition-all duration-300 ease-in-out",
-                isExpanded ? "items-start p-4" : "items-center p-3",
-                className
-            )}
-            {...props}
-            />
-        );
-    }
-);
-SidebarFooter.displayName = "SidebarFooter";
-
-
-export const SidebarContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-    ({ className, ...props }, ref) => (
-        <div
-        ref={ref}
-        className={cn("flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto overflow-x-hidden p-2", className)}
-        {...props}
-        />
-    )
-);
-SidebarContent.displayName = "SidebarContent";
-
-export const SidebarMenu = React.forwardRef<HTMLUListElement, React.HTMLAttributes<HTMLUListElement>>(
-    ({ className, ...props }, ref) => (
-        <ul ref={ref} className={cn("flex w-full min-w-0 flex-col gap-1", className)} {...props} />
-    )
-);
-SidebarMenu.displayName = "SidebarMenu";
-
-export const SidebarMenuItem = React.forwardRef<HTMLLIElement, React.HTMLAttributes<HTMLLIElement>>(
-    ({ className, ...props }, ref) => (
-        <li ref={ref} className={cn("group/menu-item relative", className)} {...props} />
-    )
-);
-SidebarMenuItem.displayName = "SidebarMenuItem";
-
-
-export const SidebarTrigger = React.forwardRef<
-  React.ElementRef<typeof Button>,
-  React.ComponentProps<typeof Button>
->(({ className, onClick, ...props }, ref) => {
-  const { setOpenMobile } = useSidebar();
-  return (
-    <Button
-      ref={ref}
-      variant="ghost"
-      size="icon"
-      className={cn("h-7 w-7 md:hidden", className)}
-      onClick={(event) => {
-        onClick?.(event);
-        setOpenMobile(true);
+  const renderSidebarContent = () => (
+    <motion.aside
+      ref={containerRef}
+      onMouseEnter={() => setExpanded(true)}
+      onMouseLeave={() => setExpanded(false)}
+      onFocusCapture={() => setExpanded(true)}
+      onBlurCapture={(e) => {
+        if (!containerRef.current?.contains(e.relatedTarget as Node)) setExpanded(false);
       }}
-      {...props}
+      initial={false}
+      animate={{ width: shouldReducedMotion ? (expanded ? 280 : 88) : (expanded ? 280 : 88) }}
+      transition={shouldReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 28 }}
+      className="fixed left-0 top-0 h-screen bg-[#0f1713]/85 border-r border-[rgba(255,255,255,0.02)] backdrop-blur-sm px-3 pt-3 pb-4 flex flex-col items-start z-50"
+      aria-label="Primary navigation"
     >
-      <PanelLeft />
-      <span className="sr-only">Toggle Sidebar</span>
-    </Button>
-  );
-});
-SidebarTrigger.displayName = "SidebarTrigger";
+      {/* Top logo */}
+      <div className="w-full flex items-center justify-center mb-2">
+        <div className="w-10 h-10 rounded-full bg-emerald-800/30 flex items-center justify-center">
+          <Shield className="w-5 h-5 text-emerald-300" />
+        </div>
+      </div>
 
-// --- Inset for main content ---
-export const SidebarInset = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => {
+      <nav className="w-full mt-2 flex-1" aria-label="Main">
+        {mainNavItems.map((item) => {
+          const active = location.pathname === item.to;
+          const IconComponent = item.icon; // Get the icon component
+          return (
+            <Tooltip key={item.id} delayDuration={120}>
+              <TooltipTrigger asChild>
+                <MotionLink
+                  to={item.to}
+                  className="relative w-full flex items-center gap-3 px-1 py-2 rounded-lg hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-emerald-400/20 transition-colors duration-200"
+                  whileHover={shouldReducedMotion ? {} : { scale: 1.01, y: -3, boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}
+                  whileTap={shouldReducedMotion ? {} : { scale: 0.99 }}
+                  aria-current={active ? "page" : undefined}
+                  aria-label={item.label}
+                >
+                  {/* Active left indicator */}
+                  <motion.span
+                    layout
+                    className={`absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-8 w-1 rounded-r-full ${active ? 'bg-emerald-400' : 'bg-transparent'}`}
+                    transition={shouldReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 30 }}
+                  />
+
+                  {/* Icon badge */}
+                  <motion.div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${active ? 'bg-emerald-800/40 shadow-[0_8px_24px_rgba(16,185,129,0.06)]' : 'bg-transparent'}`}
+                    animate={ shouldReducedMotion ? {} : (active ? { scale: 1.02, rotate: 3 } : { scale: 1, rotate: 0 }) }
+                    transition={shouldReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 18 }}
+                  >
+                    <IconComponent className={`w-5 h-5 ${active ? 'text-emerald-300' : 'text-foreground/70'}`} />
+                  </motion.div>
+
+                  {/* Label area — only visible in expanded mode (animated) */}
+                  <AnimatePresence initial={false}>
+                    {expanded && (
+                      <motion.span
+                        initial={{ opacity: 0, x: -8, width: 0 }}
+                        animate={{ opacity: 1, x: 0, width: "auto" }}
+                        exit={{ opacity: 0, x: -6, width: 0 }}
+                        transition={shouldReducedMotion ? { duration: 0 } : { duration: 0.22 }}
+                        className={`ml-2 text-sm font-medium whitespace-nowrap overflow-hidden ${active ? 'text-emerald-200' : 'text-foreground/80'}`}
+                      >
+                        {item.label}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </MotionLink>
+              </TooltipTrigger>
+              {!expanded && <TooltipContent side="right" className="bg-gray-800 text-white text-sm px-3 py-1 rounded-md shadow-lg">{item.label}</TooltipContent>}
+            </Tooltip>
+          );
+        })}
+      </nav>
+
+      {/* Footer small items (profile, about, theme, sign out) */}
+      <div className="mt-auto w-full flex flex-col items-start gap-2">
+        {footerNavItems.map((item) => {
+          const active = location.pathname === item.to;
+          const IconComponent = item.icon; // Get the icon component
+          return (
+            <Tooltip key={item.id} delayDuration={120}>
+              <TooltipTrigger asChild>
+                <MotionLink
+                  to={item.to}
+                  className="relative w-full flex items-center gap-3 px-1 py-2 rounded-lg hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-emerald-400/20 transition-colors duration-200"
+                  whileHover={shouldReducedMotion ? {} : { scale: 1.01, y: -3, boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}
+                  whileTap={shouldReducedMotion ? {} : { scale: 0.99 }}
+                  aria-current={active ? "page" : undefined}
+                  aria-label={item.label}
+                >
+                  {/* Active left indicator */}
+                  <motion.span
+                    layout
+                    className={`absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-8 w-1 rounded-r-full ${active ? 'bg-emerald-400' : 'bg-transparent'}`}
+                    transition={shouldReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 30 }}
+                  />
+
+                  {/* Icon badge */}
+                  <motion.div
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${active ? 'bg-emerald-800/40 shadow-[0_8px_24px_rgba(16,185,129,0.06)]' : 'bg-transparent'}`}
+                    animate={ shouldReducedMotion ? {} : (active ? { scale: 1.02, rotate: 3 } : { scale: 1, rotate: 0 }) }
+                    transition={shouldReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 18 }}
+                  >
+                    <IconComponent className={`w-5 h-5 ${active ? 'text-emerald-300' : 'text-foreground/70'}`} />
+                  </motion.div>
+
+                  {/* Label area — only visible in expanded mode (animated) */}
+                  <AnimatePresence initial={false}>
+                    {expanded && (
+                      <motion.span
+                        initial={{ opacity: 0, x: -8, width: 0 }}
+                        animate={{ opacity: 1, x: 0, width: "auto" }}
+                        exit={{ opacity: 0, x: -6, width: 0 }}
+                        transition={shouldReducedMotion ? { duration: 0 } : { duration: 0.22 }}
+                        className={`ml-2 text-sm font-medium whitespace-nowrap overflow-hidden ${active ? 'text-emerald-200' : 'text-foreground/80'}`}
+                      >
+                        {item.label}
+                      </motion.span>
+                    )}
+                  </AnimatePresence>
+                </MotionLink>
+              </TooltipTrigger>
+              {!expanded && <TooltipContent side="right" className="bg-gray-800 text-white text-sm px-3 py-1 rounded-md shadow-lg">{item.label}</TooltipContent>}
+            </Tooltip>
+          );
+        })}
+
+        {/* Theme Toggle */}
+        <div className="w-full flex items-center justify-center py-2">
+          <ModeToggle />
+        </div>
+
+        {/* Sign Out Button */}
+        <Tooltip delayDuration={120}>
+          <TooltipTrigger asChild>
+            <motion.button
+              onClick={signOut}
+              className="relative w-full flex items-center gap-3 px-1 py-2 rounded-lg hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-emerald-400/20 transition-colors duration-200"
+              whileHover={shouldReducedMotion ? {} : { scale: 1.01, y: -3, boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}
+              whileTap={shouldReducedMotion ? {} : { scale: 0.99 }}
+              aria-label="Sign Out"
+            >
+              {/* Icon badge */}
+              <motion.div
+                className="w-10 h-10 rounded-full flex items-center justify-center bg-transparent"
+                animate={ shouldReducedMotion ? {} : { scale: 1, rotate: 0 } }
+                transition={shouldReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 18 }}
+              >
+                <LogOut className="w-5 h-5 text-foreground/70" />
+              </motion.div>
+
+              {/* Label area — only visible in expanded mode (animated) */}
+              <AnimatePresence initial={false}>
+                {expanded && (
+                  <motion.span
+                    initial={{ opacity: 0, x: -8, width: 0 }}
+                    animate={{ opacity: 1, x: 0, width: "auto" }}
+                    exit={{ opacity: 0, x: -6, width: 0 }}
+                    transition={shouldReducedMotion ? { duration: 0 } : { duration: 0.22 }}
+                    className="ml-2 text-sm font-medium whitespace-nowrap overflow-hidden text-foreground/80"
+                  >
+                    Sign Out
+                  </motion.span>
+                )}
+              </AnimatePresence>
+            </motion.button>
+          </TooltipTrigger>
+          {!expanded && <TooltipContent side="right" className="bg-gray-800 text-white text-sm px-3 py-1 rounded-md shadow-lg">Sign Out</TooltipContent>}
+        </Tooltip>
+      </div>
+    </motion.aside>
+  );
+
+  if (isMobile) {
     return (
-      <div
-        ref={ref}
-        className={cn("transition-all duration-300 ease-in-out", className)}
-        style={{ paddingLeft: `var(--sb-w, ${W_COLLAPSED}px)` }}
-        {...props}
-      />
+      <Sheet open={openMobile} onOpenChange={setOpenMobile}>
+        <SheetTrigger asChild>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="fixed left-4 top-4 z-50 h-7 w-7 md:hidden"
+            aria-label="Toggle Sidebar"
+          >
+            <LayoutDashboard className="h-5 w-5" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent
+          side="left"
+          className="w-[--sidebar-width-mobile] bg-sidebar p-0 text-sidebar-foreground [&>button]:hidden"
+          style={{ "--sidebar-width-mobile": `280px` } as React.CSSProperties}
+        >
+          {renderSidebarContent()}
+        </SheetContent>
+      </Sheet>
     );
   }
-);
-SidebarInset.displayName = "SidebarInset";
+
+  return renderSidebarContent();
+};
+
+Sidebar.displayName = "Sidebar";
