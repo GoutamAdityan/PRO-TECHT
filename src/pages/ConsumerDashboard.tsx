@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { useConsumerDashboardData } from '../hooks/useConsumerDashboardData';
 import { useAuth } from '../hooks/useAuth'; // Import useAuth
-import { Package, ShieldCheck, Wrench } from 'lucide-react';
+import { Package, ShieldCheck, Wrench, Users } from 'lucide-react';
 
 // Import the extracted components
 import Header from '../components/ConsumerDashboard/Header';
@@ -58,6 +58,17 @@ const ConsumerDashboard: React.FC = () => {
         initial="hidden"
         animate="visible"
       >
+        <div className="flex items-center gap-3 mb-6">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.4, ease: "easeOut" }}
+            className="p-2 rounded-full bg-emerald-800/30 flex items-center justify-center"
+          >
+            <Users className="w-5 h-5 text-emerald-400" />
+          </motion.div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Consumer Dashboard</h1>
+        </div>
         <Header
           userName={userName}
           subtitle="Here’s an overview of your registered products and warranty activity."
