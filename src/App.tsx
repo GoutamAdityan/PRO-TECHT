@@ -28,6 +28,7 @@ import ServiceReports from "./pages/ServiceReports";
 import { AnimatePresence } from "framer-motion";
 import PageTransition from "@/components/PageTransition";
 import AuthRedirector from "@/components/AuthRedirector"; // Import AuthRedirector
+import ConsumerDashboard from "./pages/ConsumerDashboard";
 
 const queryClient = new QueryClient();
 
@@ -61,9 +62,9 @@ const App = () => {
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/about" element={<About />} />
                   <Route path="/active-jobs" element={<ActiveJobs />} />
-                  <Route path="/customer-communication" element={<CustomerCommunication />} />
-                  <Route path="/service-reports" element={<ServiceReports />} />
-                </Route>
+                                  <Route path="/customer-communication" element={<CustomerCommunication />} />
+                                  <Route path="/service-reports" element={<ServiceReports />} />
+                                  <Route path="/consumer-dashboard" element={<PageTransition><ConsumerDashboard /></PageTransition>} />                </Route>
                 <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
               </Routes>
             </AnimatePresence>

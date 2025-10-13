@@ -24,24 +24,34 @@ const MainLayout = () => {
   const { user, profile, signOut } = useAuth();
   const location = useLocation();
 
+  const getDashboardPath = () => {
+    if (!profile?.role) return "/"; // Default to home if no role
+    switch (profile.role) {
+      case "consumer":
+        return "/consumer-dashboard";
+      case "business_partner":
+        return "/service-queue";
+      case "service_center":
+        return "/active-jobs";
+      default:
+        return "/"; // Fallback
+    }
+  };
+
+  const dashboardPath = getDashboardPath();
+
   const getPageTitle = (pathname: string) => {
     switch (pathname) {
       case "/":
-        return "Dashboard";
+        return "ServiceBridge"; // Default for homepage, not dashboard anymore
+      case "/consumer-dashboard":
+        return "Consumer Dashboard";
       case "/products":
         return "Product Vault";
-      case "/service-requests":
-        return "Service Requests";
       case "/service-queue":
-        return "Service Queue";
-      case "/product-catalog":
-        return "Product Catalog";
-      case "/analytics":
-        return "Analytics";
-      case "/warranty-tracker":
-        return "Warranty Tracker";
+        return "Dashboard"; // Business Partner Dashboard
       case "/active-jobs":
-        return "Active Jobs";
+        return "Dashboard"; // Service Center Dashboard
       case "/customer-communication":
         return "Customer Communication";
       case "/service-reports":
@@ -72,7 +82,7 @@ const MainLayout = () => {
           <SidebarMenu>
             <RoleGuard allowed={['consumer', 'service_center', 'business_partner']}>
               <SidebarMenuItem>
-                <SidebarMenuButton label="Dashboard" to="/">
+                <SidebarMenuButton label="Dashboard" to={dashboardPath}>
                   <LayoutDashboard />
                 </SidebarMenuButton>
               </SidebarMenuItem>
