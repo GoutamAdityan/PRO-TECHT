@@ -14,7 +14,7 @@ function Header({ userName, subtitle }: HeaderProps) {
       transition={{ duration: 0.5, ease: "easeOut" }}
       className="mb-8 text-center md:text-left"
     >
-      <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-white mb-2">Welcome back, {userName}</h1>
+      <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-foreground mb-2">Welcome back, {userName}</h1>
       <p className="text-foreground/70 text-sm">{subtitle}</p>
     </motion.div>
   );

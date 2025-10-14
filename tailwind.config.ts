@@ -17,7 +17,10 @@ export default {
       colors: {
         bg: tokens.colors.bg,
         "card-bg": tokens.colors.cardBg,
-        accent: tokens.colors.accent,
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
         text: tokens.colors.text,
         heading: tokens.colors.heading,
         border: "hsl(var(--border))",
@@ -71,6 +74,16 @@ export default {
         hover: "hsl(var(--hover))",
         "primary-hover": "hsl(var(--primary-hover))",
         "primary-active": "hsl(var(--primary-active))",
+        // New badge and button colors
+        "subtle-button-bg": "hsl(var(--subtle-button-bg))",
+        "subtle-button-text": "hsl(var(--subtle-button-text))",
+        "subtle-button-border": "hsl(var(--subtle-button-border))",
+        "success-badge-bg": "hsl(var(--success-badge-bg))",
+        "success-badge-text": "hsl(var(--success-badge-text))",
+        "warning-badge-bg": "hsl(var(--warning-badge-bg))",
+        "warning-badge-text": "hsl(var(--warning-badge-text))",
+        "destructive-badge-bg": "hsl(var(--destructive-badge-bg))",
+        "destructive-badge-text": "hsl(var(--destructive-badge-text))",
       },
       borderRadius: {
         lg: "var(--radius)",

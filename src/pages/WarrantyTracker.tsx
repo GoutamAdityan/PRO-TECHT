@@ -106,7 +106,7 @@ const WarrantyTracker = () => {
       animate="show"
       exit={{ opacity: 0, y: shouldReduceMotion ? 0 : -30, filter: shouldReduceMotion ? 'none' : 'blur(10px)', transition: { duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" } }}
       variants={containerVariants}
-      className="max-w-7xl mx-auto px-6 py-10 text-white" // Centered with max-width and generous padding
+      className="max-w-7xl mx-auto px-6 py-10" // Centered with max-width and generous padding
     >
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div className="flex flex-col">
@@ -114,7 +114,7 @@ const WarrantyTracker = () => {
             <h1 className="text-4xl font-bold leading-tight mb-2">Warranty Tracker</h1>
           </motion.div>
           <motion.div variants={itemVariants}>
-            <p className="text-lg text-gray-400 leading-relaxed">
+            <p className="text-lg text-muted-foreground leading-relaxed">
               An overview of your product warranties and service history.
             </p>
           </motion.div>
@@ -129,20 +129,18 @@ const WarrantyTracker = () => {
             placeholder="Filter by brand or model..."
             value={filter}
             onChange={e => setFilter(e.target.value)}
-            className="h-11 w-full pl-10 pr-4 py-2.5 rounded-lg border border-[rgba(255,255,255,0.03)] bg-[rgba(18,26,22,0.45)] text-foreground/80 placeholder:text-muted-foreground placeholder:opacity-80
-                       focus:outline-none focus:ring-2 focus:ring-emerald-400/30 transition-all duration-150 ease-out"
+            className="h-11 w-full pl-10 pr-4 py-2.5 rounded-lg border bg-background text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-150 ease-out"
             aria-label="Filter warranties"
           />
         </motion.div>
         <motion.div variants={itemVariants}>
           <Select value={statusFilter} onValueChange={setStatusFilter}>
             <SelectTrigger
-              className="h-11 w-full md:w-[180px] px-4 rounded-lg border border-[rgba(255,255,255,0.03)] bg-[rgba(18,26,22,0.45)] text-foreground/80
-                         focus:outline-none focus:ring-2 focus:ring-emerald-400/30 transition-all duration-150 ease-out"
+              className="h-11 w-full md:w-[180px] px-4 rounded-lg border bg-background text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-all duration-150 ease-out"
             >
               <SelectValue placeholder="Filter by status" />
             </SelectTrigger>
-            <SelectContent className="bg-[rgba(18,26,22,0.8)] backdrop-blur-md border border-[rgba(255,255,255,0.05)] text-foreground/80">
+            <SelectContent className="bg-card text-foreground">
               <SelectItem value="all">All Statuses</SelectItem>
               <SelectItem value="active">Active</SelectItem>
               <SelectItem value="expiring-soon">Expiring Soon</SelectItem>
@@ -164,7 +162,7 @@ const WarrantyTracker = () => {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex flex-col items-center justify-center min-h-[40vh] text-center"
           >
-            <Card className="bg-[rgba(18,26,22,0.45)] backdrop-blur-sm border border-[rgba(255,255,255,0.03)] rounded-2xl p-8 shadow-xl max-w-md w-full">
+            <Card className="bg-card backdrop-blur-sm border border-border rounded-2xl p-8 shadow-xl max-w-md w-full">
               <CardContent className="flex flex-col items-center justify-center p-0">
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
@@ -176,7 +174,7 @@ const WarrantyTracker = () => {
                 <CardTitle className="text-2xl font-bold mb-3 leading-normal">
                   No Warranties Found
                 </CardTitle>
-                <CardDescription className="text-base text-gray-400 mb-8 leading-relaxed">
+                <CardDescription className="text-base text-muted-foreground mb-8 leading-relaxed">
                   It looks like you haven't registered any products yet, or all warranties have expired.
                 </CardDescription>
               </CardContent>
@@ -185,7 +183,7 @@ const WarrantyTracker = () => {
         ) : (
           <motion.div
             key="warranty-list"
-            className="rounded-md border border-[rgba(255,255,255,0.03)] bg-[rgba(18,26,22,0.45)] backdrop-blur-sm shadow-xl"
+            className="rounded-md border bg-card backdrop-blur-sm shadow-xl"
             variants={containerVariants}
             initial="hidden"
             animate="show"
@@ -193,11 +191,11 @@ const WarrantyTracker = () => {
             <Table>
               <TableHeader className="[&_tr]:border-b-[rgba(255,255,255,0.05)]">
                 <TableRow className="hover:bg-transparent">
-                  <TableHead className="text-gray-300 font-bold tracking-wider">Product</TableHead>
-                  <TableHead className="text-gray-300 font-bold tracking-wider">Warranty Status</TableHead>
-                  <TableHead className="text-gray-300 font-bold tracking-wider">Days to Expiry</TableHead>
-                  <TableHead className="text-gray-300 font-bold tracking-wider">Services (In Progress)</TableHead>
-                  <TableHead className="text-gray-300 font-bold tracking-wider">Services (Completed)</TableHead>
+                  <TableHead className="text-muted-foreground font-bold tracking-wider">Product</TableHead>
+                  <TableHead className="text-muted-foreground font-bold tracking-wider">Warranty Status</TableHead>
+                  <TableHead className="text-muted-foreground font-bold tracking-wider">Days to Expiry</TableHead>
+                  <TableHead className="text-muted-foreground font-bold tracking-wider">Services (In Progress)</TableHead>
+                  <TableHead className="text-muted-foreground font-bold tracking-wider">Services (Completed)</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -218,13 +216,13 @@ const WarrantyTracker = () => {
                       className="border-b-[rgba(255,255,255,0.05)] cursor-pointer"
                     >
                       <TableCell>
-                        <div className="font-medium text-gray-100">{p.brand} {p.model}</div>
-                        <div className="text-sm text-gray-400">{p.serial_number}</div>
+                        <div className="font-medium text-foreground">{p.brand} {p.model}</div>
+                        <div className="text-sm text-muted-foreground">{p.serial_number}</div>
                       </TableCell>
                       <TableCell><WarrantyStatusBadge warrantyExpiry={p.warranty_expiry} /></TableCell>
-                      <TableCell className="text-gray-200">{daysUntilExpiry !== null ? `${daysUntilExpiry} days` : '-'}</TableCell>
-                      <TableCell className="text-gray-200">{p.service_counts?.in_progress || 0}</TableCell>
-                      <TableCell className="text-gray-200">{p.service_counts?.completed || 0}</TableCell>
+                      <TableCell className="text-secondary-foreground">{daysUntilExpiry !== null ? `${daysUntilExpiry} days` : '-'}</TableCell>
+                      <TableCell className="text-secondary-foreground">{p.service_counts?.in_progress || 0}</TableCell>
+                      <TableCell className="text-secondary-foreground">{p.service_counts?.completed || 0}</TableCell>
                     </motion.tr>
                   );
                 })}

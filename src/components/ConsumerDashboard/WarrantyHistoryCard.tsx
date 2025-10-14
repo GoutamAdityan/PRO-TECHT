@@ -18,7 +18,7 @@ const WarrantyHistoryCard: React.FC<WarrantyHistoryCardProps> = ({ warrantyHisto
     className="h-full"
   >
     <Card className="bg-[rgba(18,26,22,0.45)] backdrop-blur-sm border border-[rgba(255,255,255,0.03)] rounded-2xl p-5 h-full flex flex-col">
-      <h3 className="text-lg font-medium text-gray-200 mb-4">Upcoming Warranty & History</h3>
+      <h3 className="text-lg font-medium text-foreground mb-4">Upcoming Warranty & History</h3>
       {warrantyHistory.length > 0 ? (
         <ul className="space-y-3 flex-grow">
           {warrantyHistory.slice(0, 3).map((event) => (

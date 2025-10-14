@@ -31,7 +31,7 @@ const SummaryCard: React.FC<SummaryCardProps> = ({ title, value, ctaText, onCtaC
           <Icon className="w-6 h-6 text-emerald-400 mr-3" />
           <h3 className="text-lg font-medium text-foreground/90">{title}</h3>
         </div>
-        <p className="text-4xl font-bold text-white mb-4">{value}</p>
+        <p className="text-4xl font-bold text-foreground mb-4">{value}</p>
         <Button
           onClick={onCtaClick}
           className="mt-auto px-6 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold rounded-full shadow-lg

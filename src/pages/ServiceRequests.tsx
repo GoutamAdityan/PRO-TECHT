@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import ServiceRequestSkeleton from '@/components/ServiceRequestSkeleton'; // New import
 
+const MotionButton = motion(Button);
+
 interface ServiceRequest {
   id: string;
   issue_description: string;
@@ -85,36 +87,24 @@ const ServiceRequests = () => {
   }, [fetchServiceRequests]);
 
   const getStatusBadge = (request: ServiceRequest) => {
-    let statusText = 'Pending';
-    let variant: 'default' | 'secondary' | 'destructive' | 'outline' = 'outline';
-    let bgColor = 'bg-gray-600/30';
-    let textColor = 'text-gray-300';
-    let borderColor = 'border-gray-500/50';
+    let className = 'badge-destructive';
 
     if (!request.service_centers) {
       statusText = 'Pending Assignment';
+      className = 'badge-warning';
     } else if (!request.appointment_date) {
       statusText = 'Assigned';
-      variant = 'secondary';
-      bgColor = 'bg-blue-600/30';
-      textColor = 'text-blue-300';
-      borderColor = 'border-blue-500/50';
+      className = 'badge-warning';
     } else if (request.actual_cost !== null) {
       statusText = 'Completed';
-      variant = 'default';
-      bgColor = 'bg-green-600/30';
-      textColor = 'text-green-300';
-      borderColor = 'border-green-500/50';
+      className = 'badge-success';
     } else {
       statusText = 'In Progress';
-      variant = 'outline';
-      bgColor = 'bg-yellow-600/30';
-      textColor = 'text-yellow-300';
-      borderColor = 'border-yellow-500/50';
+      className = 'badge-warning';
     }
 
     return (
-      <Badge variant={variant} className={`flex items-center gap-1 shadow-sm ${bgColor} ${textColor} ${borderColor}`}>
+      <Badge variant={variant} className={className}>
         {statusText}
       </Badge>
     );
@@ -155,12 +145,12 @@ const ServiceRequests = () => {
             <h1 className="text-4xl font-bold leading-tight mb-2">Service Requests</h1>
           </motion.div>
           <motion.div variants={itemVariants}>
-            <p className="text-lg text-gray-400 leading-relaxed">
+            <p className="text-lg text-muted-foreground leading-relaxed">
               Track your product repairs and service appointments.
             </p>
           </motion.div>
         </div>
-        <Button
+        <MotionButton
           asChild
           className="h-12 px-6 rounded-full bg-gradient-to-br from-green-600 to-green-700 text-white font-medium shadow-lg
                      hover:from-green-700 hover:to-green-800 transition-all duration-300 ease-out
@@ -173,7 +163,7 @@ const ServiceRequests = () => {
             <Plus className="w-5 h-5 mr-2" />
             New Request
           </Link>
-        </Button>
+        </MotionButton>
       </div>
 
       <AnimatePresence mode="wait">
@@ -188,7 +178,7 @@ const ServiceRequests = () => {
             transition={{ duration: 0.5, ease: "easeOut" }}
             className="flex flex-col items-center justify-center min-h-[40vh] text-center"
           >
-            <Card className="bg-[rgba(18,26,22,0.45)] backdrop-blur-sm border border-[rgba(255,255,255,0.03)] rounded-2xl p-8 shadow-xl max-w-md w-full">
+            <Card className="bg-card backdrop-blur-sm border border-border rounded-2xl p-8 shadow-xl max-w-md w-full">
               <CardContent className="flex flex-col items-center justify-center p-0">
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
@@ -200,7 +190,7 @@ const ServiceRequests = () => {
                 <CardTitle className="text-2xl font-bold mb-3 leading-normal">
                   No Service Requests Yet
                 </CardTitle>
-                <CardDescription className="text-base text-gray-400 mb-8 leading-relaxed">
+                <CardDescription className="text-base text-muted-foreground mb-8 leading-relaxed">
                   Create your first service request when you need repair or maintenance.
                 </CardDescription>
                 <motion.div
@@ -211,7 +201,7 @@ const ServiceRequests = () => {
                   whileTap={{ scale: 0.985 }}
                   className="relative"
                 >
-                  <Button
+                  <MotionButton
                     asChild
                     className="h-12 px-8 rounded-full bg-gradient-to-br from-green-600 to-green-700 text-white font-medium shadow-lg
                                hover:from-green-700 hover:to-green-800 transition-all duration-300 ease-out
@@ -221,7 +211,7 @@ const ServiceRequests = () => {
                       <Plus className="w-5 h-5 mr-2" />
                       Create Service Request
                     </Link>
-                  </Button>
+                  </MotionButton>
                 </motion.div>
               </CardContent>
             </Card>
@@ -247,7 +237,7 @@ const ServiceRequests = () => {
                 }}
                 className="relative"
               >
-                <Card className="bg-[rgba(18,26,22,0.45)] backdrop-blur-sm border border-[rgba(255,255,255,0.03)] rounded-2xl p-5 h-full flex flex-col justify-between">
+                <Card className="bg-card backdrop-blur-sm border border-border rounded-2xl p-5 h-full flex flex-col justify-between">
                   <CardHeader className="pb-3 px-0 pt-0">
                     <div className="flex justify-between items-start">
                       <div>
@@ -301,13 +291,11 @@ const ServiceRequests = () => {
                     </div>
 
                     <div className="pt-4">
-                      <Button
+                      <MotionButton
                         variant="outline"
                         size="sm"
                         asChild
-                        className="h-10 px-5 rounded-full border-green-500/50 text-green-300 bg-green-600/20
-                                   hover:bg-green-600/40 hover:text-green-100 transition-all duration-200 ease-out
-                                   focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75"
+                        className="btn-subtle"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.985 }}
                         transition={{ duration: 0.2, ease: "easeOut" }}
@@ -316,7 +304,7 @@ const ServiceRequests = () => {
                           <FileText className="w-4 h-4 mr-2" />
                           View Details
                         </Link>
-                      </Button>
+                      </MotionButton>
                     </div>
                   </CardContent>
                 </Card>
