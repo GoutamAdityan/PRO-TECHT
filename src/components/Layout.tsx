@@ -17,11 +17,11 @@ const MainLayout = () => {
 case "/":
         return "Pro-Techt"; // Default for homepage, not dashboard anymore
       case "/consumer-dashboard":
-        return "Consumer Dashboard";
+        return "Pro-Techt";
       case "/products":
-        return "Product Vault";
+        return "Pro-Techt";
       case "/service-queue":
-        return "Dashboard"; // Business Partner Dashboard
+        return "Pro-Techt"; // Business Partner Dashboard
       case "/active-jobs":
         return "Dashboard"; // Service Center Dashboard
       case "/customer-communication":
@@ -29,7 +29,7 @@ case "/":
       case "/service-reports":
         return "Service Reports";
       case "/profile":
-        return "Profile";
+        return "Pro-Techt";
       case "/about":
         return "About Us";
       default:

@@ -38,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
   const mainNavItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, to: '/consumer-dashboard', roles: ['consumer'] },
     { id: 'dashboard-bp', label: 'Dashboard', icon: LayoutDashboard, to: '/business-partner-dashboard', roles: ['business_partner'] },
-    { id: 'dashboard-sc', label: 'Dashboard', icon: LayoutDashboard, to: '/active-jobs', roles: ['service_center'] },
+    { id: 'dashboard-sc', label: 'Dashboard', icon: LayoutDashboard, to: '/service-center-dashboard', roles: ['service_center'] },
     { id: 'products', label: 'Product Vault', icon: Shield, to: '/products', roles: ['consumer'] },
     { id: 'requests', label: 'Service Requests', icon: ClipboardList, to: '/service-requests', roles: ['consumer'] },
     { id: 'warranty', label: 'Warranty Tracker', icon: ShieldCheck, to: '/warranty-tracker', roles: ['consumer'] },

@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.auth-body {
+    @apply text-gray-200;
+}
+
+.glass-card-auth {
+    @apply bg-black/20 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl shadow-black/50;
+    transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.glass-card-auth:hover {
+    border-color: rgba(255, 165, 0, 0.2);
+    box-shadow: 0 0 40px rgba(255, 165, 0, 0.1);
+}
+
+.auth-tab {
+    @apply relative py-2 px-4 text-gray-400 transition-colors duration-300;
+}
+
+.auth-tab.active {
+    @apply text-white;
+}
+
+.auth-input {
+    @apply w-full bg-white/5 border-2 border-transparent rounded-lg py-3 px-12 text-white placeholder-gray-500 transition-all duration-300;
+    @apply focus:outline-none focus:ring-0 focus:border-orange-500/50;
+}
+
+.social-btn {
+    @apply flex-1 bg-white/5 border border-white/10 rounded-lg py-3 px-4 flex items-center justify-center transition-all duration-300;
+}
+
+.social-btn:hover {
+    @apply border-white/30 scale-105;
+}
+
+.social-btn.google:hover {
+    box-shadow: 0 0 20px rgba(66, 133, 244, 0.3);
+}
+
+.social-btn.apple:hover {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+}
+
+.social-btn.x:hover {
+    box-shadow: 0 0 20px rgba(128, 128, 128, 0.3);
+}
+
+.social-btn.discord:hover {
+    box-shadow: 0 0 20px rgba(88, 101, 242, 0.3);
+}
