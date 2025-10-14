@@ -38,9 +38,11 @@ input:focus, textarea:focus, select:focus, button:focus, a:focus {
   @apply bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 shadow-2xl transition-all duration-500;
 }
 
-.form-input {
-  @apply w-full bg-white/5 border-2 border-transparent rounded-lg py-3 px-4 text-white placeholder-gray-400 transition-all duration-300;
-  @apply focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent;
+@layer components {
+  .form-input {
+    @apply w-full bg-white/5 border-2 border-transparent rounded-lg py-3 px-4 text-white placeholder-gray-400 transition-all duration-300;
+    @apply focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent;
+  }
 }
 
 .form-input:hover {
