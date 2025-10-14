@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { AppCard, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Wrench } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -10,20 +10,20 @@ interface ServiceQueueCardProps {
 
 export const ServiceQueueCard = ({ count }: ServiceQueueCardProps) => {
   return (
-    <motion.div whileHover={{ scale: 1.02, y: -5 }}>
-      <Card>
+    <motion.div whileHover={{ y: -6, boxShadow: '0 14px 40px rgba(0,0,0,0.48)' }} whileTap={{ scale: 0.98 }}>
+      <AppCard>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Pending Service Requests</CardTitle>
-          <Wrench className="h-4 w-4 text-muted-foreground" />
+          <CardTitle className="text-base font-medium text-muted-text">Pending Service Requests</CardTitle>
+          <Wrench className="h-4 w-4 text-muted-text" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">{count}</div>
-          <p className="text-xs text-muted-foreground">requests awaiting assignment</p>
-          <Button asChild className="mt-4">
+          <div className="text-3xl font-bold text-text-main">{count}</div>
+          <p className="text-xs text-muted-text">requests awaiting assignment</p>
+          <Button asChild variant="primary" size="pill" className="mt-4">
             <Link to="/service-queue">Open Queue</Link>
           </Button>
         </CardContent>
-      </Card>
+      </AppCard>
     </motion.div>
   );
 };

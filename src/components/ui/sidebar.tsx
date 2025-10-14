@@ -58,7 +58,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
         if (!containerRef.current?.contains(e.relatedTarget as Node)) setExpanded(false);
       }}
       initial={false}
-      animate={{ width: shouldReducedMotion ? (expanded ? 280 : 88) : (expanded ? 280 : 88) }}
+      animate={{ width: shouldReducedMotion ? (expanded ? 280 : 84) : (expanded ? 280 : 84) }}
       transition={shouldReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 28 }}
       className="fixed left-0 top-0 h-screen bg-card/80 dark:bg-[#0f1713]/85 border-r border-border/50 backdrop-blur-sm px-3 pt-3 pb-4 flex flex-col items-start z-50"
       aria-label="Primary navigation"
