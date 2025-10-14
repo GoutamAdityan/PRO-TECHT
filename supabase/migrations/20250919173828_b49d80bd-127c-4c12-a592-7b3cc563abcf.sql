@@ -1,4 +1,4 @@
--- Drop existing types if they exist (safely)
+﻿-- Drop existing types if they exist (safely)
 DO $$ 
 BEGIN
     IF EXISTS (SELECT 1 FROM pg_type WHERE typname = 'user_role') THEN
@@ -19,7 +19,17 @@ BEGIN
 END $$;
 
 -- Create enum for user roles
-CREATE TYPE public.user_role AS ENUM ('consumer', 'business_partner', 'service_center');
+-- Create enum for user roles (idempotent - only create if missing)
+DO LineNumber
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_type WHERE typname = 'user_role'
+      AND typnamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'public')
+  ) THEN
+    CREATE TYPE public.user_role AS ENUM ('consumer', 'business_partner', 'service_center');
+  END IF;
+END
+LineNumber;
 
 -- Create enum for product categories
 CREATE TYPE public.product_category AS ENUM ('electronics', 'appliances', 'automotive', 'furniture', 'tools', 'other');
