@@ -16,13 +16,13 @@ export default {
     extend: {
       colors: {
         bg: tokens.colors.bg,
-        "panel-bg": tokens.colors.panelBg,
-        "panel-border": tokens.colors.panelBorder,
-        "accent-green": tokens.colors.accentGreen,
-        "accent-green-dark": tokens.colors.accentGreenDark,
-        "muted-text": tokens.colors.mutedText,
-        "text-main": tokens.colors.textMain,
-        accent: tokens.colors.accentGreen,
+        "card-bg": tokens.colors.cardBg,
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        text: tokens.colors.text,
+        heading: tokens.colors.heading,
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -74,6 +74,16 @@ export default {
         hover: "hsl(var(--hover))",
         "primary-hover": "hsl(var(--primary-hover))",
         "primary-active": "hsl(var(--primary-active))",
+        // New badge and button colors
+        "subtle-button-bg": "hsl(var(--subtle-button-bg))",
+        "subtle-button-text": "hsl(var(--subtle-button-text))",
+        "subtle-button-border": "hsl(var(--subtle-button-border))",
+        "success-badge-bg": "hsl(var(--success-badge-bg))",
+        "success-badge-text": "hsl(var(--success-badge-text))",
+        "warning-badge-bg": "hsl(var(--warning-badge-bg))",
+        "warning-badge-text": "hsl(var(--warning-badge-text))",
+        "destructive-badge-bg": "hsl(var(--destructive-badge-bg))",
+        "destructive-badge-text": "hsl(var(--destructive-badge-text))",
       },
       borderRadius: {
         lg: "var(--radius)",

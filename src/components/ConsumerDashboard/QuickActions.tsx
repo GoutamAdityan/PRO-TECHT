@@ -18,7 +18,7 @@ const QuickActions: React.FC<QuickActionsProps> = ({ onAddProduct, delay = 0 }) 
     className="col-span-full md:col-span-1 h-full"
   >
     <Card className="bg-[rgba(18,26,22,0.45)] backdrop-blur-sm border border-[rgba(255,255,255,0.03)] rounded-2xl p-5 h-full">
-      <h3 className="text-lg font-medium text-gray-200 mb-4">Quick Actions</h3>
+      <h3 className="text-lg font-medium text-foreground mb-4">Quick Actions</h3>
       <div className="grid grid-cols-1 gap-3">
         <motion.div
           whileHover={{

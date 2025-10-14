@@ -10,6 +10,8 @@ import { Link } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
 import ProductSkeleton from '@/components/ProductSkeleton'; // New import
 
+const MotionButton = motion(Button);
+
 interface Product {
   id: string;
   type: string;
@@ -120,7 +122,7 @@ const Products = () => {
           </p>
         </motion.div>
         </div>
-        <Button
+        <MotionButton
           asChild
           className="h-12 px-6 rounded-full bg-gradient-to-br from-green-600 to-green-700 text-white font-medium shadow-lg
                      hover:from-green-700 hover:to-green-800 transition-all duration-300 ease-out
@@ -133,7 +135,7 @@ const Products = () => {
             <Plus className="w-5 h-5 mr-2" />
             Add New Product
           </Link>
-        </Button>
+        </MotionButton>
       </div>
 
       <AnimatePresence mode="wait">
@@ -171,7 +173,7 @@ const Products = () => {
                   whileTap={{ scale: 0.985 }}
                   className="relative"
                 >
-                  <Button
+                  <MotionButton
                     asChild
                     className="h-12 px-8 rounded-full bg-gradient-to-br from-green-600 to-green-700 text-white font-medium shadow-lg
                                hover:from-green-700 hover:to-green-800 transition-all duration-300 ease-out
@@ -181,7 +183,7 @@ const Products = () => {
                       <Plus className="w-5 h-5 mr-2" />
                       Add Your First Product
                     </Link>
-                  </Button>
+                  </MotionButton>
                 </motion.div>
               </CardContent>
             </Card>
@@ -207,27 +209,27 @@ const Products = () => {
                 }}
                 className="relative"
               >
-                <Card className="bg-[rgba(18,26,22,0.45)] backdrop-blur-sm border border-[rgba(255,255,255,0.03)] rounded-2xl p-5 h-full flex flex-col justify-between">
+                <Card className="bg-card backdrop-blur-sm border border-border rounded-2xl p-5 h-full flex flex-col justify-between">
                   <CardHeader className="pb-3 px-0 pt-0">
                     <div className="flex justify-between items-start">
                       <div>
                         <CardTitle className="text-xl font-bold leading-normal">{product.brand} {product.model}</CardTitle> {/* H2 20-24px */}
-                        <CardDescription className="text-base text-gray-400 leading-relaxed">{product.type}</CardDescription>
+                        <CardDescription className="text-base text-muted-foreground leading-relaxed">{product.type}</CardDescription>
                       </div>
                       {product.warranty_expiry && (
                         <div className="flex items-center">
                           {isWarrantyExpired(product.warranty_expiry) ? (
-                            <Badge variant="destructive" className="flex items-center gap-1 shadow-sm bg-red-600/30 text-red-300 border-red-500/50">
+                            <Badge variant="destructive" className="badge-destructive">
                               <ShieldX className="w-3 h-3" />
                               Expired
                             </Badge>
                           ) : isWarrantyExpiringSoon(product.warranty_expiry) ? (
-                            <Badge variant="outline" className="flex items-center gap-1 border-yellow-500/50 text-yellow-300 bg-yellow-600/30 shadow-sm">
+                            <Badge variant="outline" className="badge-warning">
                               <ShieldCheck className="w-3 h-3" />
                               Expiring Soon
                             </Badge>
                           ) : (
-                            <Badge variant="outline" className="flex items-center gap-1 border-green-500/50 text-green-300 bg-green-600/30 shadow-sm">
+                            <Badge variant="outline" className="badge-success">
                               <ShieldCheck className="w-3 h-3" />
                               Active
                             </Badge>
@@ -240,11 +242,11 @@ const Products = () => {
                     {product.serial_number && (
                       <div className="text-base">
                         <span className="text-gray-400">Serial:</span>{' '}
-                        <span className="font-mono text-gray-200">{product.serial_number}</span>
+                        <span className="font-mono text-foreground">{product.serial_number}</span>
                       </div>
                     )}
                     
-                    <div className="flex items-center gap-4 text-base text-gray-400">
+                    <div className="flex items-center gap-4 text-base text-muted-foreground">
                       <div className="flex items-center gap-1">
                         <Calendar className="w-4 h-4 text-green-400" />
                         {new Date(product.purchase_date).toLocaleDateString()}
@@ -278,9 +280,7 @@ const Products = () => {
                         variant="outline"
                         size="sm"
                         asChild
-                        className="h-10 px-5 rounded-full border-green-500/50 text-green-300 bg-green-600/20
-                                   hover:bg-green-600/40 hover:text-green-100 transition-all duration-200 ease-out
-                                   focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75"
+                        className="btn-subtle"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.985 }}
                         transition={{ duration: 0.2, ease: "easeOut" }}

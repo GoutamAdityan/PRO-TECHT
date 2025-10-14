@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { ModeToggle } from "@/components/theme-toggle";
+import { ThemeSwitch } from "@/components/ui/ThemeSwitch";
 import { useAuth } from "@/hooks/useAuth";
 import { useSidebar } from "@/hooks/useSidebar";
 
@@ -60,27 +60,27 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
       initial={false}
       animate={{ width: shouldReducedMotion ? (expanded ? 280 : 84) : (expanded ? 280 : 84) }}
       transition={shouldReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 28 }}
-      className="fixed left-0 top-0 h-screen bg-panel-bg border-r border-panel-border backdrop-blur-glass px-3 pt-3 pb-4 flex flex-col items-start z-50"
+      className="fixed left-0 top-0 h-screen bg-card/80 dark:bg-[#0f1713]/85 border-r border-border/50 backdrop-blur-sm px-3 pt-3 pb-4 flex flex-col items-start z-50"
       aria-label="Primary navigation"
     >
       {/* Top logo */}
       <div className="w-full flex items-center justify-center mb-2">
-        <div className="w-10 h-10 rounded-full bg-emerald-800/30 flex items-center justify-center">
-          <Shield className="w-5 h-5 text-emerald-300" />
+        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+          <Shield className="w-5 h-5 text-primary" />
         </div>
       </div>
 
       <nav className="w-full mt-2 flex-1" aria-label="Main">
         {mainNavItems.map((item) => {
           const active = location.pathname === item.to;
-          const IconComponent = item.icon; // Get the icon component
+          const IconComponent = item.icon;
           return (
             <Tooltip key={item.id} delayDuration={120}>
               <TooltipTrigger asChild>
                 <MotionLink
                   to={item.to}
                   className={cn(
-                    "relative w-full flex items-center px-1 py-2 rounded-lg hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-emerald-400/20 transition-colors duration-200",
+                    "relative w-full flex items-center px-1 py-2 rounded-lg hover:bg-accent/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors duration-200",
                     expanded ? "gap-3" : "justify-center"
                   )}
                   whileHover={shouldReducedMotion ? {} : { scale: 1.01, y: -3, boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}
@@ -88,23 +88,18 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
                   aria-current={active ? "page" : undefined}
                   aria-label={item.label}
                 >
-                  {/* Active left indicator */}
                   <motion.span
                     layout
-                    className={`absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-8 w-1 rounded-r-full ${active ? 'bg-accent-green' : 'bg-transparent'}`}
+                    className={`absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-8 w-1 rounded-r-full ${active ? 'bg-primary' : 'bg-transparent'}`}
                     transition={shouldReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 30 }}
                   />
-
-                  {/* Icon badge */}
                   <motion.div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${active ? 'bg-emerald-800/40 shadow-[0_8px_24px_rgba(16,185,129,0.06)]' : 'bg-transparent'}`}
-                    animate={ shouldReducedMotion ? {} : (active ? { scale: 1.02, rotate: 3 } : { scale: 1, rotate: 0 }) }
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${active ? 'bg-primary/10' : 'bg-transparent'}`}
+                    animate={shouldReducedMotion ? {} : (active ? { scale: 1.02, rotate: 3 } : { scale: 1, rotate: 0 })}
                     transition={shouldReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 18 }}
                   >
-                    <IconComponent className={`w-5 h-5 ${active ? 'text-emerald-300' : 'text-foreground/70'}`} />
+                    <IconComponent className={`w-5 h-5 ${active ? 'text-primary' : 'text-muted-foreground'}`} />
                   </motion.div>
-
-                  {/* Label area — only visible in expanded mode (animated) */}
                   <AnimatePresence initial={false}>
                     {expanded && (
                       <motion.span
@@ -112,7 +107,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
                         animate={{ opacity: 1, x: 0, width: "auto" }}
                         exit={{ opacity: 0, x: -6, width: 0 }}
                         transition={shouldReducedMotion ? { duration: 0 } : { duration: 0.22 }}
-                        className={`ml-2 text-sm font-medium whitespace-nowrap overflow-hidden ${active ? 'text-emerald-200' : 'text-foreground/80'}`}
+                        className={`ml-2 text-sm font-medium whitespace-nowrap overflow-hidden ${active ? 'text-foreground' : 'text-muted-foreground'}`}
                       >
                         {item.label}
                       </motion.span>
@@ -120,45 +115,42 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
                   </AnimatePresence>
                 </MotionLink>
               </TooltipTrigger>
-              {!expanded && <TooltipContent side="right" className="bg-gray-800 text-white text-sm px-3 py-1 rounded-md shadow-lg">{item.label}</TooltipContent>}
+              {!expanded && <TooltipContent side="right">{item.label}</TooltipContent>}
             </Tooltip>
           );
         })}
       </nav>
 
-      {/* Footer small items (profile, about, theme, sign out) */}
       <div className="mt-auto w-full flex flex-col items-start gap-2">
         {footerNavItems.map((item) => {
           const active = location.pathname === item.to;
-          const IconComponent = item.icon; // Get the icon component
+          const IconComponent = item.icon;
           return (
             <Tooltip key={item.id} delayDuration={120}>
               <TooltipTrigger asChild>
                 <MotionLink
                   to={item.to}
-                  className="relative w-full flex items-center gap-3 px-1 py-2 rounded-lg hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-emerald-400/20 transition-colors duration-200"
+                  className={cn(
+                    "relative w-full flex items-center px-1 py-2 rounded-lg hover:bg-accent/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors duration-200",
+                    expanded ? "gap-3" : "justify-center"
+                  )}
                   whileHover={shouldReducedMotion ? {} : { scale: 1.01, y: -3, boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}
                   whileTap={shouldReducedMotion ? {} : { scale: 0.99 }}
                   aria-current={active ? "page" : undefined}
                   aria-label={item.label}
                 >
-                  {/* Active left indicator */}
                   <motion.span
                     layout
-                    className={`absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-8 w-1 rounded-r-full ${active ? 'bg-emerald-400' : 'bg-transparent'}`}
+                    className={`absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-8 w-1 rounded-r-full ${active ? 'bg-primary' : 'bg-transparent'}`}
                     transition={shouldReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 30 }}
                   />
-
-                  {/* Icon badge */}
                   <motion.div
-                    className={`w-10 h-10 rounded-full flex items-center justify-center ${active ? 'bg-emerald-800/40 shadow-[0_8px_24px_rgba(16,185,129,0.06)]' : 'bg-transparent'}`}
-                    animate={ shouldReducedMotion ? {} : (active ? { scale: 1.02, rotate: 3 } : { scale: 1, rotate: 0 }) }
+                    className={`w-10 h-10 rounded-full flex items-center justify-center ${active ? 'bg-primary/10' : 'bg-transparent'}`}
+                    animate={shouldReducedMotion ? {} : (active ? { scale: 1.02, rotate: 3 } : { scale: 1, rotate: 0 })}
                     transition={shouldReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 18 }}
                   >
-                    <IconComponent className={`w-5 h-5 ${active ? 'text-emerald-300' : 'text-foreground/70'}`} />
+                    <IconComponent className={`w-5 h-5 ${active ? 'text-primary' : 'text-muted-foreground'}`} />
                   </motion.div>
-
-                  {/* Label area — only visible in expanded mode (animated) */}
                   <AnimatePresence initial={false}>
                     {expanded && (
                       <motion.span
@@ -166,7 +158,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
                         animate={{ opacity: 1, x: 0, width: "auto" }}
                         exit={{ opacity: 0, x: -6, width: 0 }}
                         transition={shouldReducedMotion ? { duration: 0 } : { duration: 0.22 }}
-                        className={`ml-2 text-sm font-medium whitespace-nowrap overflow-hidden ${active ? 'text-emerald-200' : 'text-foreground/80'}`}
+                        className={`ml-2 text-sm font-medium whitespace-nowrap overflow-hidden ${active ? 'text-foreground' : 'text-muted-foreground'}`}
                       >
                         {item.label}
                       </motion.span>
@@ -174,36 +166,34 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
                   </AnimatePresence>
                 </MotionLink>
               </TooltipTrigger>
-              {!expanded && <TooltipContent side="right" className="bg-gray-800 text-white text-sm px-3 py-1 rounded-md shadow-lg">{item.label}</TooltipContent>}
+              {!expanded && <TooltipContent side="right">{item.label}</TooltipContent>}
             </Tooltip>
           );
         })}
 
-        {/* Theme Toggle */}
         <div className="w-full flex items-center justify-center py-2">
-          <ModeToggle />
+          <ThemeSwitch />
         </div>
 
-        {/* Sign Out Button */}
         <Tooltip delayDuration={120}>
           <TooltipTrigger asChild>
             <motion.button
               onClick={signOut}
-              className="relative w-full flex items-center gap-3 px-1 py-2 rounded-lg hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-emerald-400/20 transition-colors duration-200"
+              className={cn(
+                "relative w-full flex items-center px-1 py-2 rounded-lg hover:bg-accent/50 focus:outline-none focus:ring-2 focus:ring-primary/20 transition-colors duration-200",
+                expanded ? "gap-3" : "justify-center"
+              )}
               whileHover={shouldReducedMotion ? {} : { scale: 1.01, y: -3, boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}
               whileTap={shouldReducedMotion ? {} : { scale: 0.99 }}
               aria-label="Sign Out"
             >
-              {/* Icon badge */}
               <motion.div
                 className="w-10 h-10 rounded-full flex items-center justify-center bg-transparent"
-                animate={ shouldReducedMotion ? {} : { scale: 1, rotate: 0 } }
+                animate={shouldReducedMotion ? {} : { scale: 1, rotate: 0 }}
                 transition={shouldReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 18 }}
               >
-                <LogOut className="w-5 h-5 text-foreground/70" />
+                <LogOut className="w-5 h-5 text-muted-foreground" />
               </motion.div>
-
-              {/* Label area — only visible in expanded mode (animated) */}
               <AnimatePresence initial={false}>
                 {expanded && (
                   <motion.span
@@ -211,7 +201,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
                     animate={{ opacity: 1, x: 0, width: "auto" }}
                     exit={{ opacity: 0, x: -6, width: 0 }}
                     transition={shouldReducedMotion ? { duration: 0 } : { duration: 0.22 }}
-                    className="ml-2 text-sm font-medium whitespace-nowrap overflow-hidden text-foreground/80"
+                    className="ml-2 text-sm font-medium whitespace-nowrap overflow-hidden text-muted-foreground"
                   >
                     Sign Out
                   </motion.span>
@@ -219,7 +209,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
               </AnimatePresence>
             </motion.button>
           </TooltipTrigger>
-          {!expanded && <TooltipContent side="right" className="bg-gray-800 text-white text-sm px-3 py-1 rounded-md shadow-lg">Sign Out</TooltipContent>}
+          {!expanded && <TooltipContent side="right">Sign Out</TooltipContent>}
         </Tooltip>
       </div>
     </motion.aside>

@@ -17,7 +17,7 @@ const RecentActivity: React.FC<RecentActivityProps> = ({ activity, delay = 0 }) 
     className="col-span-full"
   >
     <Card className="bg-[rgba(18,26,22,0.45)] backdrop-blur-sm border border-[rgba(255,255,255,0.03)] rounded-2xl p-5">
-      <h3 className="text-lg font-medium text-gray-200 mb-4">Recent Activity</h3>
+      <h3 className="text-lg font-medium text-foreground mb-4">Recent Activity</h3>
       {activity.length > 0 ? (
         <ul className="space-y-3">
           {activity.slice(0, 5).map((event) => (

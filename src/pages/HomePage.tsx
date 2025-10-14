@@ -1,6 +1,6 @@
-import { motion } from 'framer-motion';
+import { motion, useScroll, useSpring } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, Clock, Zap } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useRef, useState, useEffect } from 'react';
 import NavBar from '@/components/NavBar';
 import HeroIllustration from '@/components/HeroIllustration';
@@ -11,6 +11,13 @@ import Footer from '@/components/Footer';
 const HomePage = () => {
   const navbarRef = useRef<HTMLElement>(null);
   const [navbarHeight, setNavbarHeight] = useState(0);
+
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
 
   useEffect(() => {
     if (navbarRef.current) {
@@ -29,8 +36,16 @@ const HomePage = () => {
   };
 
   return (
-    <div className="bg-bg min-h-screen text-white overflow-x-hidden">
+    <div className="min-h-screen text-white">
+      <video autoPlay loop muted playsInline className="fixed top-0 left-0 w-full h-full object-cover -z-10">
+        <source src="/videos/your-video-name.mp4" type="video/mp4" />
+      </video>
+      <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 -z-10"></div>
       <NavBar ref={navbarRef} />
+      <motion.div 
+        className="fixed left-0 right-0 h-1 bg-accent z-[998]" 
+        style={{ scaleX, transformOrigin: "0%", top: navbarHeight }} 
+      />
       <main className="container mx-auto px-4">
         {/* Hero Section */}
         <motion.section
@@ -61,19 +76,19 @@ const HomePage = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-center text-heading mb-12">Why you'll love ServiceBridge</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <FeatureCard 
-              icon={<ShieldCheck size={32} />} 
+              imageUrl="/images/tracking.png"
               title="Centralized Tracking" 
-              description="Keep all your warranties in one place, never lose a proof of purchase again."
+              description="Say goodbye to cluttered folders and lost receipts. Our platform provides a secure, centralized hub for all your product warranties. Easily upload, organize, and access your documents anytime, anywhere, ensuring you have proof of purchase right when you need it."
             />
             <FeatureCard 
-              icon={<Clock size={32} />} 
+              imageUrl="/images/reminders.png"
               title="Smart Reminders" 
-              description="Get notified before a warranty expires, so you can take action in time."
+              description="Never miss a warranty expiration date again. Our intelligent system proactively monitors your registered products and sends timely alerts for expiring warranties and recommended maintenance, empowering you to take action and save money."
             />
             <FeatureCard 
-              icon={<Zap size={32} />} 
+              imageUrl="/images/service.png"
               title="Effortless Service" 
-              description="Initiate service requests directly from the app with just a few clicks."
+              description="When something goes wrong, getting help shouldn't be a hassle. Initiate service requests directly from the app in just a few taps. We connect you with qualified technicians and streamline the entire process, from diagnosis to resolution."
             />
           </div>
         </motion.section>
