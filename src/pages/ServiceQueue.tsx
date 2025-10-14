@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { motion, useReducedMotion } from "framer-motion";
-import { Filter, Users } from "lucide-react";
+import { Filter, ClipboardList } from "lucide-react";
 import { cn } from "@/lib/utils";
 import PageTransition from '@/components/PageTransition';
 import SearchBar from '@/components/ui/SearchBar';
@@ -93,7 +93,7 @@ const ServiceQueue = () => {
             animate="show"
             className="p-2 rounded-full bg-emerald-800/30 flex items-center justify-center"
           >
-            <Users className="w-5 h-5 text-emerald-400" />
+            <ClipboardList className="w-5 h-5 text-emerald-400" />
           </motion.div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">Service Queue</h1>
         </div>

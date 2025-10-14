@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import AIAdvisor from "@/components/custom/AIAdvisor";
 import { motion, useReducedMotion } from 'framer-motion';
-import { Users } from 'lucide-react';
+import { BarChart as BarChartIcon } from 'lucide-react';
 import PageTransition from '@/components/PageTransition';
 import { containerVariants, cardVariants, cardHoverVariants, headerIconVariants } from '@/lib/animations';
 import { cn } from '@/lib/utils';
@@ -57,7 +57,7 @@ const Analytics = () => {
             animate="show"
             className="p-2 rounded-full bg-emerald-800/30 flex items-center justify-center"
           >
-            <Users className="w-5 h-5 text-emerald-400" />
+            <BarChartIcon className="w-5 h-5 text-emerald-400" />
           </motion.div>
           <h1 className="text-2xl font-bold tracking-tight text-foreground">Analytics Dashboard</h1>
         </div>
