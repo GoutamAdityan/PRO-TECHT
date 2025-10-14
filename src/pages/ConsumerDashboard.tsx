@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { useConsumerDashboardData } from '../hooks/useConsumerDashboardData';
 import { useAuth } from '../hooks/useAuth'; // Import useAuth
 import { Package, ShieldCheck, Wrench, Users } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 // Import the extracted components
 import Header from '../components/ConsumerDashboard/Header';
@@ -32,6 +33,7 @@ const itemVariants = {
 const ConsumerDashboard: React.FC = () => {
   const { profile } = useAuth(); // Get profile from useAuth
   const { userName, products, serviceRequests, warrantyHistory } = useConsumerDashboardData(profile?.full_name || 'Guest');
+  const navigate = useNavigate();
 
   const activeWarrantiesCount = products.filter(p => new Date(p.warrantyExpiry) > new Date()).length;
   const pendingServiceRequestsCount = serviceRequests.filter(req => req.status === 'Open' || req.status === 'Pending').length;
@@ -80,7 +82,7 @@ const ConsumerDashboard: React.FC = () => {
             title="Registered Products"
             value={products.length}
             ctaText="Open Vault"
-            onCtaClick={() => console.log('Open Vault')}
+            onCtaClick={() => navigate('/products')}
             icon={Package}
             delay={0.2}
           />
@@ -88,7 +90,7 @@ const ConsumerDashboard: React.FC = () => {
             title="Active Warranties"
             value={activeWarrantiesCount}
             ctaText="View Warranties"
-            onCtaClick={() => console.log('View Warranties')}
+            onCtaClick={() => navigate('/warranty-tracker')}
             icon={ShieldCheck}
             delay={0.3}
           />
@@ -96,7 +98,7 @@ const ConsumerDashboard: React.FC = () => {
             title="Pending Service Requests"
             value={pendingServiceRequestsCount}
             ctaText="Request Service"
-            onCtaClick={() => console.log('Request Service')}
+            onCtaClick={() => navigate('/service-requests')}
             icon={Wrench}
             delay={0.4}
           />

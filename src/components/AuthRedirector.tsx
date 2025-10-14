@@ -13,7 +13,7 @@ const AuthRedirector = () => {
 
       switch (profile.role) {
         case "consumer":
-          redirectPath = "/products";
+          redirectPath = "/consumer-dashboard";
           break;
         case "business_partner":
           redirectPath = "/service-requests";

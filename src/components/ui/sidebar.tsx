@@ -112,7 +112,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
               <TooltipTrigger asChild>
                 <MotionLink
                   to={item.to}
-                  className="relative w-full flex items-center gap-3 px-1 py-2 rounded-lg hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-emerald-400/20 transition-colors duration-200"
+                  className={cn(
+                    "relative w-full flex items-center px-1 py-2 rounded-lg hover:bg-white/5 focus:outline-none focus:ring-2 focus:ring-emerald-400/20 transition-colors duration-200",
+                    expanded ? "gap-3" : "justify-center"
+                  )}
                   whileHover={shouldReducedMotion ? {} : { scale: 1.01, y: -3, boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}
                   whileTap={shouldReducedMotion ? {} : { scale: 0.99 }}
                   aria-current={active ? "page" : undefined}
