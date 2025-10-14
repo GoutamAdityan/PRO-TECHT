@@ -58,9 +58,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
         if (!containerRef.current?.contains(e.relatedTarget as Node)) setExpanded(false);
       }}
       initial={false}
-      animate={{ width: shouldReducedMotion ? (expanded ? 280 : 88) : (expanded ? 280 : 88) }}
+      animate={{ width: shouldReducedMotion ? (expanded ? 280 : 84) : (expanded ? 280 : 84) }}
       transition={shouldReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 28 }}
-      className="fixed left-0 top-0 h-screen bg-[#0f1713]/85 border-r border-[rgba(255,255,255,0.02)] backdrop-blur-sm px-3 pt-3 pb-4 flex flex-col items-start z-50"
+      className="fixed left-0 top-0 h-screen bg-panel-bg border-r border-panel-border backdrop-blur-glass px-3 pt-3 pb-4 flex flex-col items-start z-50"
       aria-label="Primary navigation"
     >
       {/* Top logo */}
@@ -91,7 +91,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
                   {/* Active left indicator */}
                   <motion.span
                     layout
-                    className={`absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-8 w-1 rounded-r-full ${active ? 'bg-emerald-400' : 'bg-transparent'}`}
+                    className={`absolute left-0 top-1/2 transform -translate-x-1/2 -translate-y-1/2 h-8 w-1 rounded-r-full ${active ? 'bg-accent-green' : 'bg-transparent'}`}
                     transition={shouldReducedMotion ? { duration: 0 } : { type: "spring", stiffness: 300, damping: 30 }}
                   />
 

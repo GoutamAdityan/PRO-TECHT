@@ -1,22 +1,23 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ServiceQueueCard, ProductCatalogCard, ActiveAssignmentsCard, QuickActionsRow } from '@/components/BusinessPartner';
+import { ServiceQueueCard, ProductCatalogCard, ActiveAssignmentsCard, QuickActionsRow, RecentRequestsCard, CatalogPreviewCard } from '@/components/BusinessPartner';
 import { useAuth } from '@/hooks/useAuth';
 import { LayoutDashboard } from 'lucide-react';
 
+const pageVariants = {
+  hidden: { opacity: 0, y: 12 },
+  enter: { opacity: 1, y: 0, transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } },
+  exit: { opacity: 0, y: 10, transition: { duration: 0.3 } },
+};
+
 const containerVariants = {
-  hidden: { opacity: 0, y: 8 },
-  visible: {
+  hidden: { opacity: 0 },
+  enter: {
     opacity: 1,
-    y: 0,
     transition: {
       staggerChildren: 0.06,
-      delayChildren: 0.1,
-      duration: 0.22,
-      ease: 'easeOut',
     },
   },
-  exit: { opacity: 0, y: -4, transition: { duration: 0.16, ease: 'easeIn' } },
 };
 
 import Header from '@/components/ConsumerDashboard/Header';
@@ -27,9 +28,9 @@ const BusinessPartnerDashboard: React.FC = () => {
   return (
     <motion.div
       className="max-w-6xl mx-auto px-6 py-6 text-white"
-      variants={containerVariants}
+      variants={pageVariants}
       initial="hidden"
-      animate="visible"
+      animate="enter"
       exit="exit"
     >
       <div className="flex items-center gap-3 mb-6">
@@ -41,25 +42,20 @@ const BusinessPartnerDashboard: React.FC = () => {
         >
           <LayoutDashboard className="w-5 h-5 text-emerald-400" />
         </motion.div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Business Partner Dashboard</h1>
+        <h1 className="text-4xl font-bold text-text-main">Business Partner Dashboard</h1>
       </div>
       <Header userName={profile?.full_name || 'Partner'} subtitle="Here’s an overview of your business activities." />
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      <motion.div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" variants={containerVariants}>
         <ServiceQueueCard count={5} />
         <ActiveAssignmentsCard count={3} />
         <ProductCatalogCard count={12} />
-      </div>
+      </motion.div>
 
-      <div className="grid md:grid-cols-2 gap-8 mb-8">
-        {/* Replace with actual components for recent requests and product catalog preview */}
-        <motion.div whileHover={{ scale: 1.01, y: -5 }}>
-          <div className="p-6 bg-card rounded-lg shadow-lg">Recent Requests</div>
-        </motion.div>
-        <motion.div whileHover={{ scale: 1.01, y: -5 }}>
-          <div className="p-6 bg-card rounded-lg shadow-lg">Product Catalog Preview</div>
-        </motion.div>
-      </div>
+      <motion.div className="grid md:grid-cols-2 gap-8 mb-8" variants={containerVariants}>
+        <RecentRequestsCard />
+        <CatalogPreviewCard />
+      </motion.div>
 
       <QuickActionsRow />
     </motion.div>
