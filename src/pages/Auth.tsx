@@ -82,9 +82,13 @@ const Auth = () => {
     setIsSubmitting(false);
   };
 
-  return (
-    <div className="auth-container pt-[10vh] items-start">
-      <motion.div
+    return (
+        <div className="auth-body min-h-screen w-full flex items-center justify-center p-4 font-sans">
+            <video autoPlay loop muted playsInline className="fixed top-0 left-0 w-full h-full object-cover -z-10">
+                <source src="/videos/your-video-name.mp4" type="video/mp4" />
+            </video>
+            <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 -z-10"></div>
+            <motion.div
         initial={{ opacity: 0, y: 20, scale: 0.95 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
         transition={{ duration: 0.7, ease: [0.4, 0.0, 0.2, 1] }}
