@@ -1,6 +1,6 @@
 
 import { useState, useEffect } from 'react';
-import { AppCard, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -90,7 +90,7 @@ const ServiceQueue = () => {
       </motion.div>
 
       <motion.div variants={container} initial="hidden" animate="visible">
-        <AppCard className="mb-8" whileHover={micro.hover} whileTap={micro.tap}>
+        <Card variant="app" className="mb-8" whileHover={micro.hover} whileTap={micro.tap}>
           <CardHeader>
             <CardTitle className="text-xl font-semibold">Incoming Warranty & Service Requests</CardTitle>
             <div className="mt-4 flex items-center gap-4">
@@ -221,7 +221,7 @@ const ServiceQueue = () => {
               </Table>
             </div>
           </CardContent>
-        </AppCard>
+        </Card>
       </motion.div>
     </motion.div>
   );
