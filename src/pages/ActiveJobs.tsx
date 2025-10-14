@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import SearchBar from "@/components/ui/SearchBar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal, Eye, Check, RotateCcw, Filter, CalendarDays, Search, Loader2, Users } from 'lucide-react';
 import { motion, useReducedMotion } from 'framer-motion';
+import StatusBadge, { JobStatus } from '@/components/ui/StatusBadge';
 import { DetailsPanel } from '@/features/chat/DetailsPanel/DetailsPanel';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { cn } from '@/lib/utils';
@@ -37,23 +39,6 @@ interface Job {
   status: JobStatus;
   assignedCenter: string;
 }
-
-interface StatusBadgeProps {
-  status: JobStatus;
-}
-
-const StatusBadge: React.FC<StatusBadgeProps> = ({ status }) => {
-  const statusClasses = {
-    'Pending': 'bg-amber-500/20 text-amber-400',
-    'In Progress': 'bg-blue-500/20 text-blue-400',
-    'Completed': 'bg-emerald-500/20 text-emerald-400',
-  };
-  return (
-    <span className={cn("px-2.5 py-0.5 rounded-full text-xs font-medium", statusClasses[status])}>
-      {status}
-    </span>
-  );
-};
 
 const ActiveJobs = () => {
   const { user, profile } = useAuth();
@@ -148,15 +133,12 @@ const ActiveJobs = () => {
             <CardHeader className="px-0 pt-0 pb-4">
               <CardTitle className="text-xl font-semibold text-foreground/90">Current Service Assignments</CardTitle>
               <div className="flex flex-wrap items-center gap-4 mt-4">
-                <div className="relative flex-1 min-w-[200px]">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                  <Input
-                    placeholder="Search by ID, product, or customer..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                    className="pl-9 h-10 rounded-full bg-background/50 border-border/50 focus-visible:ring-primary focus-visible:ring-offset-0"
-                  />
-                </div>
+                <SearchBar
+                  placeholder="Search by ID, product, or customer..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  aria-label="Search active jobs"
+                />
                 <Select value={filterStatus} onValueChange={(value: JobStatus | "All") => setFilterStatus(value)}>
                   <SelectTrigger className="w-[180px] h-10 rounded-full bg-background/50 border-border/50 focus-visible:ring-primary focus-visible:ring-offset-0">
                     <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
