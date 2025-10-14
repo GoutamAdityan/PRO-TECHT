@@ -99,7 +99,7 @@ const Auth = () => {
           >
             <Shield className="w-8 h-8 text-accent" />
           </motion.div>
-          <h1 className="text-4xl font-bold text-white">Welcome to ServiceBridge</h1>
+          <h1 className="text-4xl font-bold text-white">Welcome to Pro-Techt</h1>
           <p className="text-gray-400 mt-2">Your calm place for product lifecycle management.</p>
         </div>
 

@@ -73,7 +73,7 @@ const HomePage = () => {
           viewport={{ once: true, amount: 0.5 }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-heading mb-12">Why you'll love ServiceBridge</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-heading mb-12">Why you'll love Pro-Techt</h2>
           <div className="grid md:grid-cols-3 gap-8">
             <FeatureCard 
               imageUrl="/images/tracking.png"
