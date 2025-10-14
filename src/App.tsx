@@ -16,6 +16,7 @@ import ServiceRequests from "./pages/ServiceRequests";
 import NewServiceRequest from "./pages/NewServiceRequest";
 import ServiceRequestDetails from "./pages/ServiceRequestDetails";
 import WarrantyTracker from "./pages/WarrantyTracker";
+import { SidebarProvider } from "@/providers/SidebarProvider";
 import Layout from "@/components/Layout";
 import ServiceQueue from "./pages/ServiceQueue";
 import ProductCatalog from "./pages/ProductCatalog";
@@ -29,6 +30,7 @@ import { AnimatePresence } from "framer-motion";
 import PageTransition from "@/components/PageTransition";
 import AuthRedirector from "@/components/AuthRedirector"; // Import AuthRedirector
 import ConsumerDashboard from "./pages/ConsumerDashboard";
+import BusinessPartnerDashboard from "./pages/BusinessPartnerDashboard";
 
 const queryClient = new QueryClient();
 
@@ -47,7 +49,7 @@ const App = () => {
               <Routes location={location} key={location.pathname}>
                 <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
                 <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
-                <Route element={<Layout />}>
+                <Route element={<SidebarProvider><Layout /></SidebarProvider>}>
                   <Route path="/products" element={<Products />} />
                   <Route path="/products/new" element={<NewProduct />} />
                   <Route path="/products/:id" element={<ProductDetails />} />
@@ -64,7 +66,8 @@ const App = () => {
                   <Route path="/active-jobs" element={<ActiveJobs />} />
                                   <Route path="/customer-communication" element={<CustomerCommunication />} />
                                   <Route path="/service-reports" element={<ServiceReports />} />
-                                  <Route path="/consumer-dashboard" element={<PageTransition><ConsumerDashboard /></PageTransition>} />                </Route>
+                                  <Route path="/consumer-dashboard" element={<PageTransition><ConsumerDashboard /></PageTransition>} />
+                                  <Route path="/business-partner-dashboard" element={<PageTransition><BusinessPartnerDashboard /></PageTransition>} />                </Route>
                 <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
               </Routes>
             </AnimatePresence>

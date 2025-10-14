@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
@@ -29,35 +29,40 @@ interface ServiceRequest {
 }
 
 const ServiceRequests = () => {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const { toast } = useToast();
   const [requests, setRequests] = useState<ServiceRequest[]>([]);
   const [loading, setLoading] = useState(true);
   const shouldReduceMotion = useReducedMotion();
 
-  useEffect(() => {
-    if (user) {
-      fetchServiceRequests();
-    }
-  }, [user]);
+  const fetchServiceRequests = useCallback(async () => {
+    if (!user || !profile) return;
 
-  const fetchServiceRequests = async () => {
+    setLoading(true);
     try {
-      const { data, error } = await supabase
+      let query = supabase
         .from('service_requests')
         .select(`
           *,
           products (brand, model),
           service_centers (name, phone)
-        `)
-        .eq('user_id', user?.id)
-        .order('created_at', { ascending: false });
+        `);
+
+      // Role-based data fetching
+      if (profile.role === 'consumer') {
+        query = query.eq('user_id', user.id);
+      } else if (profile.role === 'business_partner') {
+        // The RLS policy for business_partner will automatically filter requests.
+        // We don't need to add a filter here.
+      }
+
+      const { data, error } = await query.order('created_at', { ascending: false });
 
       if (error) {
         console.error('Error fetching service requests:', error);
         toast({
           title: 'Error',
-          description: 'Failed to load service requests',
+          description: 'Failed to load service requests.',
           variant: 'destructive',
         });
       } else {
@@ -67,13 +72,17 @@ const ServiceRequests = () => {
       console.error('Error:', error);
       toast({
         title: 'Error',
-        description: 'Failed to load service requests',
+        description: 'An unexpected error occurred.',
         variant: 'destructive',
       });
     } finally {
       setLoading(false);
     }
-  };
+  }, [user, profile, toast]);
+
+  useEffect(() => {
+    fetchServiceRequests();
+  }, [fetchServiceRequests]);
 
   const getStatusBadge = (request: ServiceRequest) => {
     let statusText = 'Pending';

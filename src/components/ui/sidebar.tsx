@@ -1,51 +1,18 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import React, { useState, useRef } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Users, Grid, Box, Wrench, Shield, User, Sun, LogOut, Info, LayoutDashboard, ClipboardList, Book, BarChart, MessageSquare, FileText, ShieldCheck, Package } from "lucide-react";
+import { LogOut, Info, LayoutDashboard, ClipboardList, Book, BarChart, MessageSquare, FileText, ShieldCheck, Shield, User } from "lucide-react";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { ModeToggle } from "@/components/theme-toggle";
 import { useAuth } from "@/hooks/useAuth";
+import { useSidebar } from "@/hooks/useSidebar";
 
 const MotionLink = motion(Link);
-
-// --- Context for Sidebar State ---
-interface SidebarContextProps {
-  isMobile: boolean;
-  openMobile: boolean;
-  setOpenMobile: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const SidebarContext = React.createContext<SidebarContextProps | null>(null);
-
-export function useSidebar() {
-  const context = React.useContext(SidebarContext);
-  if (!context) {
-    throw new Error("useSidebar must be used within a SidebarProvider.");
-  }
-  return context;
-}
-
-// --- Sidebar Provider ---
-export function SidebarProvider({ children }: { children: React.ReactNode }) {
-  const isMobile = useIsMobile();
-  const [openMobile, setOpenMobile] = React.useState(false);
-
-  const contextValue = React.useMemo(
-    () => ({ isMobile, openMobile, setOpenMobile }),
-    [isMobile, openMobile]
-  );
-
-  return (
-    <SidebarContext.Provider value={contextValue}>
-      <TooltipProvider delayDuration={0}>{children}</TooltipProvider>
-    </SidebarContext.Provider>
-  );
-}
 
 // --- Main Sidebar Component ---
 interface SidebarProps {
@@ -55,7 +22,7 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
   const location = useLocation();
-  const navigate = useNavigate(); // Use useNavigate for programmatic navigation
+ 
   const [expanded, setExpanded] = useState(false);
   const containerRef = useRef<HTMLElement>(null);
   const shouldReducedMotion = useReducedMotion();
@@ -63,12 +30,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
 
   const mainNavItems = [
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard, to: '/consumer-dashboard', roles: ['consumer'] },
-    { id: 'dashboard-bp', label: 'Dashboard', icon: LayoutDashboard, to: '/service-queue', roles: ['business_partner'] },
+    { id: 'dashboard-bp', label: 'Dashboard', icon: LayoutDashboard, to: '/business-partner-dashboard', roles: ['business_partner'] },
     { id: 'dashboard-sc', label: 'Dashboard', icon: LayoutDashboard, to: '/active-jobs', roles: ['service_center'] },
-    { id: 'products', label: 'Product Vault', icon: Package, to: '/products', roles: ['consumer'] },
-    { id: 'requests', label: 'Service Requests', icon: Wrench, to: '/service-requests', roles: ['consumer'] },
+    { id: 'products', label: 'Product Vault', icon: Shield, to: '/products', roles: ['consumer'] },
+    { id: 'requests', label: 'Service Requests', icon: ClipboardList, to: '/service-requests', roles: ['consumer'] },
     { id: 'warranty', label: 'Warranty Tracker', icon: ShieldCheck, to: '/warranty-tracker', roles: ['consumer'] },
-    { id: 'service-queue', label: ClipboardList, to: '/service-queue', roles: ['business_partner'] }, // Icon directly here
+    { id: 'service-queue', label: 'Service Queue', icon: ClipboardList, to: '/service-queue', roles: ['business_partner'] }, // Icon directly here
     { id: 'product-catalog', label: 'Product Catalog', icon: Book, to: '/product-catalog', roles: ['business_partner'] },
     { id: 'analytics', label: 'Analytics', icon: BarChart, to: '/analytics', roles: ['business_partner'] },
     { id: 'active-jobs', label: 'Active Jobs', icon: ClipboardList, to: '/active-jobs', roles: ['service_center'] },

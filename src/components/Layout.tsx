@@ -2,10 +2,8 @@ import { ModeToggle } from "@/components/theme-toggle";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
-import {
-  Sidebar,
-  SidebarProvider,
-} from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/providers/SidebarProvider";
+import { Sidebar } from "@/components/ui/sidebar";
 import { Topbar } from "@/components/ui/Topbar";
 import { RoleGuard } from "@/components/ui/RoleGuard"; // Import RoleGuard
 import { Shield, Package, Wrench, LogOut, LayoutDashboard, ClipboardList, Book, BarChart, User, Info, ShieldCheck, MessageSquare, FileText } from "lucide-react";

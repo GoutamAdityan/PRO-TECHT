@@ -2,7 +2,7 @@
 // src/components/ui/Topbar.tsx
 import React from 'react';
 import { cn } from '@/lib/utils';
-import { useSidebar } from './sidebar';
+import { useSidebar } from '@/hooks/useSidebar';
 import { Button } from './button';
 import { PanelLeft } from 'lucide-react';
 
