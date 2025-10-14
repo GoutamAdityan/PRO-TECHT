@@ -39,6 +39,8 @@ type PasswordFormValues = z.infer<typeof passwordFormSchema>;
 const Profile = () => {
   const { user, profile, updateProfile, updateEmail, updatePassword } = useAuth();
   const shouldReduceMotion = useReducedMotion();
+  const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false);
+  const [isPasswordDialogOpen, setIsPasswordDialogOpen] = useState(false);
 
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
@@ -230,7 +232,7 @@ const Profile = () => {
               </CardHeader>
               <CardContent className="px-0 pb-0 flex-grow space-y-4">
                 {/* Change Email Dialog */}
-                <Dialog>
+                <Dialog open={isEmailDialogOpen} onOpenChange={setIsEmailDialogOpen}>
                   <DialogTrigger asChild>
                     <Button className="w-full justify-start px-6 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold rounded-full shadow-lg
                                        hover:translate-y-[-2px] transition-all duration-200 ease-out
@@ -263,7 +265,7 @@ const Profile = () => {
                           <Button type="submit" className="px-6 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold rounded-full shadow-lg
                                                      hover:translate-y-[-2px] transition-all duration-200 ease-out
                                                      shadow-[0_0_15px_rgba(34,197,94,0.25)] hover:shadow-[0_0_25px_rgba(34,197,94,0.4)]">Confirm Change</Button>
-                          <Button type="button" variant="outline" onClick={() => emailForm.reset()} className="px-6 py-2 rounded-full border-border/50 hover:bg-accent/10 hover:text-accent-foreground">Cancel</Button>
+                          <Button type="button" variant="outline" onClick={() => setIsEmailDialogOpen(false)} className="px-6 py-2 rounded-full border-border/50 hover:bg-accent/10 hover:text-accent-foreground">Cancel</Button>
                         </div>
                       </form>
                     </Form>
@@ -271,7 +273,7 @@ const Profile = () => {
                 </Dialog>
 
                 {/* Change Password Dialog */}
-                <Dialog>
+                <Dialog open={isPasswordDialogOpen} onOpenChange={setIsPasswordDialogOpen}>
                   <DialogTrigger asChild>
                     <Button className="w-full justify-start px-6 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold rounded-full shadow-lg
                                        hover:translate-y-[-2px] transition-all duration-200 ease-out
@@ -317,7 +319,7 @@ const Profile = () => {
                           <Button type="submit" className="px-6 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold rounded-full shadow-lg
                                                      hover:translate-y-[-2px] transition-all duration-200 ease-out
                                                      shadow-[0_0_15px_rgba(34,197,94,0.25)] hover:shadow-[0_0_25px_rgba(34,197,94,0.4)]">Change Password</Button>
-                          <Button type="button" variant="outline" onClick={() => passwordForm.reset()} className="px-6 py-2 rounded-full border-border/50 hover:bg-accent/10 hover:text-accent-foreground">Cancel</Button>
+                          <Button type="button" variant="outline" onClick={() => setIsPasswordDialogOpen(false)} className="px-6 py-2 rounded-full border-border/50 hover:bg-accent/10 hover:text-accent-foreground">Cancel</Button>
                         </div>
                       </form>
                     </Form>
