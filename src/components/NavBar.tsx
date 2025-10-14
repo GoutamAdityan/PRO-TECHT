@@ -13,7 +13,7 @@ const NavBar = forwardRef<HTMLElement>((props, ref) => {
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       transition={{ duration: 0.5 }}
-      className="fixed top-0 left-0 right-0 z-50 py-4 px-8 bg-transparent backdrop-filter backdrop-blur-lg bg-opacity-30 border-b border-gray-800"
+      className="fixed top-0 left-0 right-0 z-[999] py-4 px-8 bg-transparent backdrop-filter backdrop-blur-lg bg-opacity-30 border-b border-gray-800"
     >
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-2xl font-bold text-white">ServiceBridge</Link>
