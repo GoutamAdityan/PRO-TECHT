@@ -1,7 +1,7 @@
 import React from 'react';
 import { cn } from '@/lib/utils';
 
-export type JobStatus = "Pending" | "In Progress" | "Completed" | "Unread";
+export type JobStatus = "Pending" | "In Progress" | "Completed" | "Unread" | "Approved" | "Rejected";
 
 interface StatusBadgeProps {
   status: JobStatus;
