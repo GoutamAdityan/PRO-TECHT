@@ -21,7 +21,7 @@ import ServiceQueue from "./pages/ServiceQueue";
 import ProductCatalog from "./pages/ProductCatalog";
 import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
-import About from "./pages/About";
+import { About } from "./pages/About";
 import ActiveJobs from "./pages/ActiveJobs";
 import CustomerCommunication from "./pages/CustomerCommunication";
 import ServiceReports from "./pages/ServiceReports";

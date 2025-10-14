@@ -40,7 +40,7 @@ const About = () => {
             transition={{ duration: 0.5, delay: 0.4 }}
             className="text-5xl md:text-6xl font-heading font-bold text-foreground tracking-tight mb-4"
           >
-            Welcome to ServiceBridge
+            Welcome to Pro-Techt
           </motion.h1>
           <motion.p
             initial={{ y: -20, opacity: 0 }}
@@ -130,9 +130,9 @@ const About = () => {
           </div>
         </motion.div>
 
-        {/* The ServiceBridge Difference */}
+        {/* The Pro-Techt Difference */}
         <motion.div variants={itemVariants} className="text-center pt-8">
-          <h2 className="text-3xl font-heading font-bold">The ServiceBridge Difference</h2>
+          <h2 className="text-3xl font-heading font-bold">The Pro-Techt Difference</h2>
           <p className="text-xl text-muted-foreground mt-2">
             Join us in building a world where every product is backed by a seamless service experience.
           </p>
@@ -142,4 +142,4 @@ const About = () => {
   );
 };
 
-export default About;
+export { About };

@@ -1,6 +1,6 @@
 # UI Grand Redesign Feature
 
-This document outlines the comprehensive visual redesign applied across the ServiceBridge application, focusing on a bold, modern, and elegant aesthetic with enhanced user experience and accessibility.
+This document outlines the comprehensive visual redesign applied across the Pro-Techt application, focusing on a bold, modern, and elegant aesthetic with enhanced user experience and accessibility.
 
 ## Design Principles
 
