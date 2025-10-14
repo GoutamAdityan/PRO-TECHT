@@ -14,205 +14,192 @@ import { Textarea } from "@/components/ui/textarea";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useEffect, useState } from "react";
-import { ProductSelector } from '@/components/ui/ProductSelector';
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'; // Added AnimatePresence, useReducedMotion
-import { mockRealtimeAdapter } from '@/lib/realtime/mockAdapter';
-import { Send } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { Send, Plus, Wrench, Image as ImageIcon } from 'lucide-react';
+import { ProductDropdown } from "@/components/ui/ProductDropdown";
+import { Uploader } from "@/components/ui/Uploader";
 
-interface SelectedProduct {
-  type: string;
+// 1. Updated Schema with optional image
+const serviceRequestSchema = z.object({
+  product_id: z.string().min(1, "Please select a product"),
+  issue_description: z.string().min(10, "Please describe the issue in at least 10 characters"),
+  image_file: z.instanceof(File).optional(),
+});
+
+interface Product {
+  id: string;
   brand: string;
   model: string;
 }
 
-const serviceRequestSchema = z.object({
-  product_type: z.string().min(1, "Product type is required"),
-  product_brand: z.string().min(1, "Product brand is required"),
-  product_model: z.string().min(1, "Product model is required"),
-  issue_description: z.string().min(10, "Please describe the issue in at least 10 characters"),
-});
-
 const NewServiceRequest = () => {
-  const { user, profile } = useAuth();
+  const { user } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
-  const shouldReduceMotion = useReducedMotion(); // Added useReducedMotion
-
-  const [selectedProduct, setSelectedProduct] = useState<SelectedProduct | null>(null);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof serviceRequestSchema>>({
     resolver: zodResolver(serviceRequestSchema),
     defaultValues: {
-      product_type: "",
-      product_brand: "",
-      product_model: "",
+      product_id: "",
       issue_description: "",
     },
   });
 
   useEffect(() => {
-    if (selectedProduct) {
-      form.setValue('product_type', selectedProduct.type);
-      form.setValue('product_brand', selectedProduct.brand);
-      form.setValue('product_model', selectedProduct.model);
-    } else {
-      form.setValue('product_type', '');
-      form.setValue('product_brand', '');
-      form.setValue('product_model', '');
-    }
-  }, [selectedProduct, form]);
+    const fetchProducts = async () => {
+      if (!user) return;
+      setLoading(true);
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('id, brand, model')
+          .eq('user_id', user.id);
 
+        if (error) throw error;
+        setProducts(data || []);
+      } catch (error: any) {
+        toast({ title: "Error fetching products", description: error.message, variant: "destructive" });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProducts();
+  }, [user, toast]);
+
+  // 2. Updated onSubmit to handle image upload
   const onSubmit = async (values: z.infer<typeof serviceRequestSchema>) => {
-    if (!user || !profile) return;
-
+    if (!user) return;
     setIsSubmitting(true);
-    try {
-      const { data, error } = await supabase.from("service_requests").insert([
-        {
-          user_id: user.id,
-          product_type: values.product_type,
-          product_brand: values.product_brand,
-          product_model: values.product_model,
-          issue_description: values.issue_description,
-          status: "Pending", // Initial status
-        },
-      ]).select(); // Select the inserted data to get its ID
+    let imageUrl: string | null = null;
 
-      if (error) {
-        throw error;
+    try {
+      // Upload image if one is provided
+      if (values.image_file) {
+        const file = values.image_file;
+        const filePath = `${user.id}/${Date.now()}-${file.name}`;
+        const { error: uploadError } = await supabase.storage
+          .from('service_request_images')
+          .upload(filePath, file);
+
+        if (uploadError) throw uploadError;
+
+        const { data: urlData } = supabase.storage
+          .from('service_request_images')
+          .getPublicUrl(filePath);
+        imageUrl = urlData.publicUrl;
       }
 
-      const newRequest = data[0];
+      // Create the service request record
+      const { error: requestError } = await supabase.from("service_requests").insert([
+        {
+          user_id: user.id,
+          product_id: values.product_id,
+          issue_description: values.issue_description,
+          image_url: imageUrl, // Save the image URL
+          status: "Pending",
+        },
+      ]);
 
-      // Notify service centers via mock adapter
-      mockRealtimeAdapter.emit('newRequest', {
-        id: newRequest.id,
-        requestId: newRequest.id, // Assuming id is also requestId for now
-        productName: `${newRequest.product_brand} ${newRequest.product_model}`,
-        customerName: profile.full_name || user.email || 'Unknown',
-        requestDate: new Date(newRequest.created_at).toISOString().split('T')[0],
-        status: newRequest.status,
-        assignedCenter: '',
-      });
+      if (requestError) throw requestError;
 
-      toast({
-        title: "Service request created",
-        description: "Your service request has been submitted.",
-      });
+      toast({ title: "Service request created", description: "Your service request has been submitted." });
       navigate("/service-requests");
     } catch (error: any) {
-      console.error("Error creating service request:", error.message);
-      toast({
-        title: "Error creating service request",
-        description: error.message,
-        variant: "destructive",
-      });
+      toast({ title: "Error creating service request", description: error.message, variant: "destructive" });
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Global easing for primary transitions (matching dashboard/product vault)
-  const globalEasing = [0.22, 0.9, 0.32, 1];
+  if (loading) {
+    return <div className="text-center py-10">Loading products...</div>;
+  }
 
-  const containerVariants = {
-    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 50 },
-    show: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        staggerChildren: 0.07,
-        delayChildren: 0.2,
-        ease: "easeOut",
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { y: shouldReduceMotion ? 0 : 20, opacity: 0, filter: shouldReduceMotion ? 'none' : 'blur(8px)' },
-    show: { y: 0, opacity: 1, filter: 'blur(0px)', transition: { duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" } },
-  };
+  if (products.length === 0) {
+    return (
+      <div className="max-w-3xl mx-auto px-6 py-10 text-center">
+        <Wrench className="w-16 h-16 mx-auto text-muted-foreground mb-4" />
+        <h1 className="text-2xl font-bold mb-2">No Products Found</h1>
+        <p className="text-muted-foreground mb-6">You need to add a product to your vault before you can create a service request.</p>
+        <Button asChild>
+          <Link to="/products/new">
+            <Plus className="h-5 w-5 mr-2" /> Add a Product
+          </Link>
+        </Button>
+      </div>
+    );
+  }
 
   return (
-    <motion.div
-      initial="hidden"
-      animate="show"
-      exit={{ opacity: 0, y: shouldReduceMotion ? 0 : -30, filter: shouldReduceMotion ? 'none' : 'blur(10px)', transition: { duration: shouldReduceMotion ? 0 : 0.6, ease: "easeOut" } }}
-      variants={containerVariants}
-      className="max-w-3xl mx-auto px-6 py-10 text-white" // Centered with max-width and generous padding
-    >
-      <motion.div variants={itemVariants}>
-        <h1 className="text-4xl font-bold leading-tight mb-6">Create a New Service Request</h1>
-      </motion.div>
-
-      <motion.div variants={itemVariants}>
-        <Card className="bg-[rgba(18,26,22,0.45)] backdrop-blur-sm border border-[rgba(255,255,255,0.03)] rounded-2xl p-6 shadow-xl">
-          <CardHeader className="px-0 pt-0">
-            <CardTitle className="text-2xl font-bold leading-normal">Service Request Details</CardTitle>
-            <CardDescription className="text-base text-gray-400 leading-relaxed">Please provide details about the product and the issue you are experiencing.</CardDescription>
-          </CardHeader>
-          <CardContent className="px-0 pb-0">
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <FormField
-                  control={form.control}
-                  name="product_type"
-                  render={() => (
-                    <motion.div variants={itemVariants}>
-                      <FormItem>
-                        <FormLabel className="text-gray-300">Product</FormLabel>
-                        <ProductSelector onProductSelect={setSelectedProduct} className="mt-1" />
-                        <FormMessage />
-                      </FormItem>
-                    </motion.div>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="issue_description"
-                  render={({ field }) => (
-                    <motion.div variants={itemVariants}>
-                      <FormItem>
-                        <FormLabel className="text-gray-300">Issue Description</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Please describe the issue with your product in detail."
-                            {...field}
-                            className="bg-[rgba(18,26,22,0.45)] border-[rgba(255,255,255,0.03)] text-white focus-visible:ring-green-400 focus-visible:ring-offset-0"
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    </motion.div>
-                  )}
-                />
-                <motion.div variants={itemVariants}>
-                  <Button
-                    type="submit"
-                    className="w-full h-12 px-6 rounded-full bg-gradient-to-br from-green-600 to-green-700 text-white font-medium shadow-lg
-                               hover:from-green-700 hover:to-green-800 transition-all duration-300 ease-out
-                               focus:outline-none focus:ring-4 focus:ring-green-500 focus:ring-opacity-50"
-                    whileHover={{ scale: 1.02, boxShadow: shouldReduceMotion ? 'none' : '0 0 15px rgba(34, 197, 94, 0.5)' }}
-                    whileTap={{ scale: 0.985 }}
-                    transition={{ duration: 0.2, ease: "easeOut" }}
-                    disabled={isSubmitting || !selectedProduct}
-                  >
-                    {isSubmitting ? 'Submitting...' : (
-                      <>
-                        <Send className="h-5 w-5 mr-2" /> Submit Request
-                      </>
-                    )}
-                  </Button>
-                </motion.div>
-              </form>
-            </Form>
-          </CardContent>
-        </Card>
-      </motion.div>
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="max-w-3xl mx-auto px-6 py-10">
+      <h1 className="text-4xl font-bold leading-tight mb-6">Create a New Service Request</h1>
+      <Card className="bg-card border-border rounded-2xl p-6 shadow-xl">
+        <CardContent className="px-0 pb-0">
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              <FormField
+                control={form.control}
+                name="product_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xl font-bold">1. Select a Product</FormLabel>
+                    <FormControl>
+                      <ProductDropdown products={products} value={field.value} onChange={field.onChange} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="issue_description"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xl font-bold">2. Describe the Issue</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="e.g., The screen is flickering and showing distorted colors."
+                        {...field}
+                        className="bg-background border-border text-foreground focus-visible:ring-ring"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              {/* 3. Uploader Component Added */}
+              <FormField
+                control={form.control}
+                name="image_file"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xl font-bold flex items-center gap-2">
+                      <ImageIcon className="h-5 w-5" /> 3. Add an Image (Optional)
+                    </FormLabel>
+                    <FormControl>
+                      <Uploader
+                        onFilesChange={(files) => form.setValue('image_file', files[0])}
+                        maxFiles={1}
+                        accept={{ 'image/*': ['.jpeg', '.png', '.gif'] }}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <Button type="submit" className="w-full h-12" disabled={isSubmitting}>
+                {isSubmitting ? 'Submitting...' : <><Send className="h-5 w-5 mr-2" /> Submit Request</>}
+              </Button>
+            </form>
+          </Form>
+        </CardContent>
+      </Card>
     </motion.div>
   );
 };
