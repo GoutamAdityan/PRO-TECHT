@@ -21,6 +21,7 @@ import ServiceQueue from "./pages/ServiceQueue";
 import ProductCatalog from "./pages/ProductCatalog";
 import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
 import { About } from "./pages/About";
 import ActiveJobs from "./pages/ActiveJobs";
 import CustomerCommunication from "./pages/CustomerCommunication";
@@ -30,6 +31,8 @@ import PageTransition from "@/components/PageTransition";
 import AuthRedirector from "@/components/AuthRedirector"; // Import AuthRedirector
 import ConsumerDashboard from "./pages/ConsumerDashboard";
 import BusinessPartnerDashboard from "./pages/BusinessPartnerDashboard";
+import Contact from "./pages/Contact";
+import TermsOfService from "./pages/Terms";
 
 const queryClient = new QueryClient();
 
@@ -62,6 +65,9 @@ const App = () => {
                   <Route path="/analytics" element={<Analytics />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route path="/about" element={<About />} />
+                  <Route path="/privacy" element={<PrivacyPolicy />} />
+                  <Route path="/contact" element={<Contact />} />
+                  <Route path="/terms" element={<TermsOfService />} />
                   <Route path="/active-jobs" element={<ActiveJobs />} />
                                   <Route path="/customer-communication" element={<CustomerCommunication />} />
                                   <Route path="/service-reports" element={<ServiceReports />} />
