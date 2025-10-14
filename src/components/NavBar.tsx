@@ -16,7 +16,7 @@ const NavBar = forwardRef<HTMLElement>((props, ref) => {
       className="fixed top-0 left-0 right-0 z-[999] py-4 px-8 bg-transparent backdrop-filter backdrop-blur-lg bg-opacity-30 border-b border-gray-800"
     >
       <div className="container mx-auto flex justify-between items-center">
-        <Link to="/" className="text-2xl font-bold text-white">ServiceBridge</Link>
+        <Link to="/" className="text-2xl font-bold text-white">Pro-Techt</Link>
         <div className="hidden md:flex items-center space-x-4">
           <motion.div whileHover={{ scale: 1.05 }} transition={{ type: 'spring', stiffness: 300 }}>
             <Link to="/auth" className="bg-accent text-black py-2 px-4 rounded-full hover:bg-opacity-80 transition-colors duration-300">Login</Link>

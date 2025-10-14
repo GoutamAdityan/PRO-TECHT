@@ -14,8 +14,8 @@ const MainLayout = () => {
 
   const getPageTitle = (pathname: string) => {
     switch (pathname) {
-      case "/":
-        return "ServiceBridge"; // Default for homepage, not dashboard anymore
+case "/":
+        return "Pro-Techt"; // Default for homepage, not dashboard anymore
       case "/consumer-dashboard":
         return "Consumer Dashboard";
       case "/products":
@@ -33,7 +33,7 @@ const MainLayout = () => {
       case "/about":
         return "About Us";
       default:
-        return "ServiceBridge";
+        return "Pro-Techt";
     }
   };
 
