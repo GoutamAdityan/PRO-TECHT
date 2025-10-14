@@ -49,7 +49,7 @@ const HomePage = () => {
       <main className="container mx-auto px-4">
         {/* Hero Section */}
         <motion.section
-          className="min-h-screen text-center flex flex-col items-center justify-center relative"
+          className="min-h-screen text-center flex flex-col items-center justify-start relative"
           style={{ minHeight: `calc(100vh - ${navbarHeight}px)` }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -59,8 +59,8 @@ const HomePage = () => {
           <h1 className="text-4xl md:text-6xl font-bold text-heading mb-4 -mt-12 md:-mt-20 relative z-10">Manage warranties & service requests — in one calm place.</h1>
           <p className="text-lg md:text-xl text-text max-w-2xl mx-auto mb-8 relative z-10">Track, protect, and get help for your devices. Quick setup, smart reminders.</p>
           <div className="flex space-x-4 relative z-10">
-            <Link to="/auth" className="bg-accent text-black py-3 px-6 rounded-full font-semibold hover:bg-opacity-80 transition-colors duration-300 flex items-center">Get Started <ArrowRight className="ml-2" /></Link>
-            <a href="#features" onClick={handleScroll} className="bg-gray-800 text-white py-3 px-6 rounded-full font-semibold hover:bg-gray-700 transition-colors duration-300">Learn More</a>
+            <Link to="/auth" className="border border-white text-white py-3 px-6 rounded-full font-semibold hover:bg-green-700 hover:border-green-700 transition-colors duration-300 flex items-center">Get Started <ArrowRight className="ml-2" /></Link>
+            <a href="#features" onClick={handleScroll} className="border border-white text-white py-3 px-6 rounded-full font-semibold hover:bg-green-700 hover:border-green-700 transition-colors duration-300">Learn More</a>
           </div>
         </motion.section>
 
