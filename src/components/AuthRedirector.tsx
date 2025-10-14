@@ -16,7 +16,7 @@ const AuthRedirector = () => {
           redirectPath = "/consumer-dashboard";
           break;
         case "business_partner":
-          redirectPath = "/service-requests";
+          redirectPath = "/business-partner-dashboard";
           break;
         case "service_center":
           redirectPath = "/service-queue";
