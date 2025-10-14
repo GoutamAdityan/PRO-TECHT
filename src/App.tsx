@@ -31,6 +31,7 @@ import PageTransition from "@/components/PageTransition";
 import AuthRedirector from "@/components/AuthRedirector"; // Import AuthRedirector
 import ConsumerDashboard from "./pages/ConsumerDashboard";
 import BusinessPartnerDashboard from "./pages/BusinessPartnerDashboard";
+import * as ServiceCenterDashboardModule from "./pages/ServiceCenterDashboard";
 import Contact from "./pages/Contact";
 import TermsOfService from "./pages/Terms";
 
@@ -72,7 +73,8 @@ const App = () => {
                                   <Route path="/customer-communication" element={<CustomerCommunication />} />
                                   <Route path="/service-reports" element={<ServiceReports />} />
                                   <Route path="/consumer-dashboard" element={<PageTransition><ConsumerDashboard /></PageTransition>} />
-                                  <Route path="/business-partner-dashboard" element={<PageTransition><BusinessPartnerDashboard /></PageTransition>} />                </Route>
+                                  <Route path="/business-partner-dashboard" element={<PageTransition><BusinessPartnerDashboard /></PageTransition>} />
+                                  <Route path="/service-center-dashboard" element={<PageTransition><ServiceCenterDashboardModule.default /></PageTransition>} />                </Route>
                 <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
               </Routes>
             </AnimatePresence>
