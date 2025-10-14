@@ -47,3 +47,15 @@ export const headerIconVariants: Variants = {
   hidden: { opacity: 0, scale: 0.9 },
   show: { opacity: 1, scale: 1, transition: { duration: 0.4, ease: "easeOut" } },
 };
+
+export const rowVariants: Variants = {
+  hidden: { opacity: 0, x: -6 },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: {
+      duration: 0.28,
+      ease: [0.2, 0.8, 0.2, 1],
+    },
+  },
+};
