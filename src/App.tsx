@@ -32,8 +32,10 @@ import AuthRedirector from "@/components/AuthRedirector"; // Import AuthRedirect
 import ConsumerDashboard from "./pages/ConsumerDashboard";
 import BusinessPartnerDashboard from "./pages/BusinessPartnerDashboard";
 import * as ServiceCenterDashboardModule from "./pages/ServiceCenterDashboard";
+import Community from "./pages/Community";
 import Contact from "./pages/Contact";
 import TermsOfService from "./pages/Terms";
+import ModerationDashboard from "./pages/ModerationDashboard";
 
 const queryClient = new QueryClient();
 
@@ -72,9 +74,12 @@ const App = () => {
                   <Route path="/active-jobs" element={<ActiveJobs />} />
                                   <Route path="/customer-communication" element={<CustomerCommunication />} />
                                   <Route path="/service-reports" element={<ServiceReports />} />
-                                  <Route path="/consumer-dashboard" element={<PageTransition><ConsumerDashboard /></PageTransition>} />
+                                  <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
+                  <Route path="/consumer-dashboard" element={<PageTransition><ConsumerDashboard /></PageTransition>} />
                                   <Route path="/business-partner-dashboard" element={<PageTransition><BusinessPartnerDashboard /></PageTransition>} />
-                                  <Route path="/service-center-dashboard" element={<PageTransition><ServiceCenterDashboardModule.default /></PageTransition>} />                </Route>
+                                  <Route path="/service-center-dashboard" element={<PageTransition><ServiceCenterDashboardModule.default /></PageTransition>} />
+                                  <Route path="/moderation-dashboard" element={<PageTransition><ModerationDashboard /></PageTransition>} />
+                </Route>
                 <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
               </Routes>
             </AnimatePresence>
@@ -86,5 +91,3 @@ const App = () => {
 };
 
 export default App;
-
-

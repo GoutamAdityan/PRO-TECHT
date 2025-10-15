@@ -79,6 +79,7 @@
     --warning-badge-text: 45 90% 30%;
     --destructive-badge-bg: 0 70% 90%;
     --destructive-badge-text: 0 70% 35%;
+    --neon-green: 158 39% 30%;
   }
 
   .dark {
@@ -140,6 +141,9 @@
     --warning-badge-text: 45 90% 70%;
     --destructive-badge-bg: 0 70% 20%;
     --destructive-badge-text: 0 70% 70%;
+
+    --radio-bright-primary: 158 70% 60%; /* Brighter green for radio buttons */
+    --radio-bright-foreground: 140 25% 95%; /* Lighter text for radio buttons */
   }
 }
 
@@ -195,5 +199,61 @@
     &:hover {
       @apply bg-accent text-accent-foreground;
     }
+  }
+
+  .glassmorphic-dark {
+    background-color: rgba(19, 26, 24, 0.8); /* deep green-black */
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(46, 107, 79, 0.3); /* neon-green accent border */
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(46, 107, 79, 0.2);
+  }
+
+  .neon-green-accent {
+    background-color: #2E6B4F; /* primary green */
+    color: #E0F2E9;
+    box-shadow: 0 0 10px #2E6B4F, 0 0 20px #2E6B4F;
+  }
+
+  /* Custom styles for brighter radio buttons */
+  .radio-bright {
+    border-color: hsl(var(--radio-bright-primary));
+    color: hsl(var(--radio-bright-primary));
+  }
+  .radio-bright:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 2px hsl(var(--ring)), 0 0 0 4px hsl(var(--radio-bright-primary));
+  }
+  .radio-bright[data-state="checked"] {
+    background-color: hsl(var(--radio-bright-primary));
+    border-color: hsl(var(--radio-bright-primary));
+  }
+  .text-radio-bright {
+    color: hsl(var(--radio-bright-foreground));
+  }
+
+  /* Custom scrollbar styles */
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px; /* width of the entire scrollbar */
+    height: 8px; /* height of the entire scrollbar */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-button {
+    display: none; /* hide scrollbar buttons */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(19, 26, 24, 0.5); /* color of the tracking area */
+    border-radius: 10px; /* roundness of the track */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground)); /* color of the scroll thumb */
+    border-radius: 10px; /* roundness of the scroll thumb */
+    border: 2px solid transparent; /* creates padding around thumb */
+    background-clip: padding-box; /* ensures border is outside the thumb */
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--neon-green)); /* brighter color on hover */
   }
 }
