@@ -48,12 +48,12 @@ const gridItemVariants = {
 const ReactionButton = ({ icon, count, label, onReact, isReacted }) => {
   const IconComponent = icon;
   return (
-    <Button variant="ghost" size="xs" className={`flex items-center gap-x-1 ${isReacted ? 'text-green-400' : 'text-gray-400'} hover:text-green-400`} onClick={onReact}>
-      <motion.div whileTap={{ scale: 1.5, transition: { duration: DURATION_SMALL, ease: SMOOTH_EASE } }}>
-        <IconComponent className={`w-3.5 h-3.5 ${isReacted ? 'fill-current' : ''}`} />
+    <Button variant="ghost" size="sm" className={`flex items-center gap-x-2 text-sm ${isReacted ? 'text-green-500' : 'text-gray-400'} hover:text-green-500 transition-colors duration-200`} onClick={onReact}>
+      <motion.div whileTap={{ scale: 1.2, transition: { duration: DURATION_SMALL, ease: SMOOTH_EASE } }}>
+        <IconComponent className={`w-4 h-4 ${isReacted ? 'fill-current' : ''}`} />
       </motion.div>
       <span>{label}</span>
-      <span className="text-xs">{count}</span>
+      {count !== undefined && <span className="text-xs">{count}</span>}
     </Button>
   );
 };
@@ -157,7 +157,7 @@ const PostCard: React.FC<PostCardProps> = ({
       )}
 
       <div className="mt-3 flex items-center justify-between text-gray-400">
-        <div className="flex items-center gap-x-1">
+        <div className="flex items-center gap-x-4"> {/* Increased gap-x to 1rem */}
           <ReactionButton
             icon={ThumbsUp}
             count={reactions.likes}
@@ -172,19 +172,19 @@ const PostCard: React.FC<PostCardProps> = ({
             onReact={() => handleReaction('helpful')}
             isReacted={reacted.helpful}
           />
-          <Button variant="ghost" size="xs" className="flex items-center gap-x-1 text-gray-400 hover:text-green-400" onClick={() => setPostDetailModalOpen(true)}>
-            <MessageCircle className="w-3.5 h-3.5" />
+          <Button variant="ghost" size="sm" className="flex items-center gap-x-2 text-sm text-gray-400 hover:text-green-500 transition-colors duration-200" onClick={() => setPostDetailModalOpen(true)}>
+            <MessageCircle className="w-4 h-4" /> {/* Increased icon size */}
             <span>Comment</span>
           </Button>
-          <Button variant="ghost" size="xs" className="flex items-center gap-x-1 text-gray-400 hover:text-green-400" onClick={handleShare}>
-            <Share2 className="w-3.5 h-3.5" />
+          <Button variant="ghost" size="sm" className="flex items-center gap-x-2 text-sm text-gray-400 hover:text-green-500 transition-colors duration-200" onClick={handleShare}>
+            <Share2 className="w-4 h-4" /> {/* Increased icon size */}
             <span>Share</span>
           </Button>
         </div>
-        <div className="flex items-center gap-x-1">
+        <div className="flex items-center gap-x-4"> {/* Increased gap-x to 1rem */}
             <span className="text-xs bg-gray-700 text-gray-300 px-1.5 py-0.5 rounded-md">{category}</span>
-            <Button variant="ghost" size="xs" className="flex items-center gap-x-1 text-gray-400 hover:text-red-500" onClick={() => setReportModalOpen(true)}>
-                <Flag className="w-3.5 h-3.5" />
+            <Button variant="ghost" size="sm" className="flex items-center gap-x-2 text-sm text-gray-400 hover:text-red-500 transition-colors duration-200" onClick={() => setReportModalOpen(true)}>
+                <Flag className="w-4 h-4" /> {/* Increased icon size */}
                 <span>Report</span>
             </Button>
         </div>
