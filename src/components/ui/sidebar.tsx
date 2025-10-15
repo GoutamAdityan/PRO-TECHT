@@ -48,7 +48,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
     { id: 'active-jobs', label: 'Active Jobs', icon: ClipboardList, to: '/active-jobs', roles: ['service_center'] },
     { id: 'customer-communication', label: 'Customer Communication', icon: MessageSquare, to: '/customer-communication', roles: ['service_center'] },
     { id: 'service-reports', label: 'Service Reports', icon: FileText, to: '/service-reports', roles: ['service_center'] },
-    { id: 'community', label: 'Community', icon: Users, to: '/community', roles: ['consumer', 'business_partner', 'service_center'] },
+    { id: 'community', label: 'Community', icon: Users, to: '/community', roles: ['consumer'] },
   ].filter(item => item.roles.includes(profileRole || 'guest'));
 
   const footerNavItems = [
