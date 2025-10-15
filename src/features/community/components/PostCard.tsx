@@ -159,8 +159,8 @@ const PostCard: React.FC<PostCardProps> = ({
         </motion.div>
       )}
 
-      <div className="mt-3 flex items-center justify-between text-gray-400">
-        <div className="flex items-center gap-x-4"> {/* Increased gap-x to 1rem */}
+      <div className="mt-3 flex items-center text-gray-400"> {/* Removed justify-between */}
+        <div className="flex items-center gap-x-2"> {/* Left group */}
           <ReactionButton
             icon={ThumbsUp}
             count={reactions.likes}
@@ -184,12 +184,10 @@ const PostCard: React.FC<PostCardProps> = ({
             <span>Share</span>
           </Button>
         </div>
-        <div className="flex items-center"> {/* Removed gap-x-4 */}
-            <Button variant="ghost" size="sm" className="flex items-center gap-x-2 text-sm text-gray-400 hover:text-red-500 transition-colors duration-200" onClick={() => setReportModalOpen(true)}>
-                <Flag className="w-4 h-4" /> {/* Increased icon size */}
-                <span>Report</span>
-            </Button>
-        </div>
+        <Button variant="ghost" size="sm" className="flex items-center gap-x-2 text-sm text-gray-400 hover:text-red-500 transition-colors duration-200 ml-auto" onClick={() => setReportModalOpen(true)}> {/* Added ml-auto */}
+            <Flag className="w-4 h-4" />
+            <span>Report</span>
+        </Button>
       </div>
       <ReportModal
         isOpen={isReportModalOpen}
