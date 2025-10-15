@@ -7,6 +7,23 @@ import { PostCard } from '@/features/community/components/PostCard'; // Changed 
 import PostComposer from '@/components/custom/PostComposer';
 import { Button } from '@/components/ui/button';
 import { postCategories } from '@/features/community/data';
+import { Users } from 'lucide-react'; // Import Users icon
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.1,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { y: 12, opacity: 0 },
+  visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
+};
 
 // Mock data for community posts
 const mockPosts = [
@@ -76,23 +93,34 @@ const Community: React.FC = () => {
 
   return (
     <motion.div
-      className="max-w-6xl mx-auto px-6 py-6 text-white"
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
+      className="max-w-6xl mx-auto px-6 py-6"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
     >
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+      <div className="flex items-center gap-3 mb-6">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="p-2 rounded-full bg-emerald-800/30 flex items-center justify-center"
+        >
+          <Users className="w-5 h-5 text-emerald-400" />
+        </motion.div>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Community Wall</h1>
+      </div>
+      <motion.div variants={itemVariants} className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div className="flex flex-col">
-          <h1 className="text-4xl font-bold leading-tight mb-2">Community Wall</h1>
-          <p className="text-lg text-muted-foreground leading-relaxed">
+          <h1 className="text-4xl font-bold leading-tight mb-2 text-white">Community Wall</h1>
+          <p className="text-lg text-muted-foreground leading-relaxed text-gray-300">
             Connect with other users, share tips, and get help.
           </p>
         </div>
         <Button onClick={() => setIsPostComposerOpen(true)}>Create Post</Button>
-      </div>
+      </motion.div>
 
       {/* Filter Bar */}
-      <div className="bg-card/80 dark:bg-[#0f1713]/85 border border-border/50 backdrop-blur-sm p-4 rounded-lg mb-6 flex items-center gap-4">
+      <motion.div variants={itemVariants} className="bg-card/80 dark:bg-[#0f1713]/85 border border-border/50 backdrop-blur-sm p-4 rounded-lg mb-6 flex items-center gap-4">
         <Input
           placeholder="Search posts..."
           className="max-w-xs bg-gray-800 border-gray-700"
@@ -117,12 +145,14 @@ const Community: React.FC = () => {
             <SelectItem value="relevance">Most Relevant</SelectItem>
           </SelectContent>
         </Select>
-      </div>
+      </motion.div>
 
       {/* Posts List */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
         {filteredPosts.map(post => (
-          <PostCard key={post.id} {...post} />
+          <motion.div key={post.id} variants={itemVariants}>
+            <PostCard {...post} />
+          </motion.div>
         ))}
       </div>
 
