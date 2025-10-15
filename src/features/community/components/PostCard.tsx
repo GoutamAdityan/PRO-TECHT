@@ -109,7 +109,10 @@ const PostCard: React.FC<PostCardProps> = ({
         <div className="flex-1">
           <div className="flex items-center justify-between">
             <p className="text-sm font-semibold text-green-400">{author.name}</p>
-            <span className="text-xs text-gray-400">{timestamp}</span>
+            <div className="flex items-center gap-x-2"> {/* New div to group category and timestamp */}
+              <span className="text-xs bg-green-900/50 text-green-300 px-1.5 py-0.5 rounded-md">{category}</span> {/* Moved category here */}
+              <span className="text-xs text-gray-400">{timestamp}</span>
+            </div>
           </div>
           <h2 className="text-base font-bold text-white mt-0.5">{title}</h2>
           <div className="flex flex-wrap gap-x-1 my-1">
@@ -181,8 +184,7 @@ const PostCard: React.FC<PostCardProps> = ({
             <span>Share</span>
           </Button>
         </div>
-        <div className="flex items-center gap-x-4"> {/* Increased gap-x to 1rem */}
-            <span className="text-xs bg-gray-700 text-gray-300 px-1.5 py-0.5 rounded-md">{category}</span>
+        <div className="flex items-center"> {/* Removed gap-x-4 */}
             <Button variant="ghost" size="sm" className="flex items-center gap-x-2 text-sm text-gray-400 hover:text-red-500 transition-colors duration-200" onClick={() => setReportModalOpen(true)}>
                 <Flag className="w-4 h-4" /> {/* Increased icon size */}
                 <span>Report</span>
