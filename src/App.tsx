@@ -1,3 +1,4 @@
+
 import { ThemeProvider } from "@/components/theme-provider";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
@@ -34,6 +35,7 @@ import BusinessPartnerDashboard from "./pages/BusinessPartnerDashboard";
 import * as ServiceCenterDashboardModule from "./pages/ServiceCenterDashboard";
 import Contact from "./pages/Contact";
 import TermsOfService from "./pages/Terms";
+import ChatPage from "./pages/Chat";
 
 const queryClient = new QueryClient();
 
@@ -53,6 +55,7 @@ const App = () => {
                 <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
                 <Route path="/" element={<HomePage />} />
                 <Route element={<Layout />}>
+                  <Route path="/chat" element={<ChatPage />} />
                   <Route path="/products" element={<Products />} />
                   <Route path="/products/new" element={<NewProduct />} />
                   <Route path="/products/:id" element={<ProductDetails />} />
