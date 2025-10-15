@@ -2,8 +2,13 @@ import { motion } from 'framer-motion';
 import { FileText } from 'lucide-react';
 import NavBar from '@/components/NavBar';
 import Footer from '@/components/Footer';
+import { useEffect } from 'react';
 
 const TermsOfService = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   return (
     <div className="min-h-screen bg-background text-foreground">
       <NavBar />
@@ -55,7 +60,7 @@ const TermsOfService = () => {
                   You agree not to do any of the following:
                 </p>
                 <ul className="list-disc list-inside mt-4 space-y-2">
-                  <li>Post, upload, publish, submit or transmit any Content that: (i) infringes, misappropriates or violates a third party’s patent, copyright, trademark, trade secret, moral rights or other intellectual property rights, or rights of publicity or privacy; (ii) violates, or encourages any conduct that would violate, any applicable law or regulation or would give rise to civil liability; (iii) is fraudulent, false, misleading or deceptive; (iv) is defamatory, obscene, pornographic, vulgar or offensive; (v) promotes discrimination, bigotry, racism, hatred, harassment or harm against any individual or group; (vi) is violent or threatening or promotes violence or actions that are threatening to any person or entity; or (vii) promotes illegal or harmful activities or substances.</li>
+                  <li>Post, upload, publish, submit or transmit any Content that: (i) infringes, misappropriates or violates a third party’s patent, copyright, trademark, trade secret, moral rights or other intellectual property rights, or rights of publicity or privacy; (ii) violates, or encourages any conduct that would violate, any applicable law or regulation or would give rise to civil liability; (iii) is fraudulent, false, misleading or deceptive; (iv) is defamatory, obscene, pornographic, vulgar or offensive; (v) promotes discrimination, bigotry, racism, hatred, harassment or harm against any individual or group; or (vii) promotes illegal or harmful activities or substances.</li>
                   <li>Use, display, mirror or frame the Services or any individual element within the Services, Pro-Techt’s name, any Pro-Techt trademark, logo or other proprietary information, or the layout and design of any page or form contained on a page, without Pro-Techt’s express written consent;</li>
                 </ul>
               </section>
