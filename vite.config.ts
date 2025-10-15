@@ -13,11 +13,15 @@ export default defineConfig(({ mode }) => ({
     host: true,
     port: 8080,
     allowedHosts: ["product-care-flow.onrender.com"], // ✅ allow Render host
+    historyApiFallback: true, // Enable history API fallback for SPA routing
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
+  },
+  build: {
+    copyPublicDir: true, // Explicitly ensure public directory is copied
   },
 }));
