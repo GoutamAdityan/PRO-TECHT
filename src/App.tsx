@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { Routes, Route, useLocation } from "react-router-dom";
-import { AuthProvider } from "@/hooks/useAuth";
+import { Routes, Route, useLocation, Navigate } from "react-router-dom"; // Added Navigate
+import { AuthProvider, useAuth } from "@/hooks/useAuth"; // Added useAuth
 import HomePage from "./pages/HomePage";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
@@ -33,11 +33,35 @@ import AuthRedirector from "@/components/AuthRedirector"; // Import AuthRedirect
 import ConsumerDashboard from "./pages/ConsumerDashboard";
 import BusinessPartnerDashboard from "./pages/BusinessPartnerDashboard";
 import * as ServiceCenterDashboardModule from "./pages/ServiceCenterDashboard";
+import Community from "./pages/Community";
 import Contact from "./pages/Contact";
 import TermsOfService from "./pages/Terms";
+import ModerationDashboard from "./pages/ModerationDashboard";
 import ChatPage from "./pages/Chat";
 
 const queryClient = new QueryClient();
+
+// ProtectedRoute component for role-based access control
+interface ProtectedRouteProps {
+  children: React.ReactNode;
+  allowedRoles: string[];
+}
+
+const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
+  const { profile, isLoading } = useAuth();
+
+  if (isLoading) {
+    // Optionally render a loading spinner or placeholder
+    return <div>Loading...</div>;
+  }
+
+  if (!profile || !allowedRoles.includes(profile.role)) {
+    // Redirect to a "Not Found" page or login if not authorized
+    return <Navigate to="/not-found" replace />;
+  }
+
+  return <>{children}</>;
+};
 
 const App = () => {
   const location = useLocation();
@@ -73,11 +97,14 @@ const App = () => {
                   <Route path="/contact" element={<Contact />} />
                   <Route path="/terms" element={<TermsOfService />} />
                   <Route path="/active-jobs" element={<ActiveJobs />} />
-                                  <Route path="/customer-communication" element={<CustomerCommunication />} />
-                                  <Route path="/service-reports" element={<ServiceReports />} />
-                                  <Route path="/consumer-dashboard" element={<PageTransition><ConsumerDashboard /></PageTransition>} />
-                                  <Route path="/business-partner-dashboard" element={<PageTransition><BusinessPartnerDashboard /></PageTransition>} />
-                                  <Route path="/service-center-dashboard" element={<PageTransition><ServiceCenterDashboardModule.default /></PageTransition>} />                </Route>
+                  <Route path="/customer-communication" element={<CustomerCommunication />} />
+                  <Route path="/service-reports" element={<ServiceReports />} />
+                  <Route path="/community" element={<ProtectedRoute allowedRoles={['consumer']}><PageTransition><Community /></PageTransition></ProtectedRoute>} />
+                  <Route path="/consumer-dashboard" element={<PageTransition><ConsumerDashboard /></PageTransition>} />
+                  <Route path="/business-partner-dashboard" element={<PageTransition><BusinessPartnerDashboard /></PageTransition>} />
+                  <Route path="/service-center-dashboard" element={<PageTransition><ServiceCenterDashboardModule.default /></PageTransition>} />
+                  <Route path="/moderation-dashboard" element={<PageTransition><ModerationDashboard /></PageTransition>} />
+                </Route>
                 <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
               </Routes>
             </AnimatePresence>
@@ -89,5 +116,3 @@ const App = () => {
 };
 
 export default App;
-
-

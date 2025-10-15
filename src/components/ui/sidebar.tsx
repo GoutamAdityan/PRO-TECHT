@@ -2,7 +2,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { LogOut, Info, LayoutDashboard, ClipboardList, Book, BarChart, MessageSquare, FileText, ShieldCheck, Shield, User } from "lucide-react";
+import { LogOut, Info, LayoutDashboard, ClipboardList, Book, BarChart, MessageSquare, FileText, ShieldCheck, Shield, User, Users } from "lucide-react";
 
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
@@ -49,6 +49,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
     { id: 'active-jobs', label: 'Active Jobs', icon: ClipboardList, to: '/active-jobs', roles: ['service_center'] },
     { id: 'customer-communication', label: 'Customer Communication', icon: MessageSquare, to: '/customer-communication', roles: ['service_center'] },
     { id: 'service-reports', label: 'Service Reports', icon: FileText, to: '/service-reports', roles: ['service_center'] },
+    { id: 'community', label: 'Community', icon: Users, to: '/community', roles: ['consumer'] },
     { id: 'chat', label: 'AI Assistant', icon: MessageSquare, to: '/chat', roles: ['consumer', 'business_partner', 'service_center'] },
   ].filter(item => item.roles.includes(profileRole || 'guest'));
 
