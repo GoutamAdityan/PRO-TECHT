@@ -29,7 +29,7 @@ case "/":
       case "/service-reports":
         return "Service Reports";
       case "/profile":
-        return "Profile";
+        return "Pro-Techt";
       case "/about":
         return "About Us";
       default:

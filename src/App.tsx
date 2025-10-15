@@ -22,7 +22,7 @@ import ProductCatalog from "./pages/ProductCatalog";
 import Analytics from "./pages/Analytics";
 import Profile from "./pages/Profile";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
-import { About } from "./pages/About";
+import About from "./pages/About";
 import ActiveJobs from "./pages/ActiveJobs";
 import CustomerCommunication from "./pages/CustomerCommunication";
 import ServiceReports from "./pages/ServiceReports";
@@ -31,6 +31,7 @@ import PageTransition from "@/components/PageTransition";
 import AuthRedirector from "@/components/AuthRedirector"; // Import AuthRedirector
 import ConsumerDashboard from "./pages/ConsumerDashboard";
 import BusinessPartnerDashboard from "./pages/BusinessPartnerDashboard";
+import * as ServiceCenterDashboardModule from "./pages/ServiceCenterDashboard";
 import Community from "./pages/Community";
 import Contact from "./pages/Contact";
 import TermsOfService from "./pages/Terms";
@@ -76,6 +77,7 @@ const App = () => {
                                   <Route path="/community" element={<PageTransition><Community /></PageTransition>} />
                   <Route path="/consumer-dashboard" element={<PageTransition><ConsumerDashboard /></PageTransition>} />
                                   <Route path="/business-partner-dashboard" element={<PageTransition><BusinessPartnerDashboard /></PageTransition>} />
+                                  <Route path="/service-center-dashboard" element={<PageTransition><ServiceCenterDashboardModule.default /></PageTransition>} />
                                   <Route path="/moderation-dashboard" element={<PageTransition><ModerationDashboard /></PageTransition>} />
                 </Route>
                 <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />

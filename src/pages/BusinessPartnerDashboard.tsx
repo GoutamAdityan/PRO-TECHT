@@ -56,8 +56,6 @@ const BusinessPartnerDashboard: React.FC = () => {
         <RecentRequestsCard />
         <CatalogPreviewCard />
       </motion.div>
-
-      <QuickActionsRow />
     </motion.div>
   );
 };

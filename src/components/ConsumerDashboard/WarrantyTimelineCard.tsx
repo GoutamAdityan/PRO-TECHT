@@ -1,4 +1,4 @@
-import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Card } from '../../components/ui/card';
 import { Button } from '../../components/ui/button';
@@ -24,6 +24,7 @@ const getBadgeColor = (status: 'active' | 'nearing_expiry' | 'expired') => {
 };
 
 const WarrantyTimelineCard: React.FC<WarrantyTimelineCardProps> = ({ warrantyHistory, delay = 0 }) => {
+  const navigate = useNavigate();
   const relevantWarranties = warrantyHistory.filter(event =>
     event.type === 'Warranty Expiry' || event.status === 'nearing_expiry' || event.status === 'expired'
   ).sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()); // Sort by date
@@ -52,7 +53,7 @@ const WarrantyTimelineCard: React.FC<WarrantyTimelineCardProps> = ({ warrantyHis
                 <div className={`w-2 h-2 rounded-full mt-2 ${getBadgeColor(event.status)}`} />
                 <div>
                   <p className="text-foreground/90 font-medium">{event.productName}</p>
-                  <p className="text-foreground/70 text-sm">{event.description} on {event.date}</p>
+                  <p className="text-foreground/70 text-sm">{event.description}</p>
                 </div>
               </li>
             ))}
@@ -61,6 +62,7 @@ const WarrantyTimelineCard: React.FC<WarrantyTimelineCardProps> = ({ warrantyHis
           <p className="text-foreground/70 flex-grow">No relevant warranty events.</p>
         )}
         <Button
+          onClick={() => navigate('/warranty-tracker')}
           className="mt-6 px-6 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold rounded-full shadow-lg
                      hover:translate-y-[-2px] transition-all duration-200 ease-out
                      shadow-[0_0_15px_rgba(34,197,94,0.25)] hover:shadow-[0_0_25px_rgba(34,197,94,0.4)]"

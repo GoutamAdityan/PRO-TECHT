@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { PlusCircle, Edit, Trash2, Users } from "lucide-react";
+import { PlusCircle, Edit, Trash2, Book } from "lucide-react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { ProductCatalogCard as ProductGridCard } from "@/components/ProductCatalogCard";
 import Header from '@/components/ConsumerDashboard/Header';
@@ -86,7 +86,7 @@ const ProductCatalog = () => {
           transition={{ duration: 0.4, ease: "easeOut" }}
           className="p-2 rounded-full bg-emerald-800/30 flex items-center justify-center"
         >
-          <Users className="w-5 h-5 text-emerald-400" />
+          <Book className="w-5 h-5 text-emerald-400" />
         </motion.div>
         <h1 className="text-2xl font-bold tracking-tight text-foreground">Product Catalog</h1>
       </div>

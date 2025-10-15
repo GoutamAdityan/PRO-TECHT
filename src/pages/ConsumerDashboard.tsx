@@ -31,12 +31,8 @@ const itemVariants = {
 };
 
 const ConsumerDashboard: React.FC = () => {
-  const { profile } = useAuth(); // Get profile from useAuth
-  const { userName, products, serviceRequests, warrantyHistory } = useConsumerDashboardData(profile?.full_name || 'Guest');
+  const { userName, totalProducts, activeWarranties, pendingServiceRequests, recentProducts, warrantyHistory, loading } = useConsumerDashboardData();
   const navigate = useNavigate();
-
-  const activeWarrantiesCount = products.filter(p => new Date(p.warrantyExpiry) > new Date()).length;
-  const pendingServiceRequestsCount = serviceRequests.filter(req => req.status === 'Open' || req.status === 'Pending').length;
 
   // Page-load check for duplicate sidebars
   useEffect(() => {
@@ -44,18 +40,17 @@ const ConsumerDashboard: React.FC = () => {
       const sidebars = document.querySelectorAll('[role="navigation"], .sidebar');
       if (sidebars.length > 1) {
         console.warn('Multiple sidebar-like elements detected. Ensure only one global sidebar is mounted.');
-        // Optionally hide extra ones, but for now, just warn.
-        // For example, to hide all but the first:
-        // sidebars.forEach((sb, index) => {
-        //   if (index > 0) (sb as HTMLElement).style.display = 'none';
-        // });
       }
     }
   }, []);
 
+  if (loading) {
+    return <div>Loading...</div>; // Or a proper skeleton loader
+  }
+
   return (
       <motion.div
-        className="max-w-6xl mx-auto px-6 py-6 text-white"
+        className="max-w-6xl mx-auto px-6 py-6"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
@@ -80,23 +75,19 @@ const ConsumerDashboard: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <SummaryCard
             title="Registered Products"
-            value={products.length}
-            ctaText="Open Vault"
-            onCtaClick={() => navigate('/products')}
+            value={totalProducts}
             icon={Package}
             delay={0.2}
           />
           <SummaryCard
             title="Active Warranties"
-            value={activeWarrantiesCount}
-            ctaText="View Warranties"
-            onCtaClick={() => navigate('/warranty-tracker')}
+            value={activeWarranties}
             icon={ShieldCheck}
             delay={0.3}
           />
           <SummaryCard
             title="Pending Service Requests"
-            value={pendingServiceRequestsCount}
+            value={pendingServiceRequests}
             ctaText="Request Service"
             onCtaClick={() => navigate('/service-requests')}
             icon={Wrench}
@@ -106,7 +97,7 @@ const ConsumerDashboard: React.FC = () => {
 
         {/* Main Content Area */}
         <div className="grid md:grid-cols-2 gap-8 mb-8">
-          <RecentProductsCard products={products} delay={0.5} />
+          <RecentProductsCard products={recentProducts} delay={0.5} />
           <div className="space-y-8">
             <WarrantyTimelineCard warrantyHistory={warrantyHistory} delay={0.6} />
           </div>
