@@ -27,7 +27,7 @@ const BusinessPartnerDashboard: React.FC = () => {
 
   return (
     <motion.div
-      className="max-w-6xl mx-auto px-6 py-6 text-white"
+      className="max-w-6xl mx-auto px-6 py-6"
       variants={pageVariants}
       initial="hidden"
       animate="enter"
@@ -42,7 +42,7 @@ const BusinessPartnerDashboard: React.FC = () => {
         >
           <LayoutDashboard className="w-5 h-5 text-emerald-400" />
         </motion.div>
-        <h1 className="text-4xl font-bold text-text-main">Business Partner Dashboard</h1>
+        <h1 className="text-4xl font-bold text-foreground">Business Partner Dashboard</h1>
       </div>
       <Header userName={profile?.full_name || 'Partner'} subtitle="Here’s an overview of your business activities." />
 
