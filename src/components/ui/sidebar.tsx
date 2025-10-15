@@ -1,3 +1,4 @@
+
 import React, { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
@@ -49,6 +50,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
     { id: 'customer-communication', label: 'Customer Communication', icon: MessageSquare, to: '/customer-communication', roles: ['service_center'] },
     { id: 'service-reports', label: 'Service Reports', icon: FileText, to: '/service-reports', roles: ['service_center'] },
     { id: 'community', label: 'Community', icon: Users, to: '/community', roles: ['consumer'] },
+    { id: 'chat', label: 'AI Assistant', icon: MessageSquare, to: '/chat', roles: ['consumer', 'business_partner', 'service_center'] },
   ].filter(item => item.roles.includes(profileRole || 'guest'));
 
   const footerNavItems = [
