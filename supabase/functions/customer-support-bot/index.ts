@@ -11,6 +11,13 @@ console.log("Edge function initialized with RAG capabilities");
 const HUGGING_FACE_TOKEN = Deno.env.get("HUGGING_FACE_TOKEN");
 const HF_MODEL_NAME = "meta-llama/Llama-3.1-8B-Instruct:nebius";
 
+// Create a Supabase client with the service role key
+const adminClient = createClient(
+  Deno.env.get("SUPABASE_URL") ?? "",
+  Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ?? "",
+  { auth: { persistSession: false } }
+);
+
 const client = new OpenAI({
   baseURL: "https://router.huggingface.co/v1",
   apiKey: HUGGING_FACE_TOKEN,
@@ -22,7 +29,7 @@ const supabase = createClient(
 );
 
 serve(async (req) => {
-  console.log("Request received");
+  console.log("--- New Request Received (v3) ---");
 
   if (req.method === "OPTIONS") {
     console.log("Handling OPTIONS request");
@@ -30,16 +37,11 @@ serve(async (req) => {
   }
 
   try {
-    if (!HUGGING_FACE_TOKEN) {
-      console.error("HUGGING_FACE_TOKEN is not set!");
-      return new Response(JSON.stringify({ error: "Hugging Face API token is not configured." }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-        status: 500,
-      });
-    }
+    const serviceKeyStatus = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") ? "Set" : "NOT SET";
+    console.log(`Service Role Key Status: ${serviceKeyStatus}`);
 
     const { query } = await req.json();
-    console.log(`Received query: "${query}" for model: ${HF_MODEL_NAME}`);
+    console.log(`Received query: "${query}"`);
 
     if (!query) {
       return new Response(JSON.stringify({ error: "Missing query" }), {
@@ -50,6 +52,7 @@ serve(async (req) => {
 
     const authHeader = req.headers.get("Authorization");
     let user = null;
+
     if (authHeader) {
       const jwt = authHeader.replace("Bearer ", "");
       const { data: { user: authUser }, error: userError } = await supabase.auth.getUser(jwt);
@@ -57,6 +60,11 @@ serve(async (req) => {
         console.error("Error getting user:", userError);
       } else {
         user = authUser;
+        if (user) {
+          console.log(`Authenticated as user: ${user.id}`);
+        } else {
+          console.log("Could not authenticate user from token.");
+        }
       }
     }
 
@@ -65,25 +73,33 @@ serve(async (req) => {
     if (query.toLowerCase().includes("how many products")) {
       if (!user) {
         responseContent = "I need you to be logged in to tell you how many products you have.";
-      } else {
-        const { count, error } = await supabase
+      }
+      else {
+        console.log(`Querying product count for user_id: ${user.id}`);
+        const { count, error } = await adminClient
           .from("products")
           .select("id", { count: "exact", head: true })
           .eq("user_id", user.id);
-        if (error) throw error;
+        
+        if (error) {
+          console.error("Database error fetching product count:", error.message);
+          throw error;
+        }
+        
+        console.log(`Query returned count: ${count}`);
         responseContent = `You have **${count}** products in your vault.`;
       }
     } else if (query.toLowerCase().includes("my products") || query.toLowerCase().includes("list products")) {
       if (!user) {
         responseContent = "I need you to be logged in to list your products.";
       } else {
-        const { data, error } = await supabase
+        const { data, error } = await adminClient
           .from("products")
           .select("*")
           .eq("user_id", user.id);
         if (error) throw error;
         if (data && data.length > 0) {
-          responseContent = "Here are your products:\n\n" + data.map(p => `- **${p.brand} ${p.model}** (Serial: ${p.serial_number})`).join("\n");
+          responseContent = JSON.stringify({ type: 'product_list', products: data });
         } else {
           responseContent = "You don't have any products registered.";
         }
@@ -97,7 +113,7 @@ serve(async (req) => {
         else if (query.toLowerCase().includes("pending")) statusFilter = "submitted";
         else if (query.toLowerCase().includes("in progress")) statusFilter = "in_progress";
 
-        let serviceQuery = supabase
+        let serviceQuery = adminClient
           .from("service_requests")
           .select("*")
           .eq("user_id", user.id);
@@ -122,7 +138,7 @@ serve(async (req) => {
         const productIdMatch = query.match(/product id (\S+)/i);
         if (productIdMatch && productIdMatch[1]) {
           const product_id = productIdMatch[1];
-          const { data, error } = await supabase
+          const { data, error } = await adminClient
             .from("products")
             .select("warranty_expiry")
             .eq("id", product_id)

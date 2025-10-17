@@ -1,0 +1,21 @@
+@keyframes gradient-animation {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Combined and corrected gradient class */
+.gradient-background {
+  background: 
+    url('/noise.svg'),
+    linear-gradient(-45deg, hsl(var(--primary)/0.2), hsl(var(--primary)/0.6), hsl(var(--secondary)/0.8), hsl(var(--accent)/0.6));
+  background-size: 400% 400%;
+  animation: gradient-animation 25s ease infinite;
+}
+
+/* Dark mode gradient override */
+[data-theme="dark"] .gradient-background {
+  background: 
+    url('/noise.svg'),
+    linear-gradient(-45deg, hsl(var(--primary)/0.4), hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--background)));
+}

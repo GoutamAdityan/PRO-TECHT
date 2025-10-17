@@ -1,67 +1,27 @@
-import { ModeToggle } from "@/components/theme-toggle";
-import { NavLink, Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
 import { SidebarProvider } from "@/providers/SidebarProvider";
+import NavBar from "./NavBar";
 import { Sidebar } from "@/components/ui/sidebar";
-import { Topbar } from "@/components/ui/Topbar";
-import { RoleGuard } from "@/components/ui/RoleGuard"; // Import RoleGuard
-import { Shield, Package, Wrench, LogOut, LayoutDashboard, ClipboardList, Book, BarChart, User, Info, ShieldCheck, MessageSquare, FileText } from "lucide-react";
-
-const MainLayout = () => {
-  const { user, profile, signOut } = useAuth();
-  const location = useLocation();
-
-  const getPageTitle = (pathname: string) => {
-    switch (pathname) {
-case "/":
-        return "Pro-Techt"; // Default for homepage, not dashboard anymore
-      case "/consumer-dashboard":
-        return "Pro-Techt";
-      case "/products":
-        return "Pro-Techt";
-      case "/service-queue":
-        return "Pro-Techt"; // Business Partner Dashboard
-      case "/active-jobs":
-        return "Dashboard"; // Service Center Dashboard
-      case "/customer-communication":
-        return "Customer Communication";
-      case "/service-reports":
-        return "Service Reports";
-      case "/profile":
-        return "Pro-Techt";
-      case "/about":
-        return "About Us";
-      default:
-        return "Pro-Techt";
-    }
-  };
-
-  const currentPageTitle = getPageTitle(location.pathname);
-
-  return (
-    <>
-      <Sidebar profileRole={profile?.role} signOut={signOut} />
-      <div className="pl-[88px]"> {/* Offset for the collapsed sidebar width */}
-        <Topbar pageTitle={currentPageTitle} />
-        <main className="container mx-auto px-4 py-8">
-          <Outlet />
-        </main>
-      </div>
-    </>
-  );
-};
+import "@/styles/ChatPage.css"; // Import the gradient background styles
 
 const Layout = () => {
-  const { user } = useAuth();
+  const { profile, signOut } = useAuth(); // Get signOut
 
-  if (!user) {
-    return <Outlet />;
+  if (!profile) {
+    return null; // Or a loading spinner, or a redirect
   }
 
   return (
     <SidebarProvider>
-      <MainLayout />
+      <div className="min-h-screen w-full gradient-background">
+        <Sidebar profileRole={profile?.role} signOut={signOut} />
+        <div style={{ marginLeft: 'var(--sidebar-width)' }} className="transition-all duration-300 ease-in-out">
+          <main className="p-4 sm:p-6 lg:p-8">
+            <Outlet />
+          </main>
+        </div>
+      </div>
     </SidebarProvider>
   );
 };

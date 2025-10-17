@@ -24,7 +24,7 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
   const location = useLocation();
  
-  const [expanded, setExpanded] = useState(false);
+  const { isOpen: expanded, setIsOpen: setExpanded } = useSidebar(); // Use centralized state
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
   const containerRef = useRef<HTMLElement>(null);
   const shouldReducedMotion = useReducedMotion();
