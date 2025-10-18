@@ -141,7 +141,7 @@ export const ConversationView: React.FC<ConversationViewProps> = ({ selectedCust
       </div>
 
       {/* Message List */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4" role="log" aria-live="polite">
+      <div className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 custom-scrollbar" role="log" aria-live="polite">
         {isLoadingMessages ? (
           <div className="text-center text-muted-foreground">Loading messages...</div>
         ) : (
@@ -193,7 +193,7 @@ export const ConversationView: React.FC<ConversationViewProps> = ({ selectedCust
       </div>
 
       {/* Message Composer */}
-      <div className="flex items-end gap-2 border-t border-border/50 bg-card/50 backdrop-blur-sm p-3">
+      <div className="flex items-end gap-2 border-t border-border/50 bg-card/50 backdrop-blur-sm p-3 sticky bottom-0">
         <Button variant="ghost" size="icon" className="shrink-0 hover:bg-accent/10">
           <Smile className="h-5 w-5" />
           <span className="sr-only">Add emoji</span>

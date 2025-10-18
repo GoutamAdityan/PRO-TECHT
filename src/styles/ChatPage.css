@@ -11,6 +11,7 @@
     linear-gradient(-45deg, hsl(var(--primary)/0.2), hsl(var(--primary)/0.6), hsl(var(--secondary)/0.8), hsl(var(--accent)/0.6));
   background-size: 400% 400%;
   animation: gradient-animation 25s ease infinite;
+  z-index: 0;
 }
 
 /* Dark mode gradient override */
@@ -18,4 +19,30 @@
   background: 
     url('/noise.svg'),
     linear-gradient(-45deg, hsl(var(--primary)/0.4), hsl(var(--primary)), hsl(var(--secondary)), hsl(var(--background)));
+}
+
+/* Custom scrollbar styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px; /* width of the entire scrollbar */
+  height: 8px; /* height of the entire scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar-button {
+  display: none; /* hide scrollbar buttons */
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(19, 26, 24, 0.5); /* color of the tracking area */
+  border-radius: 10px; /* roundness of the track */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: hsl(var(--muted-foreground)); /* color of the scroll thumb */
+  border-radius: 10px; /* roundness of the scroll thumb */
+  border: 2px solid transparent; /* creates padding around thumb */
+  background-clip: padding-box; /* ensures border is outside the thumb */
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background-color: hsl(var(--neon-green)); /* brighter color on hover */
 }
