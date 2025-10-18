@@ -42,7 +42,7 @@ const ChatPage: React.FC = () => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="flex h-full overflow-hidden rounded-lg shadow-xl backdrop-blur-sm bg-surface/[0.6] border border-surface-foreground/[0.06]"
+      className="flex h-[calc(100vh-4rem)] overflow-hidden rounded-lg shadow-xl backdrop-blur-sm bg-surface/[0.6] border border-surface-foreground/[0.06]"
     >
       {/* Desktop Layout - Customer List */}
       <div className="hidden md:flex w-80 bg-card border-r border-border flex-col">
