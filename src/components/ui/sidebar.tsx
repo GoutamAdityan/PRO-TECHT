@@ -75,9 +75,13 @@ export const Sidebar: React.FC<SidebarProps> = ({ profileRole, signOut }) => {
     >
       {/* Top logo */}
       <div className="w-full flex items-center justify-center mb-2">
-        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
+        <motion.div
+          whileHover={{ rotate: 360 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center"
+        >
           <Shield className="w-5 h-5 text-primary" />
-        </div>
+        </motion.div>
       </div>
 
       <nav className="w-full mt-2 flex-1" aria-label="Main">

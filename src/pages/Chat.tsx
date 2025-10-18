@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import PageTransition from '@/components/PageTransition';
 import { ChatProductCard } from '@/components/custom/ChatProductCard';
 import ReactMarkdown from 'react-markdown';
+import { useAuth } from '@/hooks/useAuth';
 import '@/styles/ChatPage.css';
 
 interface Message {
@@ -16,7 +17,65 @@ interface Message {
   content: string | { type: string; [key: string]: any };
 }
 
+const BotAvatar = () => (
+  <div className="relative flex-shrink-0">
+    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center">
+      <Bot className="w-5 h-5 text-primary" />
+    </div>
+    <div className="absolute top-0 left-0 w-full h-full rounded-full border-2 border-primary/50 animate-pulse-glow"></div>
+  </div>
+);
+
+const loadingMessages = [
+  "I've seen things you people wouldn't believe... like a user who reads loading messages. ✨",
+  "Reticulating splines... or was it articulating spines? 🤔",
+  "Consulting the digital oracle... 🔮",
+  "Waking up the hamsters... 🐹",
+  "Searching the archives of ancient memes... 📜",
+  "Polishing the response to a mirror shine... 닦다",
+  "Don't worry, I'm not judging your query. Much. 😏",
+  "Compiling the finest artisanal data... 👨‍🍳",
+  "One moment, just finishing my digital coffee. ☕",
+  "Hang on, I've almost untangled the quantum spaghetti code. 🍝"
+];
+
+const WormLoader = () => (
+  <div className="flex items-center justify-center w-10 h-5">
+    <div className="worm-segment"></div>
+    <div className="worm-segment"></div>
+    <div className="worm-segment"></div>
+    <div className="worm-segment"></div>
+    <div className="worm-segment"></div>
+  </div>
+);
+
+const TypingIndicator = () => {
+  const [message, setMessage] = useState(loadingMessages[0]);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMessage(loadingMessages[Math.floor(Math.random() * loadingMessages.length)]);
+    }, 2500);
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="flex items-start gap-3"
+    >
+      <BotAvatar />
+      <div className="p-4 rounded-xl bg-muted/50 shadow-lg border border-border/20 max-w-md flex items-center gap-3">
+        <WormLoader />
+        <p className="text-sm text-muted-foreground italic">{message}</p>
+      </div>
+    </motion.div>
+  );
+};
+
 const ChatPage: React.FC = () => {
+  const { profile } = useAuth();
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -85,8 +144,8 @@ const ChatPage: React.FC = () => {
               <Sparkles className="w-7 h-7 text-primary" />
             </div>
             <div>
+              <h2 className="text-lg font-medium text-muted-foreground">👋 Welcome back, {profile?.full_name || 'User'}!</h2>
               <h1 className="text-3xl font-bold tracking-tight text-foreground">Intelligent Assistant</h1>
-              <p className="text-md text-muted-foreground">Your personal guide to Pro-Techt.</p>
             </div>
           </div>
 
@@ -100,7 +159,7 @@ const ChatPage: React.FC = () => {
                   transition={{ duration: 0.3, ease: 'easeOut' }}
                   className={cn('flex items-start gap-3', msg.role === 'user' ? 'justify-end' : 'justify-start')}
                 >
-                  {msg.role === 'bot' && <Bot className="w-6 h-6 text-muted-foreground flex-shrink-0 mt-1" />}
+                  {msg.role === 'bot' && <BotAvatar />}
                   <div className={cn(
                     'p-4 rounded-xl max-w-2xl shadow-lg border',
                     msg.role === 'user' ? 'bg-primary/90 text-primary-foreground' : 'bg-white/50 dark:bg-muted/50 border-white/20 dark:border-border/20'
@@ -125,22 +184,7 @@ const ChatPage: React.FC = () => {
                   {msg.role === 'user' && <User className="w-6 h-6 text-muted-foreground flex-shrink-0 mt-1" />}
                 </motion.div>
               ))}
-              {isLoading && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="flex items-start gap-3"
-                >
-                  <Bot className="w-6 h-6 text-muted-foreground flex-shrink-0 mt-1" />
-                  <div className="p-4 rounded-xl bg-muted/50 shadow-lg border border-border/20">
-                    <div className="flex items-center space-x-2">
-                      <span className="h-2 w-2 bg-primary rounded-full animate-pulse [animation-delay:-0.3s]"></span>
-                      <span className="h-2 w-2 bg-primary rounded-full animate-pulse [animation-delay:-0.15s]"></span>
-                      <span className="h-2 w-2 bg-primary rounded-full animate-pulse"></span>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
+              {isLoading && <TypingIndicator />}
               <div ref={messagesEndRef} />
             </div>
           </div>

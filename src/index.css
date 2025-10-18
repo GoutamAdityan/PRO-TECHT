@@ -25,6 +25,7 @@
 
     /* Primary Buttons & Accents (Dark Forest Green) */
     --primary: 158 39% 30%; /* #2E6B4F */
+    --primary-rgb: 46, 107, 79;
     --primary-foreground: 0 0% 100%; /* White */
 
     /* Secondary & Surface Tones */
@@ -95,6 +96,7 @@
 
     /* Primary Buttons & Accents */
     --primary: 158 39% 30%; /* #2E6B4F */
+    --primary-rgb: 46, 107, 79;
     --primary-foreground: 0 0% 100%;
 
     /* Secondary & Surface Tones */
