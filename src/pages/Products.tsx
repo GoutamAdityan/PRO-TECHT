@@ -253,8 +253,8 @@ const Products = () => {
                       </div>
                       {product.purchase_price && (
                         <div className="flex items-center gap-1">
-                          <DollarSign className="w-4 h-4 text-green-400" />
-                          ${product.purchase_price}
+                          <span className="text-green-400">₹</span>
+                          <span className="font-bold">{product.purchase_price}</span>
                         </div>
                       )}
                     </div>

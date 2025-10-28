@@ -24,12 +24,14 @@ const fetchProductData = async (): Promise<ProductData[]> => {
 interface ProductSelectorProps {
   onProductSelect: (product: { type: string; brand: string; model: string } | null) => void;
   initialProduct?: { type: string; brand: string; model: string };
+  suggestedProduct?: { type: string; brand: string; model: string };
   className?: string;
 }
 
 export const ProductSelector: React.FC<ProductSelectorProps> = ({
   onProductSelect,
   initialProduct,
+  suggestedProduct,
   className,
 }) => {
   const [allProducts, setAllProducts] = useState<ProductData[]>([]);
@@ -42,6 +44,14 @@ export const ProductSelector: React.FC<ProductSelectorProps> = ({
   useEffect(() => {
     fetchProductData().then(setAllProducts);
   }, []);
+
+  useEffect(() => {
+    if (suggestedProduct) {
+      setSelectedType(suggestedProduct.type);
+      setSelectedBrand(suggestedProduct.brand);
+      setSelectedModel(suggestedProduct.model);
+    }
+  }, [suggestedProduct]);
 
   useEffect(() => {
     if (selectedType && selectedBrand && selectedModel) {
