@@ -1,13 +1,14 @@
 
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { PostCard } from '@/features/community/components/PostCard'; // Changed to named import
+import { PostCard } from '@/features/community/components/PostCard';
 import PostComposer from '@/components/custom/PostComposer';
 import { Button } from '@/components/ui/button';
 import { postCategories } from '@/features/community/data';
-import { Users } from 'lucide-react'; // Import Users icon
+import { Users } from 'lucide-react';
+import { useCommunityPosts } from '@/hooks/useCommunityPosts';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -25,69 +26,13 @@ const itemVariants = {
   visible: { y: 0, opacity: 1, transition: { duration: 0.5, ease: "easeOut" } },
 };
 
-// Mock data for community posts
-const mockPosts = [
-  {
-    id: '1',
-    author: { name: 'Jane Doe', avatarUrl: 'https://i.pravatar.cc/150?u=a042581f4e29026704d' },
-    title: 'How to properly clean your new gadget?',
-    tags: ['cleaning', 'maintenance'],
-    excerpt: 'Just got the new Pro-Gadget X and I want to make sure I keep it in top condition. What are the best practices for cleaning the screen and body without causing damage?',
-    category: 'General Discussion',
-    timestamp: '2 hours ago',
-    initialReactions: { likes: 15, helpfuls: 7 },
-    media: [{ type: 'image', url: 'https://picsum.photos/seed/post1/800/400' }],
-  },
-  {
-    id: '2',
-    author: { name: 'John Smith', avatarUrl: 'https://i.pravatar.cc/150?u=a042581f4e29026704e' },
-    title: 'Show off your setup!',
-    tags: ['setup', 'customization'],
-    excerpt: 'Here is my current desk setup with all my favorite tech. I would love to see what you all have created!',
-    category: 'Showcase',
-    timestamp: '5 hours ago',
-    initialReactions: { likes: 42, helpfuls: 12 },
-    media: [
-      { type: 'image', url: 'https://picsum.photos/seed/post2/800/400' },
-      { type: 'image', url: 'https://picsum.photos/seed/post2a/400/400' },
-      { type: 'image', url: 'https://picsum.photos/seed/post2b/400/400' },
-    ],
-  },
-  // Add more posts to make the list longer and filtering more apparent
-];
-
 const Community: React.FC = () => {
   const [isPostComposerOpen, setIsPostComposerOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const [category, setCategory] = useState('all');
   const [sortBy, setSortBy] = useState('recent');
 
-  const filteredPosts = useMemo(() => {
-    let posts = mockPosts.map(p => ({ ...p, relevance: p.initialReactions.likes + p.initialReactions.helpfuls }));
-
-    if (searchTerm) {
-      posts = posts.filter(p => p.title.toLowerCase().includes(searchTerm.toLowerCase()) || p.excerpt.toLowerCase().includes(searchTerm.toLowerCase()));
-    }
-
-    if (category !== 'all') {
-      posts = posts.filter(p => p.category === category);
-    }
-
-    switch (sortBy) {
-      case 'likes':
-        posts.sort((a, b) => b.initialReactions.likes - a.initialReactions.likes);
-        break;
-      case 'relevance':
-        posts.sort((a, b) => b.relevance - a.relevance);
-        break;
-      case 'recent':
-      default:
-        // Assuming the mock data is already sorted by recent
-        break;
-    }
-
-    return posts;
-  }, [searchTerm, category, sortBy]);
+  const { posts, loading } = useCommunityPosts(searchTerm, category, sortBy);
 
   const categories = ['all', ...postCategories];
 
@@ -148,13 +93,30 @@ const Community: React.FC = () => {
       </motion.div>
 
       {/* Posts List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
-        {filteredPosts.map(post => (
-          <motion.div key={post.id} variants={itemVariants}>
-            <PostCard {...post} />
-          </motion.div>
-        ))}
-      </div>
+      {loading ? (
+        <p>Loading posts...</p>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-6">
+          {posts.map(post => (
+            <motion.div key={post.id} variants={itemVariants}>
+              <PostCard 
+                id={post.id}
+                author={{
+                  name: post.profiles.full_name,
+                  avatarUrl: post.profiles.avatar_url,
+                }}
+                title={post.title}
+                tags={post.tags}
+                excerpt={post.body}
+                category={post.category}
+                timestamp={new Date(post.created_at).toLocaleDateString()}
+                initialReactions={{ likes: 0, helpfuls: 0 }} // TODO: Fetch reactions
+                media={post.image_urls.map(url => ({ type: 'image', url }))}
+              />
+            </motion.div>
+          ))}
+        </div>
+      )}
 
       <PostComposer isOpen={isPostComposerOpen} onOpenChange={setIsPostComposerOpen} />
     </motion.div>
