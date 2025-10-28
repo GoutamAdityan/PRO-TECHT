@@ -6,7 +6,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Shield, Users, Wrench, Mail, Lock } from 'lucide-react';
+import { Shield, Users, Wrench, Mail, Lock, Eye, EyeOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import '@/styles/auth.css';
 
@@ -15,6 +15,7 @@ const Auth = () => {
   const [activeTab, setActiveTab] = useState("signin");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const [contentHeight, setContentHeight] = useState<number | string>('auto');
   const [maxFormHeight, setMaxFormHeight] = useState<number | string>('auto');
   const signInRef = useRef<HTMLDivElement>(null);
@@ -148,7 +149,10 @@ const Auth = () => {
                     </div>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-                      <Input id="signin-password" name="signin-password" type="password" placeholder="Password" required disabled={isSubmitting} className="form-input pl-10" />
+                      <Input id="signin-password" name="signin-password" type={showPassword ? "text" : "password"} placeholder="Password" required disabled={isSubmitting} className="form-input pl-10 pr-10" />
+                      <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400">
+                        {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                      </button>
                     </div>
                     <Button type="submit" className="submit-button" disabled={isSubmitting}>
                       {isSubmitting ? 'Signing In...' : 'Sign In'}
