@@ -3,11 +3,11 @@
 @tailwind utilities;
 
 .auth-body {
-    @apply text-gray-200;
+    @apply text-foreground;
 }
 
 .glass-card-auth {
-    @apply bg-black/20 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl shadow-black/50;
+    @apply bg-card backdrop-blur-2xl border border-border rounded-3xl shadow-2xl;
     transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
@@ -17,24 +17,24 @@
 }
 
 .auth-tab {
-    @apply relative py-2 px-4 text-gray-400 transition-colors duration-300;
+    @apply relative py-2 px-4 text-muted-foreground transition-colors duration-300;
 }
 
 .auth-tab.active {
-    @apply text-white;
+    @apply text-foreground;
 }
 
 .auth-input {
-    @apply w-full bg-white/5 border-2 border-transparent rounded-lg py-3 px-12 text-white placeholder-gray-500 transition-all duration-300;
+    @apply w-full bg-background/50 border-2 border-transparent rounded-lg py-3 px-12 text-foreground placeholder-muted-foreground transition-all duration-300;
     @apply focus:outline-none focus:ring-0 focus:border-orange-500/50;
 }
 
 .social-btn {
-    @apply flex-1 bg-white/5 border border-white/10 rounded-lg py-3 px-4 flex items-center justify-center transition-all duration-300;
+    @apply flex-1 bg-card border border-border rounded-lg py-3 px-4 flex items-center justify-center transition-all duration-300;
 }
 
 .social-btn:hover {
-    @apply border-white/30 scale-105;
+    @apply border-foreground/20 scale-105;
 }
 
 .social-btn.google:hover {

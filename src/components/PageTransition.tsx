@@ -1,14 +1,15 @@
 import { motion } from "framer-motion";
 
 export const pageVariants = {
-  initial: { opacity: 0, scale: 1.05, filter: "blur(8px)" },
-  in: { opacity: 1, scale: 1, filter: "blur(0px)" },
-  out: { opacity: 0, scale: 0.98, filter: "blur(6px)" },
+  initial: { opacity: 0, scale: 0.98, y: 10 },
+  in: { opacity: 1, scale: 1, y: 0 },
+  out: { opacity: 0, scale: 1.02, y: -10 },
 };
 
 export const pageTransition = {
-  duration: 0.8,
-  ease: [0.4, 0.0, 0.2, 1],
+  type: "spring" as const,
+  stiffness: 100,
+  damping: 20,
 };
 
 const PageTransition = ({ children }: { children: React.ReactNode }) => (
@@ -18,6 +19,7 @@ const PageTransition = ({ children }: { children: React.ReactNode }) => (
     exit="out"
     variants={pageVariants}
     transition={pageTransition}
+    className="h-full w-full"
   >
     {children}
   </motion.div>

@@ -112,7 +112,7 @@ const ProductCatalog = () => {
 
   return (
     <motion.div
-      className="max-w-6xl mx-auto px-6 py-6 text-white"
+      className="max-w-6xl mx-auto px-6 py-6 text-foreground"
       variants={containerVariants}
       initial="hidden"
       animate="visible"
@@ -150,7 +150,7 @@ const ProductCatalog = () => {
           <AnimatePresence>
             {products.map((product, index) => (
               <motion.div key={product.id} variants={itemVariants} exit="exit">
-                <ProductGridCard 
+                <ProductGridCard
                   product={{
                     id: product.id,
                     name: product.name,
@@ -159,9 +159,9 @@ const ProductCatalog = () => {
                     description: product.description,
                     imageUrl: product.image_url,
                   }}
-                  onEdit={() => handleEdit(product)} 
-                  onDelete={confirmDelete} 
-                  delay={index * 0.1} 
+                  onEdit={() => handleEdit(product)}
+                  onDelete={confirmDelete}
+                  delay={index * 0.1}
                 />
               </motion.div>
             ))}
@@ -213,10 +213,10 @@ const ProductCatalog = () => {
         </Card>
       </div>
 
-      <AddProductModal 
-        isOpen={isAddModalOpen} 
-        onClose={() => setIsAddModalOpen(false)} 
-        onProductAdded={fetchCatalogProducts} 
+      <AddProductModal
+        isOpen={isAddModalOpen}
+        onClose={() => setIsAddModalOpen(false)}
+        onProductAdded={fetchCatalogProducts}
       />
 
       <EditProductModal
@@ -231,7 +231,7 @@ const ProductCatalog = () => {
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This action cannot be undone. This will permanently delete your product 
+              This action cannot be undone. This will permanently delete your product
               from the catalog and remove its associated data from our servers.
             </AlertDialogDescription>
           </AlertDialogHeader>

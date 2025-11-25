@@ -1,151 +1,111 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Open+Sans:wght@400;500;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=Outfit:wght@300;400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* 
-  NEW THEME: Light Pastel Green Aesthetic
-  This file defines the complete design system for the application.
-  All colors, gradients, fonts, etc., are defined here as CSS variables.
-  Colors are specified in HSL format for easy manipulation of saturation and lightness.
+  THEME: Cyber-Nature (Deep Green + Neon Accents + Glassmorphism)
 */
 
 @layer base {
   :root {
-    /* Primary Palette - Soft, calm, and visually balanced pastel greens */
-    --background: 140 33% 97%; /* #F4FBF6 */
-    --foreground: 0 0% 10%; /* #1A1A1A */
+    /* Base Backgrounds - Light Mode */
+    --background: 140 20% 98%;
+    /* Very light mint/white */
+    --foreground: 150 30% 5%;
+    /* Dark Green text */
 
-    --card: 0 0% 100%; /* #FFFFFF */
-    --card-foreground: 0 0% 10%;
+    --card: 0 0% 100%;
+    /* White */
+    --card-foreground: 150 30% 5%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 10%;
+    --popover-foreground: 150 30% 5%;
 
-    /* Primary Buttons & Accents (Dark Forest Green) */
-    --primary: 158 39% 30%; /* #2E6B4F */
-    --primary-rgb: 46, 107, 79;
-    --primary-foreground: 0 0% 100%; /* White */
+    /* Primary Accents - Neon Emerald */
+    --primary: 150 100% 35%;
+    /* Slightly darker emerald for better contrast on light */
+    --primary-foreground: 0 0% 100%;
 
-    /* Secondary & Surface Tones */
-    --secondary: 140 33% 94%; /* #E8F6EC */
-    --secondary-foreground: 0 0% 20%; /* #333333 */
+    /* Secondary */
+    --secondary: 150 20% 90%;
+    /* Light green */
+    --secondary-foreground: 150 30% 10%;
 
-    /* Muted & Hover States */
-    --muted: 137 33% 91%; /* #DFF1E3 */
-    --muted-foreground: 0 0% 33%; /* #555555 */
+    /* Muted */
+    --muted: 150 10% 90%;
+    --muted-foreground: 150 5% 40%;
 
-    /* Accent & Focus */
-    --accent: 130 25% 70%; /* #9DC9A3 */
-    --accent-foreground: 0 0% 10%;
+    /* Accent */
+    --accent: 150 20% 90%;
+    --accent-foreground: 150 30% 10%;
+
+    /* Destructive */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
 
     /* Borders & Inputs */
-    --border: 130 25% 87%; /* #D2E7D5 */
-    --input: 130 25% 87%;
-    --ring: 136 31% 75%; /* #A9D5B3 - Focus Ring */
+    --border: 150 20% 90%;
+    --input: 150 20% 90%;
+    --ring: 150 100% 35%;
 
-    /* Destructive Actions */
-    --destructive: 0 70% 67%; /* #E57373 */
-    --destructive-foreground: 0 0% 100%;
+    /* Radius */
+    --radius: 1rem;
 
-    /* Other Semantic Colors */
-    --success: 140 60% 40%;
-    --success-foreground: 0 0% 100%;
-    --warning: 45 90% 55%;
-    --warning-foreground: 0 0% 10%;
-
-    --radius: 0.75rem;
-
-    /* Custom Text Colors */
-    --text-primary: 0 0% 10%; /* #1A1A1A */
-    --text-secondary: 0 0% 20%; /* #333333 */
-    --text-muted: 0 0% 33%; /* #555555 */
-
-    /* Custom States & Shadows */
-    --hover: 137 33% 91%; /* #DFF1E3 */
-    --shadow-color-rgb: 158, 10%, 20%; /* Green-gray tone for shadows */
-    
-    /* Button Specific States */
-    --primary-hover: 152 40% 39%; /* #3C8C65 */
-    --primary-active: 159 40% 24%; /* #245740 */
-
-    /* New variables for subtle button and badges */
-    --subtle-button-bg: 140 33% 90%;
-    --subtle-button-text: 158 33% 17%;
-    --subtle-button-border: 140 25% 80%;
-    --success-badge-bg: 140 60% 90%;
-    --success-badge-text: 140 60% 25%;
-    --warning-badge-bg: 45 90% 90%;
-    --warning-badge-text: 45 90% 30%;
-    --destructive-badge-bg: 0 70% 90%;
-    --destructive-badge-text: 0 70% 35%;
-    --neon-green: 158 39% 30%;
+    /* Custom Gradients & Effects */
+    --neon-glow: 0 0 15px rgba(0, 204, 102, 0.3);
+    --glass-border: rgba(0, 0, 0, 0.08);
+    --glass-bg: rgba(255, 255, 255, 0.6);
   }
 
   .dark {
-    /* Dark Mode - Deeper, muted pastel green theme */
-    --background: 158 15% 10%; /* #131A17 */
-    --foreground: 140 25% 90%; /* #DBE9E0 */
+    /* Dark mode - Deep, rich forest tones */
+    --background: 150 30% 5%;
+    /* #09110C - Very dark green/black */
+    --foreground: 140 20% 95%;
+    /* #EBF5F0 - Off-white */
 
-    --card: 158 15% 12%; /* #17201C */
-    --card-foreground: 140 25% 90%;
+    --card: 150 25% 8%;
+    /* #0F1A14 */
+    --card-foreground: 140 20% 95%;
 
-    --popover: 158 15% 10%;
-    --popover-foreground: 140 25% 90%;
+    --popover: 150 25% 8%;
+    --popover-foreground: 140 20% 95%;
 
-    /* Primary Buttons & Accents */
-    --primary: 158 39% 30%; /* #2E6B4F */
-    --primary-rgb: 46, 107, 79;
-    --primary-foreground: 0 0% 100%;
+    /* Primary Accents - Neon Emerald & Electric Lime */
+    --primary: 150 100% 40%;
+    /* #00CC66 - Vibrant Emerald */
+    --primary-foreground: 150 30% 5%;
+    /* Dark text on bright bg */
 
-    /* Secondary & Surface Tones */
-    --secondary: 158 15% 15%; /* #1C2521 */
-    --secondary-foreground: 140 25% 90%;
+    /* Secondary - Muted Moss */
+    --secondary: 150 20% 15%;
+    /* #1F2E26 */
+    --secondary-foreground: 140 20% 90%;
 
-    /* Muted & Hover States */
-    --muted: 158 15% 20%; /* #26312C */
-    --muted-foreground: 140 18% 70%; /* #A4B8AB */
+    /* Muted */
+    --muted: 150 20% 12%;
+    --muted-foreground: 140 15% 60%;
 
-    /* Accent & Focus */
-    --accent: 130 25% 40%; /* #4D825A */
-    --accent-foreground: 140 25% 90%;
+    /* Accent - Highlight */
+    --accent: 150 20% 20%;
+    --accent-foreground: 140 20% 95%;
+
+    /* Destructive */
+    --destructive: 0 80% 60%;
+    --destructive-foreground: 0 0% 100%;
 
     /* Borders & Inputs */
-    --border: 158 15% 25%; /* #313E38 */
-    --input: 158 15% 25%;
-    --ring: 136 31% 45%; /* #5B9E6D */
+    --border: 150 20% 18%;
+    --input: 150 20% 18%;
+    --ring: 150 100% 40%;
+    /* Matches primary */
 
-    /* Destructive Actions */
-    --destructive: 0 70% 50%; /* #D94C4C */
-    --destructive-foreground: 0 0% 100%;
-    
-    /* Custom Text Colors */
-    --text-primary: 140 25% 90%;
-    --text-secondary: 140 18% 70%;
-    --text-muted: 140 15% 55%;
-
-    /* Custom States & Shadows */
-    --hover: 152 20% 22%; /* #2C3D35 */
-    --shadow-color-rgb: 158, 10%, 5%;
-    
-    /* Button Specific States */
-    --primary-hover: 152 40% 39%; /* #3C8C65 */
-    --primary-active: 159 40% 24%; /* #245740 */
-
-    /* New variables for subtle button and badges */
-    --subtle-button-bg: 158 15% 20%;
-    --subtle-button-text: 140 25% 90%;
-    --subtle-button-border: 158 15% 25%;
-    --success-badge-bg: 140 60% 20%;
-    --success-badge-text: 140 60% 70%;
-    --warning-badge-bg: 45 90% 20%;
-    --warning-badge-text: 45 90% 70%;
-    --destructive-badge-bg: 0 70% 20%;
-    --destructive-badge-text: 0 70% 70%;
-
-    --radio-bright-primary: 158 70% 60%; /* Brighter green for radio buttons */
-    --radio-bright-foreground: 140 25% 95%; /* Lighter text for radio buttons */
+    /* Custom Gradients & Effects */
+    --neon-glow: 0 0 15px rgba(0, 204, 102, 0.5);
+    --glass-border: rgba(255, 255, 255, 0.08);
+    --glass-bg: rgba(15, 26, 20, 0.6);
   }
 }
 
@@ -155,107 +115,80 @@
   }
 
   body {
-    @apply bg-background text-foreground;
-    font-family: var(--font-body), sans-serif;
-    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Outfit', sans-serif;
+    background-image:
+      radial-gradient(circle at 50% 0%, rgba(0, 204, 102, 0.15), transparent 40%),
+      radial-gradient(circle at 0% 100%, rgba(0, 100, 50, 0.1), transparent 30%);
+    background-attachment: fixed;
   }
 
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading), sans-serif;
-    color: hsl(var(--text-primary));
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: 'Montserrat', sans-serif;
   }
 
-  p {
-    color: hsl(var(--text-secondary));
+  .btn-neon:hover {
+    @apply bg-primary/90;
+    box-shadow: 0 0 25px rgba(0, 204, 102, 0.6);
   }
 
-  .text-muted-foreground {
-    color: hsl(var(--text-muted));
+  /* Subtle Button */
+  .btn-subtle {
+    @apply bg-secondary/50 text-secondary-foreground border border-white/5 hover:bg-secondary hover:border-primary/30 transition-all duration-300;
+  }
+
+  /* Animations */
+  .animate-fade-in-up {
+    animation: fadeInUp 0.6s ease-out forwards;
+  }
+
+  .animate-pulse-glow {
+    animation: pulseGlow 3s infinite;
   }
 }
 
-@layer components {
-  /* Applying new hover states for buttons */
-  .btn-primary {
-    @apply bg-primary text-primary-foreground;
-  }
-  .btn-primary:hover {
-    background-color: hsl(var(--primary-hover));
-  }
-  .btn-primary:active {
-    background-color: hsl(var(--primary-active));
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
   }
 
-  /* New styles for badges and subtle button */
-  .badge-success {
-    @apply bg-success-badge-bg text-success-badge-text border-none;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  .badge-warning {
-    @apply bg-warning-badge-bg text-warning-badge-text border-none;
-  }
-  .badge-destructive {
-    @apply bg-destructive-badge-bg text-destructive-badge-text border-none;
-  }
-  .btn-subtle {
-    @apply h-10 px-5 rounded-full border bg-subtle-button-bg text-subtle-button-text border-subtle-button-border transition-colors duration-200 ease-out;
-    &:hover {
-      @apply bg-accent text-accent-foreground;
-    }
+}
+
+@keyframes pulseGlow {
+
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(0, 204, 102, 0.2);
   }
 
-  .glassmorphic-dark {
-    background-color: rgba(19, 26, 24, 0.8); /* deep green-black */
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(46, 107, 79, 0.3); /* neon-green accent border */
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1), inset 0 0 0 1px rgba(46, 107, 79, 0.2);
+  50% {
+    box-shadow: 0 0 20px rgba(0, 204, 102, 0.5);
   }
+}
 
-  .neon-green-accent {
-    background-color: #2E6B4F; /* primary green */
-    color: #E0F2E9;
-    box-shadow: 0 0 10px #2E6B4F, 0 0 20px #2E6B4F;
-  }
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
 
-  /* Custom styles for brighter radio buttons */
-  .radio-bright {
-    border-color: hsl(var(--radio-bright-primary));
-    color: hsl(var(--radio-bright-primary));
-  }
-  .radio-bright:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 2px hsl(var(--ring)), 0 0 0 4px hsl(var(--radio-bright-primary));
-  }
-  .radio-bright[data-state="checked"] {
-    background-color: hsl(var(--radio-bright-primary));
-    border-color: hsl(var(--radio-bright-primary));
-  }
-  .text-radio-bright {
-    color: hsl(var(--radio-bright-foreground));
-  }
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
 
-  /* Custom scrollbar styles */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px; /* width of the entire scrollbar */
-    height: 8px; /* height of the entire scrollbar */
-  }
+::-webkit-scrollbar-thumb {
+  @apply bg-secondary rounded-full border-2 border-background;
+}
 
-  .custom-scrollbar::-webkit-scrollbar-button {
-    display: none; /* hide scrollbar buttons */
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(19, 26, 24, 0.5); /* color of the tracking area */
-    border-radius: 10px; /* roundness of the track */
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background-color: hsl(var(--muted-foreground)); /* color of the scroll thumb */
-    border-radius: 10px; /* roundness of the scroll thumb */
-    border: 2px solid transparent; /* creates padding around thumb */
-    background-clip: padding-box; /* ensures border is outside the thumb */
-  }
-
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background-color: hsl(var(--neon-green)); /* brighter color on hover */
-  }
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-primary/50;
 }

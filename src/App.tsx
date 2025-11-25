@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Routes, Route, useLocation, Navigate } from "react-router-dom"; // Added Navigate
 import { AuthProvider, useAuth } from "@/hooks/useAuth"; // Added useAuth
+import { SoundProvider } from "@/context/SoundContext";
 import HomePage from "./pages/HomePage";
 import Auth from "./pages/Auth";
 import NotFound from "./pages/NotFound";
@@ -48,9 +49,9 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles }) => {
-  const { profile, isLoading } = useAuth();
+  const { profile, loading } = useAuth();
 
-  if (isLoading) {
+  if (loading) {
     // Optionally render a loading spinner or placeholder
     return <div>Loading...</div>;
   }
@@ -70,35 +71,35 @@ const App = () => {
     <ThemeProvider attribute="class" defaultTheme="system" storageKey="vite-ui-theme">
       <QueryClientProvider client={queryClient}>
         <AuthProvider>
-          <AuthRedirector /> {/* Render AuthRedirector here */}
-          <TooltipProvider>
-            <Toaster />
-            <Sonner />
-            <AnimatePresence mode="wait">
-              <Routes location={location} key={location.pathname}>
+          <SoundProvider>
+            <AuthRedirector /> {/* Render AuthRedirector here */}
+            <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <Routes location={location}>
                 <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
-                <Route path="/" element={<HomePage />} />
+                <Route path="/" element={<PageTransition><HomePage /></PageTransition>} />
                 <Route element={<Layout />}>
-                  <Route path="/chat" element={<ChatPage />} />
-                  <Route path="/products" element={<Products />} />
-                  <Route path="/products/new" element={<NewProduct />} />
-                  <Route path="/products/:id" element={<ProductDetails />} />
-                  <Route path="/products/:id/edit" element={<EditProduct />} />
-                  <Route path="/service-requests" element={<ServiceRequests />} />
-                  <Route path="/service-requests/new" element={<NewServiceRequest />} />
-                  <Route path="/service-requests/:id" element={<ServiceRequestDetails />} />
-                  <Route path="/warranty-tracker" element={<WarrantyTracker />} />
-                  <Route path="/service-queue" element={<ServiceQueue />} />
-                  <Route path="/product-catalog" element={<ProductCatalog />} />
-                  <Route path="/analytics" element={<Analytics />} />
-                  <Route path="/profile" element={<Profile />} />
-                  <Route path="/about" element={<About />} />
-                  <Route path="/privacy" element={<PrivacyPolicy />} />
-                  <Route path="/contact" element={<Contact />} />
-                  <Route path="/terms" element={<TermsOfService />} />
-                  <Route path="/active-jobs" element={<ActiveJobs />} />
-                  <Route path="/customer-communication" element={<CustomerCommunication />} />
-                  <Route path="/service-reports" element={<ServiceReports />} />
+                  <Route path="/chat" element={<PageTransition><ChatPage /></PageTransition>} />
+                  <Route path="/products" element={<PageTransition><Products /></PageTransition>} />
+                  <Route path="/products/new" element={<PageTransition><NewProduct /></PageTransition>} />
+                  <Route path="/products/:id" element={<PageTransition><ProductDetails /></PageTransition>} />
+                  <Route path="/products/:id/edit" element={<PageTransition><EditProduct /></PageTransition>} />
+                  <Route path="/service-requests" element={<PageTransition><ServiceRequests /></PageTransition>} />
+                  <Route path="/service-requests/new" element={<PageTransition><NewServiceRequest /></PageTransition>} />
+                  <Route path="/service-requests/:id" element={<PageTransition><ServiceRequestDetails /></PageTransition>} />
+                  <Route path="/warranty-tracker" element={<PageTransition><WarrantyTracker /></PageTransition>} />
+                  <Route path="/service-queue" element={<PageTransition><ServiceQueue /></PageTransition>} />
+                  <Route path="/product-catalog" element={<PageTransition><ProductCatalog /></PageTransition>} />
+                  <Route path="/analytics" element={<PageTransition><Analytics /></PageTransition>} />
+                  <Route path="/profile" element={<PageTransition><Profile /></PageTransition>} />
+                  <Route path="/about" element={<PageTransition><About /></PageTransition>} />
+                  <Route path="/privacy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
+                  <Route path="/contact" element={<PageTransition><Contact /></PageTransition>} />
+                  <Route path="/terms" element={<PageTransition><TermsOfService /></PageTransition>} />
+                  <Route path="/active-jobs" element={<PageTransition><ActiveJobs /></PageTransition>} />
+                  <Route path="/customer-communication" element={<PageTransition><CustomerCommunication /></PageTransition>} />
+                  <Route path="/service-reports" element={<PageTransition><ServiceReports /></PageTransition>} />
                   <Route path="/community" element={<ProtectedRoute allowedRoles={['consumer']}><PageTransition><Community /></PageTransition></ProtectedRoute>} />
                   <Route path="/consumer-dashboard" element={<PageTransition><ConsumerDashboard /></PageTransition>} />
                   <Route path="/business-partner-dashboard" element={<PageTransition><BusinessPartnerDashboard /></PageTransition>} />
@@ -107,8 +108,8 @@ const App = () => {
                 </Route>
                 <Route path="*" element={<PageTransition><NotFound /></PageTransition>} />
               </Routes>
-            </AnimatePresence>
-          </TooltipProvider>
+            </TooltipProvider>
+          </SoundProvider>
         </AuthProvider>
       </QueryClientProvider>
     </ThemeProvider>
