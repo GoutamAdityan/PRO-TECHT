@@ -1,7 +1,7 @@
 
 import React, { useCallback, useState, useEffect } from 'react';
 import { useDropzone, FileRejection } from 'react-dropzone';
-import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { DndContext, closestCenter, PointerSensor, useSensor, useSensors, DragEndEvent } from '@dnd-kit/core';
 import { arrayMove, SortableContext, useSortable, rectSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { UploadCloud, X, GripVertical } from 'lucide-react';
@@ -77,7 +77,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onFilesUpdate }) => {
 
   const onDrop = useCallback(async (acceptedFiles: File[], fileRejections: FileRejection[]) => {
     if (fileRejections.length > 0) {
-      toast({        title: 'File upload error',        description: 'You can only upload a maximum of 6 images.',        variant: 'destructive',      });
+      toast({ title: 'File upload error', description: 'You can only upload a maximum of 6 images.', variant: 'destructive', });
     }
 
     const options = {
@@ -98,7 +98,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onFilesUpdate }) => {
       onFilesUpdate(newFiles);
     } catch (error) {
       console.error('Error compressing images:', error);
-      toast({        title: 'Image compression error',        description: 'There was an error while compressing the images.',        variant: 'destructive',      });
+      toast({ title: 'Image compression error', description: 'There was an error while compressing the images.', variant: 'destructive', });
     }
   }, [files, onFilesUpdate]);
 
@@ -143,7 +143,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onFilesUpdate }) => {
     onFilesUpdate(newFiles);
   };
 
-  const handleDragEnd = (event: any) => {
+  const handleDragEnd = (event: DragEndEvent) => {
     const { active, over } = event;
     if (active.id !== over.id) {
       setFiles((items) => {
@@ -176,7 +176,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onFilesUpdate }) => {
           <SortableContext items={files.map(f => f._id)} strategy={rectSortingStrategy}>
             <motion.div
               className="flex flex-wrap gap-4"
-              variants={{              hidden: { opacity: 0 },              show: {                opacity: 1,                transition: {                  staggerChildren: 0.05,                },              },            }}
+              variants={{ hidden: { opacity: 0 }, show: { opacity: 1, transition: { staggerChildren: 0.05, }, }, }}
               initial="hidden"
               animate="show"
             >

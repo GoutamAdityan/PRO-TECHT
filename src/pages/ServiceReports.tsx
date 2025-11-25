@@ -2,17 +2,14 @@ import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Uploader } from '@/components/ui/Uploader';
-import { motion, useReducedMotion } from 'framer-motion';
-import { CheckCircle, FileText, Download, Filter, CalendarDays, Users } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { CheckCircle, FileText, Download, Filter, CalendarDays, Users, Plus, FileCheck } from 'lucide-react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { cn } from '@/lib/utils';
-import PageTransition from '@/components/PageTransition';
 import SearchBar from '@/components/ui/SearchBar';
 import StatusBadge, { JobStatus } from '@/components/ui/StatusBadge';
-import { containerVariants, cardVariants, cardHoverVariants, headerIconVariants, rowVariants } from '@/lib/animations';
+import AnimatedCard from '@/components/ui/AnimatedCard';
 
 interface ReportFile {
   preview: string;
@@ -20,6 +17,7 @@ interface ReportFile {
   progress: number;
   status: 'pending' | 'uploading' | 'completed' | 'failed';
   name: string;
+  type?: string;
 }
 
 type ReportStatus = "Pending" | "Approved" | "Rejected";
@@ -72,11 +70,10 @@ const ServiceReports = () => {
   const [reports, setReports] = useState<ServiceReport[]>(DUMMY_REPORTS);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState<ReportStatus | "All">("All");
-  const shouldReduceMotion = useReducedMotion();
+  const [isFormOpen, setIsFormOpen] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Basic validation
     if (!requestId.trim() || !summary.trim()) {
       toast({
         title: "Error",
@@ -89,7 +86,7 @@ const ServiceReports = () => {
     const newReport: ServiceReport = {
       id: `REP${Date.now()}`,
       requestId,
-      agentName: "Current Agent", // Placeholder
+      agentName: "Current Agent",
       submissionDate: new Date().toISOString().split('T')[0],
       status: "Pending",
       summary,
@@ -100,12 +97,13 @@ const ServiceReports = () => {
     setRequestId('');
     setSummary('');
     setUploadedFiles([]);
+    setIsFormOpen(false);
 
     toast({
       title: "Report Submitted!",
       description: (
         <div className="flex items-center gap-2">
-          <CheckCircle className="h-5 w-5 text-primary" />
+          <CheckCircle className="h-5 w-5 text-emerald-500" />
           <span>Your service report has been submitted successfully.</span>
         </div>
       ),
@@ -115,200 +113,184 @@ const ServiceReports = () => {
 
   const filteredReports = reports.filter(report =>
     (report.requestId.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    report.agentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    report.summary.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      report.agentName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      report.summary.toLowerCase().includes(searchTerm.toLowerCase())) &&
     (filterStatus === "All" || report.status === filterStatus)
   );
 
-  const containerAnimation = shouldReduceMotion ? { opacity: 1 } : containerVariants;
-  const headerIconAnimation = shouldReduceMotion ? { opacity: 1, scale: 1 } : headerIconVariants;
-  const cardAnimation = shouldReduceMotion ? { opacity: 1, y: 0, scale: 1 } : cardVariants;
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
 
   return (
-    <PageTransition>
-      <motion.div
-        className="max-w-6xl mx-auto px-6 py-6 text-white relative overflow-hidden bg-gradient-to-br from-background/50 via-background to-background"
-        variants={containerAnimation}
-        initial="hidden"
-        animate="show"
-        exit="exit"
-      >
-        {/* Header Section */}
-        <div className="flex items-center gap-3 mb-6">
-          <motion.div
-            variants={headerIconAnimation}
-            initial="hidden"
-            animate="show"
-            className="p-2 rounded-full bg-emerald-800/30 flex items-center justify-center"
-          >
-            <Users className="w-5 h-5 text-emerald-400" />
-          </motion.div>
-          <h1 className="text-2xl font-bold tracking-tight text-foreground">Service Reports</h1>
+    <motion.div
+      className="max-w-7xl mx-auto px-4 py-8"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      {/* Hero Section */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-emerald-900/40 to-emerald-800/20 border border-border p-8 mb-8 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-emerald-500/20 rounded-full blur-3xl animate-pulse-glow"></div>
+
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-2">
+            <div className="p-2 rounded-lg bg-emerald-500/20 text-emerald-400">
+              <FileCheck className="w-6 h-6" />
+            </div>
+            <h1 className="text-3xl font-bold text-foreground">Service Reports</h1>
+          </div>
+          <p className="text-muted-foreground max-w-xl">
+            Submit detailed reports for completed service requests and track their approval status.
+          </p>
         </div>
 
-        {/* Subtitle matching consumer dashboard style */}
-        <motion.p
-          variants={shouldReduceMotion ? { opacity: 1 } : cardVariants} // Using cardVariants for subtitle entry
-          initial="hidden"
-          animate="show"
-          className="text-lg text-foreground/70 mb-8"
+        <Button
+          onClick={() => setIsFormOpen(!isFormOpen)}
+          className="relative z-10 btn-neon rounded-full px-6 py-6 text-lg shadow-lg shadow-emerald-500/20"
         >
-          Submit and manage service reports for completed requests.
-        </motion.p>
+          {isFormOpen ? 'Cancel Report' : <><Plus className="w-5 h-5 mr-2" /> New Report</>}
+        </Button>
+      </div>
 
-        {/* Submit Report Form */}
-        <motion.div
-          variants={cardAnimation}
-          initial="hidden"
-          animate="show"
-          exit="exit"
-          whileHover={shouldReduceMotion ? {} : cardHoverVariants.hover}
-          className="rounded-2xl transition-all duration-300 ease-out
-                     shadow-[0_0_15px_rgba(34,197,94,0.05)] hover:shadow-[0_0_25px_rgba(34,197,94,0.15)] mb-8"
-        >
-          <Card className="bg-muted/40 backdrop-blur-xl border border-foreground/10 rounded-2xl p-6 flex flex-col h-full">
-            <CardHeader className="px-0 pt-0 pb-4">
-              <CardTitle className="text-xl font-semibold text-foreground/90">Submit New Service Report</CardTitle>
-              <CardDescription className="text-foreground/70">Fill out the details for a completed service request.</CardDescription>
-            </CardHeader>
-            <CardContent className="px-0 pb-0 flex-grow">
+      {/* Submit Report Form */}
+      <AnimatePresence>
+        {isFormOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+            animate={{ opacity: 1, height: 'auto', marginBottom: 32 }}
+            exit={{ opacity: 0, height: 0, marginBottom: 0 }}
+            className="overflow-hidden"
+          >
+            <AnimatedCard className="border-border bg-card backdrop-blur-md">
+              <h2 className="text-xl font-semibold text-foreground mb-6 border-b border-border pb-4">Submit New Service Report</h2>
               <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label htmlFor="requestId" className="text-sm font-medium leading-none text-foreground/90">Request ID</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-2">
+                    <label htmlFor="requestId" className="text-sm font-medium text-muted-foreground">Request ID</label>
                     <Input
                       id="requestId"
                       placeholder="e.g., SR001"
                       value={requestId}
                       onChange={(e) => setRequestId(e.target.value)}
-                      className="mt-1 h-10 rounded-full bg-background/50 border-border/50 focus-visible:ring-primary focus-visible:ring-offset-0"
-                      aria-label="Request ID"
+                      className="bg-background/50 border-border focus:border-emerald-500/50 h-11"
                     />
-                    {!requestId.trim() && <p className="text-xs text-destructive mt-1">Request ID is required.</p>}
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium text-muted-foreground">Attachments</label>
+                    <Uploader onFilesChange={setUploadedFiles} />
                   </div>
                 </div>
-                <div>
-                  <label htmlFor="summary" className="text-sm font-medium leading-none text-foreground/90">Service Summary</label>
+
+                <div className="space-y-2">
+                  <label htmlFor="summary" className="text-sm font-medium text-muted-foreground">Service Summary</label>
                   <Textarea
                     id="summary"
-                    placeholder="Describe the service performed and any findings..."
+                    placeholder="Describe the service performed, parts used, and any important notes..."
                     value={summary}
                     onChange={(e) => setSummary(e.target.value)}
-                    rows={5}
-                    className="mt-1 rounded-lg bg-background/50 border-border/50 focus-visible:ring-primary focus-visible:ring-offset-0"
-                    aria-label="Service Summary"
+                    rows={4}
+                    className="bg-background/50 border-border focus:border-emerald-500/50 min-h-[120px]"
                   />
-                  {!summary.trim() && <p className="text-xs text-destructive mt-1">Service summary is required.</p>}
                 </div>
-                <div>
-                  <label className="text-sm font-medium leading-none text-foreground/90">Attachments</label>
-                  <Uploader onFilesChange={setUploadedFiles} />
-                </div>
-                <Button type="submit" className="w-full px-6 py-2 bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold rounded-full shadow-lg
-                                           hover:translate-y-[-2px] transition-all duration-200 ease-out
-                                           shadow-[0_0_15px_rgba(34,197,94,0.25)] hover:shadow-[0_0_25px_rgba(34,197,94,0.4)]"
-                        aria-label="Submit Report">
-                  Submit Report
-                </Button>
-              </form>
-            </CardContent>
-          </Card>
-        </motion.div>
 
-        {/* Reports List */}
-        <motion.div
-          variants={cardAnimation}
-          initial="hidden"
-          animate="show"
-          exit="exit"
-          whileHover={shouldReduceMotion ? {} : cardHoverVariants.hover}
-          className="rounded-2xl transition-all duration-300 ease-out
-                     shadow-[0_0_15px_rgba(34,197,94,0.05)] hover:shadow-[0_0_25px_rgba(34,197,94,0.15)]"
-        >
-          <Card className="bg-muted/40 backdrop-blur-xl border border-foreground/10 rounded-2xl p-6 flex flex-col h-full">
-            <CardHeader className="px-0 pt-0 pb-4">
-              <CardTitle className="text-xl font-semibold text-foreground/90">Submitted Reports</CardTitle>
-              <div className="flex flex-wrap items-center gap-4 mt-4">
-                <SearchBar
-                  placeholder="Search by Request ID, agent, or summary..."
-                  value={searchTerm}
-                  onChange={(e) => setSearchTerm(e.target.value)}
-                  aria-label="Search reports"
-                />
-                <Select value={filterStatus} onValueChange={(value: ReportStatus | "All") => setFilterStatus(value)}>
-                  <SelectTrigger className="w-[180px] h-10 rounded-full bg-background/50 border-border/50 focus-visible:ring-primary focus-visible:ring-offset-0">
-                    <Filter className="h-4 w-4 mr-2 text-muted-foreground" />
-                    <SelectValue placeholder="Filter by Status" />
-                  </SelectTrigger>
-                  <SelectContent className="bg-card/90 backdrop-blur-sm border-border/50">
-                    <SelectItem value="All">All Statuses</SelectItem>
-                    <SelectItem value="Pending">
-                      <StatusBadge status="Pending" />
-                    </SelectItem>
-                    <SelectItem value="Approved">
-                      <StatusBadge status="Approved" />
-                    </SelectItem>
-                    <SelectItem value="Rejected">
-                      <StatusBadge status="Rejected" />
-                    </SelectItem>
-                  </SelectContent>
-                </Select>
-                <Button
-                  variant="outline"
-                  className="h-10 px-6 py-2 rounded-full bg-gradient-to-r from-emerald-500 to-green-600 text-white font-semibold shadow-lg
-                             hover:translate-y-[-2px] transition-all duration-200 ease-out
-                             shadow-[0_0_15px_rgba(34,197,94,0.25)] hover:shadow-[0_0_25px_rgba(34,197,94,0.4)]"
+                <div className="flex justify-end">
+                  <Button type="submit" className="btn-neon px-8 rounded-full">
+                    Submit Report
+                  </Button>
+                </div>
+              </form>
+            </AnimatedCard>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Reports List */}
+      <AnimatedCard className="border-border bg-card backdrop-blur-md p-0 overflow-hidden">
+        <div className="p-6 border-b border-border bg-muted/20 flex flex-col md:flex-row gap-4 justify-between items-center">
+          <h2 className="text-xl font-semibold text-foreground">Submitted Reports</h2>
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            <SearchBar
+              placeholder="Search reports..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full md:w-64 bg-background/50 border-border"
+            />
+            <Select value={filterStatus} onValueChange={(value: ReportStatus | "All") => setFilterStatus(value)}>
+              <SelectTrigger className="w-[160px] bg-background/50 border-border text-muted-foreground">
+                <Filter className="h-4 w-4 mr-2 text-emerald-400" />
+                <SelectValue placeholder="Filter Status" />
+              </SelectTrigger>
+              <SelectContent className="bg-card border-border text-foreground">
+                <SelectItem value="All">All Statuses</SelectItem>
+                <SelectItem value="Pending">Pending</SelectItem>
+                <SelectItem value="Approved">Approved</SelectItem>
+                <SelectItem value="Rejected">Rejected</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+
+        <div className="p-6 grid gap-4">
+          <AnimatePresence mode="popLayout">
+            {filteredReports.length === 0 ? (
+              <div className="text-center text-muted-foreground p-8 bg-card rounded-xl border border-dashed border-border">
+                <FileText className="w-12 h-12 mx-auto mb-3 text-gray-600" />
+                <p>No reports found matching your criteria.</p>
+              </div>
+            ) : (
+              filteredReports.map((report, index) => (
+                <motion.div
+                  key={report.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ delay: index * 0.05 }}
+                  className="border border-border bg-card hover:bg-accent transition-colors rounded-xl p-5 group"
                 >
-                  <CalendarDays className="h-4 w-4 mr-2" /> Date Range
-                </Button>
-              </div>
-            </CardHeader>
-            <CardContent className="px-0 pb-0 flex-grow">
-              <div className="grid gap-4">
-                {filteredReports.length === 0 ? (
-                  <div className="text-center text-muted-foreground p-4">No reports found.</div>
-                ) : (
-                  filteredReports.map((report) => (
-                    <motion.div
-                      key={report.id}
-                      variants={shouldReduceMotion ? { opacity: 1 } : rowVariants}
-                      initial="hidden"
-                      animate="show"
-                      whileHover={shouldReduceMotion ? {} : { scale: 1.01, transition: { duration: 0.12 } }}
-                      className="border-b border-foreground/5 hover:bg-muted/20 rounded-lg p-4"
-                    >
-                      <div className="flex justify-between items-start mb-2">
-                        <div>
-                          <h3 className="font-semibold text-lg text-foreground/90">Report for Request ID: {report.requestId}</h3>
-                          <p className="text-sm text-muted-foreground">Submitted by {report.agentName} on {report.submissionDate}</p>
-                        </div>
-                        <StatusBadge status={report.status} />
+                  <div className="flex flex-col md:flex-row justify-between items-start gap-4 mb-3">
+                    <div>
+                      <div className="flex items-center gap-3 mb-1">
+                        <h3 className="font-bold text-lg text-foreground">{report.requestId}</h3>
+                        <span className="text-sm text-muted-foreground">• {report.submissionDate}</span>
                       </div>
-                      <p className="text-sm text-muted-foreground mb-3">{report.summary}</p>
-                      {report.attachments && report.attachments.length > 0 && (
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          {report.attachments.map((att, idx) => (
-                            <a
-                              key={idx}
-                              href={att.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1 text-xs text-primary hover:underline hover:text-primary/80 transition-colors"
-                            >
-                              <Download className="h-3 w-3" /> {att.name}
-                            </a>
-                          ))}
-                        </div>
-                      )}
-                    </motion.div>
-                  ))
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </motion.div>
-      </motion.div>
-    </PageTransition>
+                      <p className="text-sm text-emerald-400 font-medium mb-2">Agent: {report.agentName}</p>
+                    </div>
+                    <StatusBadge status={report.status} />
+                  </div>
+
+                  <p className="text-muted-foreground mb-4 leading-relaxed bg-muted/20 p-3 rounded-lg border border-border">
+                    {report.summary}
+                  </p>
+
+                  {report.attachments && report.attachments.length > 0 && (
+                    <div className="flex flex-wrap gap-2">
+                      {report.attachments.map((att, idx) => (
+                        <a
+                          key={idx}
+                          href={att.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 transition-colors text-xs font-medium"
+                        >
+                          <Download className="h-3 w-3" /> {att.name}
+                        </a>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
+              ))
+            )}
+          </AnimatePresence>
+        </div>
+      </AnimatedCard>
+    </motion.div>
   );
 };
 

@@ -2,11 +2,10 @@ import React from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import AIAdvisor from "@/components/custom/AIAdvisor";
-import { motion, useReducedMotion } from 'framer-motion';
+import { motion, useReducedMotion, Variants } from 'framer-motion';
 import { BarChart as BarChartIcon } from 'lucide-react';
 import PageTransition from '@/components/PageTransition';
 import { containerVariants, cardVariants, cardHoverVariants, headerIconVariants } from '@/lib/animations';
-import { cn } from '@/lib/utils';
 
 // Dummy Data
 const serviceRequestData = [
@@ -36,14 +35,14 @@ const COLORS = ['#FFBB28', '#0088FE', '#00C49F']; // Recharts default colors, ca
 const Analytics = () => {
   const shouldReduceMotion = useReducedMotion();
 
-  const containerAnimation = shouldReduceMotion ? { opacity: 1 } : containerVariants;
-  const headerIconAnimation = shouldReduceMotion ? { opacity: 1, scale: 1 } : headerIconVariants;
-  const cardAnimation = shouldReduceMotion ? { opacity: 1, y: 0, scale: 1 } : cardVariants;
+  const containerAnimation: Variants = shouldReduceMotion ? { hidden: { opacity: 1 }, show: { opacity: 1 }, exit: { opacity: 1 } } : containerVariants;
+  const headerIconAnimation: Variants = shouldReduceMotion ? { hidden: { opacity: 1, scale: 1 }, show: { opacity: 1, scale: 1 } } : headerIconVariants;
+  const cardAnimation: Variants = shouldReduceMotion ? { hidden: { opacity: 1, y: 0, scale: 1 }, show: { opacity: 1, y: 0, scale: 1 }, exit: { opacity: 1 } } : cardVariants;
 
   return (
     <PageTransition>
       <motion.div
-        className="max-w-6xl mx-auto px-6 py-6 text-white relative overflow-hidden bg-gradient-to-br from-background/50 via-background to-background"
+        className="max-w-6xl mx-auto px-6 py-6 text-foreground relative overflow-hidden bg-gradient-to-br from-background/50 via-background to-background"
         variants={containerAnimation}
         initial="hidden"
         animate="show"
@@ -64,7 +63,7 @@ const Analytics = () => {
 
         {/* Subtitle matching consumer dashboard style */}
         <motion.p
-          variants={shouldReduceMotion ? { opacity: 1 } : cardVariants} // Using cardVariants for subtitle entry
+          variants={shouldReduceMotion ? { hidden: { opacity: 1 }, show: { opacity: 1 } } : cardVariants} // Using cardVariants for subtitle entry
           initial="hidden"
           animate="show"
           className="text-lg text-foreground/70 mb-8"

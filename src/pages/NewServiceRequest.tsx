@@ -15,18 +15,15 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate, Link } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
 import { motion } from 'framer-motion';
-import { Send, Plus, Wrench, Image as ImageIcon } from 'lucide-react';
+import { Send, Plus, Wrench } from 'lucide-react';
 import { ProductDropdown } from "@/components/ui/ProductDropdown";
-import { Uploader } from "@/components/ui/Uploader";
 
-// 1. Updated Schema with optional image
 const serviceRequestSchema = z.object({
   product_id: z.string().min(1, "Please select a product"),
   issue_description: z.string().min(10, "Please describe the issue in at least 10 characters"),
-  image_file: z.instanceof(File).optional(),
 });
 
 interface Product {
@@ -72,37 +69,17 @@ const NewServiceRequest = () => {
     fetchProducts();
   }, [user, toast]);
 
-  // 2. Updated onSubmit to handle image upload
   const onSubmit = async (values: z.infer<typeof serviceRequestSchema>) => {
     if (!user) return;
     setIsSubmitting(true);
-    let imageUrl: string | null = null;
 
     try {
-      // Upload image if one is provided
-      if (values.image_file) {
-        const file = values.image_file;
-        const filePath = `${user.id}/${Date.now()}-${file.name}`;
-        const { error: uploadError } = await supabase.storage
-          .from('service_request_images')
-          .upload(filePath, file);
-
-        if (uploadError) throw uploadError;
-
-        const { data: urlData } = supabase.storage
-          .from('service_request_images')
-          .getPublicUrl(filePath);
-        imageUrl = urlData.publicUrl;
-      }
-
-      // Create the service request record
       const { error: requestError } = await supabase.from("service_requests").insert([
         {
           user_id: user.id,
           product_id: values.product_id,
           issue_description: values.issue_description,
-          image_url: imageUrl, // Save the image URL
-          status: "Pending",
+          status: "submitted",
         },
       ]);
 
@@ -167,26 +144,6 @@ const NewServiceRequest = () => {
                         placeholder="e.g., The screen is flickering and showing distorted colors."
                         {...field}
                         className="bg-background border-border text-foreground focus-visible:ring-ring"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              {/* 3. Uploader Component Added */}
-              <FormField
-                control={form.control}
-                name="image_file"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-xl font-bold flex items-center gap-2">
-                      <ImageIcon className="h-5 w-5" /> 3. Add an Image (Optional)
-                    </FormLabel>
-                    <FormControl>
-                      <Uploader
-                        onFilesChange={(files) => form.setValue('image_file', files[0])}
-                        maxFiles={1}
-                        accept={{ 'image/*': ['.jpeg', '.png', '.gif'] }}
                       />
                     </FormControl>
                     <FormMessage />

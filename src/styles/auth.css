@@ -3,17 +3,27 @@
 @tailwind utilities;
 
 /* Global styles to prevent unwanted text cursor and focus */
-html, body, #root {
-  -webkit-user-select: none; /* Safari */
-  -moz-user-select: none; /* Firefox */
-  -ms-user-select: none; /* IE10+/Edge */
-  user-select: none; /* Standard */
+html,
+body,
+#root {
+  -webkit-user-select: none;
+  /* Safari */
+  -moz-user-select: none;
+  /* Firefox */
+  -ms-user-select: none;
+  /* IE10+/Edge */
+  user-select: none;
+  /* Standard */
   caret-color: transparent;
   outline: none;
 }
 
 /* Re-enable for interactive elements */
-input, textarea, select, button, a {
+input,
+textarea,
+select,
+button,
+a {
   -webkit-user-select: auto;
   -moz-user-select: auto;
   -ms-user-select: auto;
@@ -22,31 +32,36 @@ input, textarea, select, button, a {
 }
 
 /* Ensure focus outlines are visible for accessibility on interactive elements */
-input:focus, textarea:focus, select:focus, button:focus, a:focus {
-  outline: 2px solid var(--accent); /* Or your preferred focus style */
+input:focus,
+textarea:focus,
+select:focus,
+button:focus,
+a:focus {
+  outline: 2px solid var(--accent);
+  /* Or your preferred focus style */
   outline-offset: 2px;
 }
 
 .auth-container {
   @apply min-h-screen flex items-center justify-center p-4;
-  background-color: #0f1513;
+  background-color: hsl(var(--background));
   background-image: radial-gradient(circle at 15% 50%, rgba(136, 201, 166, 0.1), transparent 30%),
-                    radial-gradient(circle at 85% 30%, rgba(136, 201, 166, 0.08), transparent 40%);
+    radial-gradient(circle at 85% 30%, rgba(136, 201, 166, 0.08), transparent 40%);
 }
 
 .glass-card {
-  @apply bg-white/5 backdrop-blur-lg rounded-2xl border border-white/10 shadow-2xl transition-all duration-500;
+  @apply bg-card backdrop-blur-lg rounded-2xl border border-border shadow-2xl transition-all duration-500;
 }
 
 @layer components {
   .form-input {
-    @apply w-full bg-white/5 border-2 border-transparent rounded-lg py-3 px-4 text-white placeholder-gray-400 transition-all duration-300;
+    @apply w-full bg-background/50 border-2 border-transparent rounded-lg py-3 px-4 text-foreground placeholder-muted-foreground transition-all duration-300;
     @apply focus:outline-none focus:ring-2 focus:ring-accent/50 focus:border-accent;
   }
 }
 
 .form-input:hover {
-  @apply border-white/20;
+  @apply border-foreground/20;
 }
 
 .submit-button {
@@ -76,9 +91,9 @@ input:focus, textarea:focus, select:focus, button:focus, a:focus {
 }
 
 .tabs-trigger {
-  @apply text-gray-400 transition-colors duration-300;
+  @apply text-muted-foreground transition-colors duration-300;
 }
 
 .tabs-trigger[data-state="active"] {
-  @apply text-white;
+  @apply text-foreground;
 }

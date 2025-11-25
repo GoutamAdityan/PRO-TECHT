@@ -1,28 +1,29 @@
 export const tokens = {
   colors: {
-    bg: '#0f1612',
-    panelBg: 'rgba(20, 30, 25, 0.55)',
-    panelBorder: 'rgba(64, 87, 74, 0.2)',
-    accentGreen: '#1bb45b',
-    accentGreenDark: '#12964a',
-    mutedText: 'rgba(200, 210, 200, 0.5)',
-    textMain: '#e6efe8',
+    bg: '#09110C',
+    panelBg: 'rgba(15, 26, 20, 0.6)',
+    panelBorder: 'rgba(255, 255, 255, 0.08)',
+    accentGreen: '#00CC66',
+    accentGreenDark: '#00A352',
+    mutedText: 'rgba(235, 245, 240, 0.6)',
+    textMain: '#EBF5F0',
     white: '#ffffff',
-    text: '#a0aec0',
-    heading: '#e2e8f0',
+    text: '#EBF5F0',
+    heading: '#ffffff',
   },
   blur: {
-    glass: '6px',
+    glass: '12px',
   },
   radii: {
-    DEFAULT: '18px',
+    DEFAULT: '16px',
     full: '9999px',
   },
   shadows: {
     card: '0 20px 40px rgba(0,0,0,0.45)',
+    neon: '0 0 15px rgba(0, 204, 102, 0.5)',
   },
   motion: {
     fast: '200ms',
-    medium: '420ms',
+    medium: '400ms',
   },
 };

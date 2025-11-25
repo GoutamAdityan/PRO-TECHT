@@ -54,7 +54,7 @@ const PostComposer: React.FC<PostComposerProps> = ({ isOpen, onOpenChange }) => 
     }
 
     try {
-      let imageUrls: string[] = [];
+      const imageUrls: string[] = [];
       if (values.files && values.files.length > 0) {
         for (const file of values.files) {
           const filePath = `${user.id}/posts/${Date.now()}-${file.name}`;
@@ -86,9 +86,10 @@ const PostComposer: React.FC<PostComposerProps> = ({ isOpen, onOpenChange }) => 
       toast({ title: "Success", description: "Post published successfully." });
       form.reset();
       onOpenChange(false);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Error creating post:", error);
-      toast({ title: "Error", description: error.message || "An unexpected error occurred. Please check the console for details.", variant: "destructive" });
+      const message = error instanceof Error ? error.message : "An unexpected error occurred. Please check the console for details.";
+      toast({ title: "Error", description: message, variant: "destructive" });
     }
   };
 

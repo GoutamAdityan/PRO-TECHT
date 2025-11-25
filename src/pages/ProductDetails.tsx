@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, DollarSign, ShieldCheck, ShieldX, Trash, Edit } from "lucide-react";
+import { motion } from "framer-motion";
+import { ShieldIntegrityMeter } from "@/components/custom/ShieldIntegrityMeter";
+import { ScannerLoader } from "@/components/ui/ScannerLoader";
 
 interface Product {
   id: string;
@@ -102,94 +105,92 @@ const ProductDetails = () => {
   }
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex justify-between items-start">
-          <div>
-            <CardTitle className="text-2xl">{product.brand} {product.model}</CardTitle>
-            {product.serial_number && <CardDescription>Serial: {product.serial_number}</CardDescription>}
-          </div>
-          <div className="flex space-x-2">
-            <Button variant="outline" size="sm" asChild>
-                <Link to={`/products/${product.id}/edit`}>
+    <motion.div layoutId={`product-card-${product.id}`} className="max-w-4xl mx-auto py-8 px-4">
+      <ScannerLoader>
+        <Card className="glass-card border-emerald-500/20 shadow-2xl">
+          <CardHeader>
+            <div className="flex justify-between items-start">
+              <div>
+                <CardTitle className="text-2xl">{product.brand} {product.model}</CardTitle>
+                {product.serial_number && <CardDescription>Serial: {product.serial_number}</CardDescription>}
+              </div>
+              <div className="flex space-x-2">
+                <Button variant="outline" size="sm" asChild>
+                  <Link to={`/products/${product.id}/edit`}>
                     <Edit className="w-4 h-4 mr-2" />
                     Edit
-                </Link>
-            </Button>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button variant="destructive" size="sm">
-                  <Trash className="w-4 h-4 mr-2" />
-                  Delete
+                  </Link>
                 </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete your product
-                    and all associated data.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        {product.warranty_expiry && (
-            <div className="flex items-center">
-                {isWarrantyExpired(product.warranty_expiry) ? (
-                <Badge variant="destructive" className="flex items-center gap-1">
-                    <ShieldX className="w-3 h-3" />
-                    Expired
-                </Badge>
-                ) : (
-                <Badge variant="outline" className="flex items-center gap-1 border-success text-success">
-                    <ShieldCheck className="w-3 h-3" />
-                    Active
-                </Badge>
-                )}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" size="sm">
+                      <Trash className="w-4 h-4 mr-2" />
+                      Delete
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently delete your product
+                        and all associated data.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction onClick={handleDelete}>Delete</AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
             </div>
-        )}
-        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <div className="flex items-center gap-1">
+          </CardHeader>
+          <CardContent className="space-y-4">
+            {product.warranty_expiry && (
+              <div className="flex justify-center py-6">
+                <ShieldIntegrityMeter
+                  expiryDate={product.warranty_expiry}
+                  purchaseDate={product.purchase_date}
+                  size="lg"
+                />
+              </div>
+            )}
+            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-1">
                 <Calendar className="w-4 h-4" />
                 Purchased on {new Date(product.purchase_date).toLocaleDateString()}
-            </div>
-            {product.purchase_price && (
+              </div>
+              {product.purchase_price && (
                 <div className="flex items-center gap-1">
-                    <DollarSign className="w-4 h-4" />
-                    ${product.purchase_price}
+                  <DollarSign className="w-4 h-4" />
+                  ${product.purchase_price}
                 </div>
-            )}
-        </div>
-        {product.warranty_expiry && (
-            <div className="text-sm">
+              )}
+            </div>
+            {product.warranty_expiry && (
+              <div className="text-sm">
                 <span className="text-muted-foreground">Warranty expires:</span>{' '}
                 <span className={isWarrantyExpired(product.warranty_expiry) ? 'text-destructive' : 'text-foreground'}>
-                    {new Date(product.warranty_expiry).toLocaleDateString()}
+                  {new Date(product.warranty_expiry).toLocaleDateString()}
                 </span>
-            </div>
-        )}
-        {product.retailer && (
-            <div className="text-sm">
+              </div>
+            )}
+            {product.retailer && (
+              <div className="text-sm">
                 <span className="text-muted-foreground">Purchased from:</span>{' '}
                 <span>{product.retailer}</span>
-            </div>
-        )}
-        {product.notes && (
-            <div className="text-sm">
+              </div>
+            )}
+            {product.notes && (
+              <div className="text-sm">
                 <span className="text-muted-foreground">Notes:</span>{' '}
                 <span>{product.notes}</span>
-            </div>
-        )}
-      </CardContent>
-    </Card>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      </ScannerLoader>
+    </motion.div>
   );
 };
 

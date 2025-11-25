@@ -16,6 +16,7 @@ import { Uploader } from '@/components/ui/Uploader';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { useSound } from '@/context/SoundContext';
 import { PlusCircle, Image as ImageIcon } from 'lucide-react';
 
 const formSchema = z.object({
@@ -36,6 +37,7 @@ interface AddProductModalProps {
 export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClose, onProductAdded }) => {
   const { user } = useAuth();
   const { toast } = useToast();
+  const { playSuccessSound } = useSound();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -64,7 +66,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
         console.log("Attempting image upload...");
         const file = values.image_file;
         const filePath = `${user.id}/catalog/${Date.now()}-${file.name}`;
-        
+
         const { error: uploadError } = await supabase.storage
           .from('catalog_product_images')
           .upload(filePath, file);
@@ -100,6 +102,7 @@ export const AddProductModal: React.FC<AddProductModalProps> = ({ isOpen, onClos
       }
 
       toast({ title: "Success", description: "Product added to catalog successfully." });
+      playSuccessSound();
       form.reset();
       onProductAdded();
       onClose();

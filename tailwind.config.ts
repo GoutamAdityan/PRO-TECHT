@@ -15,14 +15,6 @@ export default {
     },
     extend: {
       colors: {
-        bg: tokens.colors.bg,
-        "card-bg": tokens.colors.cardBg,
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        text: tokens.colors.text,
-        heading: tokens.colors.heading,
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
@@ -44,6 +36,10 @@ export default {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
         },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
         popover: {
           DEFAULT: "hsl(var(--popover))",
           foreground: "hsl(var(--popover-foreground))",
@@ -52,90 +48,45 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
-        },
-        surface: {
-          DEFAULT: "hsl(var(--surface))",
-          foreground: "hsl(var(--surface-foreground))",
-        },
-        // Custom text colors
-        "text-primary": "hsl(var(--text-primary))",
-        "text-secondary": "hsl(var(--text-secondary))",
-        "text-muted": "hsl(var(--text-muted))",
-        // Custom hover/active colors
-        hover: "hsl(var(--hover))",
-        "primary-hover": "hsl(var(--primary-hover))",
-        "primary-active": "hsl(var(--primary-active))",
-        // New badge and button colors
-        "subtle-button-bg": "hsl(var(--subtle-button-bg))",
-        "subtle-button-text": "hsl(var(--subtle-button-text))",
-        "subtle-button-border": "hsl(var(--subtle-button-border))",
-        "success-badge-bg": "hsl(var(--success-badge-bg))",
-        "success-badge-text": "hsl(var(--success-badge-text))",
-        "warning-badge-bg": "hsl(var(--warning-badge-bg))",
-        "warning-badge-text": "hsl(var(--warning-badge-text))",
-        "destructive-badge-bg": "hsl(var(--destructive-badge-bg))",
-        "destructive-badge-text": "hsl(var(--destructive-badge-text))",
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-        DEFAULT: tokens.radii.DEFAULT,
-        full: tokens.radii.full,
-      },
-      blur: {
-        glass: tokens.blur.glass,
-      },
-      transitionDuration: {
-        fast: tokens.motion.fast,
-        medium: tokens.motion.medium,
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
+        },
+        fadeInUp: {
+          "0%": { opacity: "0", transform: "translateY(20px)" },
+          "100%": { opacity: "1", transform: "translateY(0)" },
+        },
+        pulseGlow: {
+          "0%, 100%": { boxShadow: "0 0 10px rgba(0, 204, 102, 0.2)" },
+          "50%": { boxShadow: "0 0 20px rgba(0, 204, 102, 0.5)" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in-up": "fadeInUp 0.6s ease-out forwards",
+        "pulse-glow": "pulseGlow 3s infinite",
       },
       fontFamily: {
         heading: ["'Montserrat'", "sans-serif"],
-        body: ["'Open Sans'", "sans-serif"],
-        sans: ["'Open Sans'", "sans-serif"],
+        body: ["'Outfit'", "sans-serif"],
+        sans: ["'Outfit'", "sans-serif"],
       },
-      boxShadow: {
-        soft: '0 4px 12px rgba(var(--shadow-color-rgb), 0.15)',
-        DEFAULT: '0 1px 3px 0 rgba(var(--shadow-color-rgb), 0.1), 0 1px 2px -1px rgba(var(--shadow-color-rgb), 0.1)',
-        md: '0 4px 6px -1px rgba(var(--shadow-color-rgb), 0.1), 0 2px 4px -2px rgba(var(--shadow-color-rgb), 0.1)',
-        lg: '0 10px 15px -3px rgba(var(--shadow-color-rgb), 0.1), 0 4px 6px -4px rgba(var(--shadow-color-rgb), 0.1)',
-        xl: '0 20px 25px -5px rgba(var(--shadow-color-rgb), 0.1), 0 8px 10px -6px rgba(var(--shadow-color-rgb), 0.1)',
-        '2xl': '0 25px 50px -12px rgba(var(--shadow-color-rgb), 0.25)',
-        inner: 'inset 0 2px 4px 0 rgba(var(--shadow-color-rgb), 0.05)',
-        card: tokens.shadows.card,
-      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'hero-pattern': "url('/hero-pattern.svg')", // Placeholder if needed
+      }
     },
   },
   plugins: [require("tailwindcss-animate")],

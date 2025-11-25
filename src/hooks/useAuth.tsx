@@ -51,7 +51,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       async (event, session) => {
         setSession(session);
         setUser(session?.user ?? null);
-        
+
         if (session?.user) {
           // Defer profile fetching to avoid auth state callback issues
           setTimeout(async () => {
@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         } else {
           setProfile(null);
         }
-        
+
         setLoading(false);
       }
     );
@@ -69,13 +69,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
         setTimeout(async () => {
           await fetchUserProfile(session.user.id);
         }, 0);
       }
-      
+
       setLoading(false);
     });
 
@@ -113,7 +113,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   const signUp = async (email: string, password: string, fullName?: string, role?: string) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
-      
+
       const { error } = await supabase.auth.signUp({
         email,
         password,
@@ -183,7 +183,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         title: "Signed out",
         description: "You have been signed out successfully."
       });
-      window.location.href = '/auth';
+      window.location.href = '/';
     } catch (error: any) {
       toast({
         variant: "destructive",

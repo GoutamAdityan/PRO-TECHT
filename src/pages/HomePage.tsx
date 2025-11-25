@@ -1,128 +1,236 @@
-import { motion, useScroll, useSpring } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import { ArrowRight } from 'lucide-react';
-import { useRef, useState, useEffect } from 'react';
+import { ArrowRight, Shield, Bell, Wrench, CheckCircle, Zap, Lock, Globe } from 'lucide-react';
 import NavBar from '@/components/NavBar';
-import HeroIllustration from '@/components/HeroIllustration';
-import FeatureCard from '@/components/FeatureCard';
 import Footer from '@/components/Footer';
+import { Button } from '@/components/ui/button';
+import CyberBackground from '@/components/ui/CyberBackground';
+import TextReveal from '@/components/ui/TextReveal';
+import TiltCard from '@/components/ui/TiltCard';
+import MagneticButton from '@/components/ui/MagneticButton';
+import CustomCursor from '@/components/ui/CustomCursor';
+import ExplainerVideoModal from '@/components/ExplainerVideoModal';
+import BinaryMorseLoader from '@/components/ui/BinaryMorseLoader';
+import { useState } from 'react';
 
-// Force re-compilation
 const HomePage = () => {
-  const navbarRef = useRef<HTMLElement>(null);
-  const [navbarHeight, setNavbarHeight] = useState(0);
-
+  const [isVideoOpen, setIsVideoOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
-    stiffness: 100,
-    damping: 30,
-    restDelta: 0.001
-  });
-
-  useEffect(() => {
-    if (navbarRef.current) {
-      setNavbarHeight(navbarRef.current.offsetHeight);
-    }
-  }, []);
-
-  const handleScroll = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault();
-    const href = e.currentTarget.href;
-    const targetId = href.replace(/.*#/, "");
-    const elem = document.getElementById(targetId);
-    elem?.scrollIntoView({
-      behavior: "smooth",
-    });
-  };
+  const y = useTransform(scrollYProgress, [0, 1], [0, -100]);
+  const opacity = useTransform(scrollYProgress, [0, 0.3], [1, 0]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
 
   return (
-    <div className="min-h-screen text-white">
-      <video autoPlay loop muted playsInline className="fixed top-0 left-0 w-full h-full object-cover -z-10">
-        <source src="/videos/your-video-name.mp4" type="video/mp4" />
-      </video>
-      <div className="fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 -z-10"></div>
-      <NavBar ref={navbarRef} />
-      <motion.div 
-        className="fixed left-0 right-0 h-1 bg-accent z-[998]" 
-        style={{ scaleX, transformOrigin: "0%", top: navbarHeight }} 
-      />
-      <main className="container mx-auto px-4">
+    <>
+      {/* Binary/Morse Loading Screen */}
+      <AnimatePresence>
+        {isLoading && (
+          <BinaryMorseLoader
+            onComplete={() => setIsLoading(false)}
+            duration={4000}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Main Content */}
+      <div className="min-h-screen bg-background text-foreground overflow-hidden relative cursor-none">
+        <CustomCursor />
+        <CyberBackground />
+        <NavBar />
+
         {/* Hero Section */}
-        <motion.section
-          className="min-h-screen text-center flex flex-col items-center justify-start relative"
-          style={{ minHeight: `calc(100vh - ${navbarHeight}px)` }}
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-        >
-          <HeroIllustration />
-          <h1 className="text-4xl md:text-6xl font-bold text-heading mb-4 -mt-12 md:-mt-20 relative z-10">Manage warranties & service requests — in one calm place.</h1>
-          <p className="text-lg md:text-xl text-text max-w-2xl mx-auto mb-8 relative z-10">Track, protect, and get help for your devices. Quick setup, smart reminders.</p>
-          <div className="flex space-x-4 relative z-10">
-            <Link to="/auth" className="border border-white text-white py-3 px-6 rounded-full font-semibold hover:bg-green-700 hover:border-green-700 transition-colors duration-300 flex items-center">Get Started <ArrowRight className="ml-2" /></Link>
-            <a href="#features" onClick={handleScroll} className="border border-white text-white py-3 px-6 rounded-full font-semibold hover:bg-green-700 hover:border-green-700 transition-colors duration-300">Learn More</a>
+        <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
+          <div className="container mx-auto px-4 relative z-10 text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, ease: "easeOut" }}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.2, duration: 0.5 }}
+                className="inline-flex items-center gap-2 mb-6 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-md text-sm font-medium text-primary shadow-[0_0_15px_rgba(0,204,102,0.3)]"
+              >
+                <Zap className="w-4 h-4" />
+                <span>The Future of Warranty Management</span>
+              </motion.div>
+
+              <h1 className="text-5xl md:text-8xl font-bold tracking-tight mb-8 leading-tight">
+                <span className="block text-foreground drop-shadow-2xl">Protect What</span>
+                <span className="block text-transparent bg-clip-text bg-gradient-to-r from-primary via-emerald-300 to-primary bg-[length:200%_auto] animate-gradient">
+                  <TextReveal text="Matters Most" delay={0.5} />
+                </span>
+              </h1>
+
+              <p className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed drop-shadow-md">
+                Your centralized hub for warranties, service requests, and device protection.
+                Simple, smart, and secure.
+              </p>
+
+              <motion.div
+                className="flex flex-col sm:flex-row items-center justify-center gap-6"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.8 }}
+              >
+                <div onClick={() => setIsVideoOpen(true)}>
+                  <MagneticButton strength={0.3}>
+                    <Button size="lg" className="btn-neon text-lg px-10 py-7 rounded-full group relative overflow-hidden">
+                      <span className="relative z-10 flex items-center">
+                        Get Started <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                      </span>
+                      <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                    </Button>
+                  </MagneticButton>
+                </div>
+
+              </motion.div>
+            </motion.div>
           </div>
-        </motion.section>
+
+          {/* Scroll Indicator */}
+          <motion.div
+            className="absolute bottom-10 left-1/2 -translate-x-1/2 text-muted-foreground flex flex-col items-center gap-2"
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <span className="text-xs uppercase tracking-widest text-muted-foreground">Scroll</span>
+            <div className="w-px h-10 bg-gradient-to-b from-primary to-transparent" />
+          </motion.div>
+        </section>
 
         {/* Features Section */}
-        <motion.section
-          id="features"
-          className="mt-32"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.8 }}
-        >
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-heading mb-12">Why you'll love Pro-Techt</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <FeatureCard 
-              imageUrl="/images/tracking.png"
-              title="Centralized Tracking" 
-              description="Say goodbye to cluttered folders and lost receipts. Our platform provides a secure, centralized hub for all your product warranties. Easily upload, organize, and access your documents anytime, anywhere, ensuring you have proof of purchase right when you need it."
-            />
-            <FeatureCard 
-              imageUrl="/images/reminders.png"
-              title="Smart Reminders" 
-              description="Never miss a warranty expiration date again. Our intelligent system proactively monitors your registered products and sends timely alerts for expiring warranties and recommended maintenance, empowering you to take action and save money."
-            />
-            <FeatureCard 
-              imageUrl="/images/service.png"
-              title="Effortless Service" 
-              description="When something goes wrong, getting help shouldn't be a hassle. Initiate service requests directly from the app in just a few taps. We connect you with qualified technicians and streamline the entire process, from diagnosis to resolution."
-            />
-          </div>
-        </motion.section>
+        <section className="py-32 relative z-10">
+          <div className="container mx-auto px-4">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="text-center mb-24"
+            >
+              <h2 className="text-4xl md:text-6xl font-bold mb-6 text-foreground">Why Choose <span className="text-primary">Pro-Techt?</span></h2>
+              <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+                We've reimagined how you manage your devices with features designed for peace of mind.
+              </p>
+            </motion.div>
 
-        {/* How it works */}
-        <motion.section
-          className="mt-32 text-center"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true, amount: 0.5 }}
-          transition={{ duration: 0.8 }}
-        >
-          <h2 className="text-3xl md:text-4xl font-bold text-heading mb-12">How It Works</h2>
-          <div className="flex flex-col md:flex-row justify-center items-center space-y-8 md:space-y-0 md:space-x-16">
-            <div className="flex flex-col items-center">
-              <motion.div className="w-16 h-16 bg-card-bg rounded-full flex items-center justify-center text-accent text-2xl font-bold border-2 border-accent mb-4" whileHover={{ scale: 1.1 }}>1</motion.div>
-              <h3 className="text-xl font-bold text-heading">Add Products</h3>
-              <p className="text-text max-w-xs">Upload receipts and warranty details for your devices.</p>
-            </div>
-            <div className="flex flex-col items-center">
-              <motion.div className="w-16 h-16 bg-card-bg rounded-full flex items-center justify-center text-accent text-2xl font-bold border-2 border-accent mb-4" whileHover={{ scale: 1.1 }}>2</motion.div>
-              <h3 className="text-xl font-bold text-heading">Get Reminders</h3>
-              <p className="text-text max-w-xs">Receive alerts for expiring warranties and maintenance.</p>
-            </div>
-            <div className="flex flex-col items-center">
-              <motion.div className="w-16 h-16 bg-card-bg rounded-full flex items-center justify-center text-accent text-2xl font-bold border-2 border-accent mb-4" whileHover={{ scale: 1.1 }}>3</motion.div>
-              <h3 className="text-xl font-bold text-heading">Request Service</h3>
-              <p className="text-text max-w-xs">Easily start a service request when things go wrong.</p>
+            <div className="grid md:grid-cols-3 gap-8 lg:gap-12">
+              {[
+                {
+                  icon: <Shield className="h-12 w-12 text-primary" />,
+                  title: "Centralized Tracking",
+                  desc: "One secure location for all your warranties and receipts. Never lose a document again."
+                },
+                {
+                  icon: <Bell className="h-12 w-12 text-emerald-400" />,
+                  title: "Smart Reminders",
+                  desc: "Automated notifications before your coverage expires. Stay ahead of the curve."
+                },
+                {
+                  icon: <Wrench className="h-12 w-12 text-primary" />,
+                  title: "Effortless Service",
+                  desc: "One-click service requests with verified partners. Repair made simple."
+                }
+              ].map((feature, idx) => (
+                <TiltCard key={idx} className="h-full">
+                  <div className="h-full p-8 rounded-3xl bg-card/50 border border-border/50 backdrop-blur-md hover:bg-card/80 transition-colors group">
+                    <div className="mb-6 p-4 bg-primary/10 rounded-2xl w-fit group-hover:scale-110 transition-transform duration-300 border border-primary/20 shadow-[0_0_15px_rgba(0,204,102,0.2)]">
+                      {feature.icon}
+                    </div>
+                    <h3 className="text-2xl font-bold mb-4 text-foreground group-hover:text-primary transition-colors">{feature.title}</h3>
+                    <p className="text-muted-foreground leading-relaxed">{feature.desc}</p>
+                  </div>
+                </TiltCard>
+              ))}
             </div>
           </div>
-        </motion.section>
-      </main>
-      <Footer />
-    </div>
+        </section>
+
+        {/* Immersive Stats Section */}
+        <section className="py-32 relative overflow-hidden">
+          <div className="absolute inset-0 bg-primary/5 skew-y-3 transform origin-top-left scale-110" />
+          <div className="container mx-auto px-4 relative z-10">
+            <div className="grid md:grid-cols-2 gap-16 items-center">
+              <motion.div
+                initial={{ opacity: 0, x: -50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+              >
+                <h2 className="text-4xl md:text-5xl font-bold mb-8 text-foreground">
+                  Simple as <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-emerald-300">1, 2, 3</span>
+                </h2>
+                <div className="space-y-12">
+                  {[
+                    { title: "Upload", desc: "Scan your receipt or enter details manually." },
+                    { title: "Track", desc: "Get notified before your warranty expires." },
+                    { title: "Resolve", desc: "Book repairs instantly with verified centers." }
+                  ].map((step, idx) => (
+                    <motion.div
+                      key={idx}
+                      initial={{ opacity: 0, x: -20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.2 }}
+                      className="flex items-start gap-6 group"
+                    >
+                      <div className="h-12 w-12 rounded-full bg-card/50 border border-border/50 flex items-center justify-center text-primary font-bold text-xl group-hover:bg-primary group-hover:text-black transition-colors shadow-[0_0_15px_rgba(0,204,102,0.1)]">
+                        {idx + 1}
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">{step.title}</h3>
+                        <p className="text-muted-foreground">{step.desc}</p>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+              </motion.div>
+
+              <div className="relative h-[500px] w-full">
+                <motion.div
+                  style={{ y }}
+                  className="absolute inset-0 flex items-center justify-center"
+                >
+                  <div className="relative w-full max-w-md aspect-square">
+                    {/* Abstract 3D Representation */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-primary/20 to-emerald-500/20 rounded-full blur-3xl animate-pulse-glow" />
+                    <motion.div
+                      style={{ rotate }}
+                      className="absolute inset-10 bg-card/40 backdrop-blur-xl rounded-full border border-border/10 flex items-center justify-center p-8"
+                    >
+                      <div className="text-center transform -rotate-0">
+                        <CheckCircle className="w-24 h-24 text-primary mx-auto mb-6 drop-shadow-[0_0_15px_rgba(0,204,102,0.8)]" />
+                      </div>
+                    </motion.div>
+
+                    {/* Floating Elements */}
+                    <motion.div
+                      animate={{ y: [0, -20, 0] }}
+                      transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                      className="absolute -top-10 -right-10 p-4 bg-black/60 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl"
+                    >
+                      <Lock className="w-8 h-8 text-emerald-400" />
+                    </motion.div>
+
+                    <motion.div
+                      animate={{ y: [0, 20, 0] }}
+                      transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                      className="absolute -bottom-5 -left-5 p-4 bg-black/60 backdrop-blur-md rounded-2xl border border-white/10 shadow-xl"
+                    >
+                      <Globe className="w-8 h-8 text-blue-400" />
+                    </motion.div>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </div >
+        </section >
+
+        <ExplainerVideoModal isOpen={isVideoOpen} onClose={() => setIsVideoOpen(false)} />
+        <Footer />
+      </div>
+    </>
   );
 };
 
