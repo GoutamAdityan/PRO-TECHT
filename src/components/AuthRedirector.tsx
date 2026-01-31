@@ -26,7 +26,7 @@ const AuthRedirector = () => {
           break;
       }
 
-      if (location.pathname === "/auth") {
+      if (location.pathname === "/auth" || location.pathname === "/") {
         navigate(redirectPath, { replace: true });
       }
     }

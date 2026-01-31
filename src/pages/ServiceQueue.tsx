@@ -34,6 +34,39 @@ const ServiceQueue = () => {
     const fetchServiceRequests = async () => {
       setLoading(true);
       try {
+        // 1. Get current user's Service Center ID
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        // Find the company owned by this user
+        const { data: company } = await supabase
+          .from('companies')
+          .select('id')
+          .eq('owner_id', user.id)
+          .single();
+
+        let serviceCenterId = null;
+
+        if (company) {
+          // Find the service center for this company
+          const { data: serviceCenter } = await supabase
+            .from('service_centers')
+            .select('id')
+            .eq('company_id', company.id)
+            .single();
+
+          if (serviceCenter) {
+            serviceCenterId = serviceCenter.id;
+          }
+        }
+
+        if (!serviceCenterId) {
+          // If no service center, return empty list (or handle error)
+          setRequests([]);
+          setLoading(false);
+          return;
+        }
+
         const { data, error } = await supabase
           .from('service_requests' as any)
           .select(`
@@ -49,6 +82,7 @@ const ServiceQueue = () => {
               full_name
             )
           `)
+          .eq('service_center_id', serviceCenterId) // Filter by service center
           .order('created_at', { ascending: false });
 
         if (error) throw error;

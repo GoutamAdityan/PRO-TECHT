@@ -17,8 +17,9 @@ interface AuthContextType {
   session: Session | null;
   profile: Profile | null;
   loading: boolean;
-  signUp: (email: string, password: string, fullName?: string, role?: string) => Promise<{ error: any }>;
+  signUp: (email: string, password: string, fullName?: string, role?: string, additionalData?: any) => Promise<{ user: any; session: any; error: any }>;
   signIn: (email: string, password: string) => Promise<{ error: any }>;
+  signInWithGoogle: () => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   updateProfile: (updates: Partial<Profile>) => Promise<{ error: any }>;
   updateEmail: (newEmail: string) => Promise<{ error: any }>;
@@ -110,11 +111,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
-  const signUp = async (email: string, password: string, fullName?: string, role?: string) => {
+  const signUp = async (email: string, password: string, fullName?: string, role?: string, additionalData?: any) => {
     try {
       const redirectUrl = `${window.location.origin}/`;
 
-      const { error } = await supabase.auth.signUp({
+      const { data: authData, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -128,22 +129,108 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       if (error) {
         toast({
-          variant: "destructive",
-          title: "Sign up failed",
-          description: error.message
+          title: "Error signing up",
+          description: error.message,
+          variant: "destructive"
         });
+        return { user: null, session: null, error };
       } else {
+        // If role is service_center, manually create Company and Service Center
+        if (role === 'service_center' && authData.user) {
+          try {
+            // 1. Create Company
+            // Use Center Name if provided, otherwise fallback to user's name + "Company"
+            const companyName = additionalData?.centerName || `${fullName || 'My'} Company`;
+
+            const { data: company, error: companyError } = await supabase
+              .from('companies')
+              .insert({
+                owner_id: authData.user.id,
+                name: companyName,
+                // Store generic registration number if we had a column, or just metadata if needed
+                // For now, schema typically just has 'name' and 'owner_id' as core
+              })
+              .select()
+              .single();
+
+            if (companyError) throw companyError;
+
+            // 2. Create Service Center
+            if (company) {
+              // Construct address from parts
+              const addressParts = [
+                additionalData?.streetAddress,
+                additionalData?.city,
+                additionalData?.zipCode
+              ].filter(Boolean);
+
+              const fullAddress = addressParts.length > 0 ? addressParts.join(', ') : 'Default Address';
+
+              const { error: scError } = await supabase
+                .from('service_centers')
+                .insert({
+                  company_id: company.id,
+                  name: additionalData?.centerName || `${fullName || 'My'} Service Center`,
+                  address: fullAddress,
+                  phone: additionalData?.supportPhone || additionalData?.mobileNumber || '',
+                  email: additionalData?.officialEmail || email,
+                  is_active: true
+                });
+
+              if (scError) throw scError;
+            }
+          } catch (provisionError: any) {
+            console.error("Error provisioning service center:", provisionError);
+            toast({
+              title: "Setup incomplete",
+              description: "Account created but failed to set up Service Center details. Please contact support.",
+              variant: "destructive"
+            });
+          }
+        }
+
         toast({
           title: "Account created",
-          description: "Please check your email to verify your account."
+          description: "Your account has been created successfully."
         });
       }
 
+      return { user: authData.user, session: authData.session, error: null };
+    } catch (error: any) {
+      toast({
+        title: "Error signing up",
+        description: error.message,
+        variant: "destructive"
+      });
+      return { user: null, session: null, error };
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+        },
+      });
+
+      if (error) {
+        toast({
+          variant: "destructive",
+          title: "Google Sign In failed",
+          description: error.message
+        });
+      }
       return { error };
     } catch (error: any) {
       toast({
         variant: "destructive",
-        title: "Sign up failed",
+        title: "Google Sign In failed",
         description: error.message
       });
       return { error };
@@ -294,6 +381,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     loading,
     signUp,
     signIn,
+    signInWithGoogle,
     signOut,
     updateProfile,
     updateEmail,

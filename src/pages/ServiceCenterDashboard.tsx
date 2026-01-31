@@ -246,7 +246,39 @@ const ServiceCenterDashboard: React.FC = () => {
     const fetchDashboardData = async () => {
       setLoading(true);
       try {
-        // Fetch all service requests
+        // 1. Get current user's Service Center ID
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return;
+
+        // Find the company owned by this user
+        const { data: company } = await supabase
+          .from('companies')
+          .select('id')
+          .eq('owner_id', user.id)
+          .single();
+
+        let serviceCenterId = null;
+
+        if (company) {
+          // Find the service center for this company
+          const { data: serviceCenter } = await supabase
+            .from('service_centers')
+            .select('id')
+            .eq('company_id', company.id)
+            .single();
+
+          if (serviceCenter) {
+            serviceCenterId = serviceCenter.id;
+          }
+        }
+
+        if (!serviceCenterId) {
+          console.error("No service center found for this user");
+          setLoading(false);
+          return;
+        }
+
+        // 2. Fetch service requests filtered by service_center_id
         const { data: requests, error } = await supabase
           .from('service_requests' as any)
           .select(`
@@ -261,6 +293,7 @@ const ServiceCenterDashboard: React.FC = () => {
               full_name
             )
           `)
+          .eq('service_center_id', serviceCenterId) // Added filter
           .order('created_at', { ascending: false });
 
         if (error) throw error;
@@ -295,7 +328,10 @@ const ServiceCenterDashboard: React.FC = () => {
 
     fetchDashboardData();
 
-    // Real-time subscription
+    // Real-time subscription - Filtered?
+    // Note: RLS should ideally handle filtering, but since we are fixing client-side:
+    // We can't easily filter channel events by a joined column (owner -> company -> sc).
+    // So we'll just refetch and let the fetch logic handle filtering.
     const channel = supabase
       .channel('dashboard_updates')
       .on('postgres_changes',

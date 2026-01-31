@@ -23,6 +23,7 @@ import { ProductDropdown } from "@/components/ui/ProductDropdown";
 
 const serviceRequestSchema = z.object({
   product_id: z.string().min(1, "Please select a product"),
+  service_center_id: z.string().min(1, "Please select a service center"),
   issue_description: z.string().min(10, "Please describe the issue in at least 10 characters"),
 });
 
@@ -37,6 +38,7 @@ const NewServiceRequest = () => {
   const { toast } = useToast();
   const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
+  const [serviceCenters, setServiceCenters] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -44,29 +46,38 @@ const NewServiceRequest = () => {
     resolver: zodResolver(serviceRequestSchema),
     defaultValues: {
       product_id: "",
+      service_center_id: "",
       issue_description: "",
     },
   });
 
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchData = async () => {
       if (!user) return;
       setLoading(true);
       try {
-        const { data, error } = await supabase
+        const { data: productsData, error: productsError } = await supabase
           .from('products')
           .select('id, brand, model')
           .eq('user_id', user.id);
 
-        if (error) throw error;
-        setProducts(data || []);
+        if (productsError) throw productsError;
+        setProducts(productsData || []);
+
+        const { data: centersData, error: centersError } = await supabase
+          .from('service_centers')
+          .select('id, name, address')
+          .eq('is_active', true);
+
+        if (centersError) throw centersError;
+        setServiceCenters(centersData || []);
       } catch (error: any) {
-        toast({ title: "Error fetching products", description: error.message, variant: "destructive" });
+        toast({ title: "Error fetching data", description: error.message, variant: "destructive" });
       } finally {
         setLoading(false);
       }
     };
-    fetchProducts();
+    fetchData();
   }, [user, toast]);
 
   const onSubmit = async (values: z.infer<typeof serviceRequestSchema>) => {
@@ -78,6 +89,7 @@ const NewServiceRequest = () => {
         {
           user_id: user.id,
           product_id: values.product_id,
+          service_center_id: values.service_center_id,
           issue_description: values.issue_description,
           status: "submitted",
         },
@@ -95,7 +107,7 @@ const NewServiceRequest = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-10">Loading products...</div>;
+    return <div className="text-center py-10">Loading...</div>;
   }
 
   if (products.length === 0) {
@@ -133,12 +145,38 @@ const NewServiceRequest = () => {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="service_center_id"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-xl font-bold">2. Select a Service Center</FormLabel>
+                    <FormControl>
+                      <select
+                        className="flex h-10 w-full items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                        value={field.value}
+                        onChange={field.onChange}
+                      >
+                        <option value="" disabled>Select a service center...</option>
+                        {serviceCenters.map((center) => (
+                          <option key={center.id} value={center.id}>
+                            {center.name} - {center.address}
+                          </option>
+                        ))}
+                      </select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="issue_description"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel className="text-xl font-bold">2. Describe the Issue</FormLabel>
+                    <FormLabel className="text-xl font-bold">3. Describe the Issue</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="e.g., The screen is flickering and showing distorted colors."
